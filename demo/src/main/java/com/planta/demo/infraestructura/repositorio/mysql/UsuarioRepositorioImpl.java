@@ -1,72 +1,54 @@
-package repositorio.mysql;
+package com.planta.demo.infraestructura.repositorio.mysql;
 
-import dominio.usuario.modelo.Usuario;
+import com.planta.demo.dominio.usuario.IUsuarioRepositorio;
+import com.planta.demo.dominio.usuario.modelo.Usuario;
+import org.springframework.stereotype.Repository;
 
-import java.io.*;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 /**
- * 
+ * Implementación del repositorio de Usuario usando MySQL.
+ * Esta clase forma parte de la capa de infraestructura.
  */
-public class UsuarioRepositorioImpl {
+@Repository
+public class UsuarioRepositorioImpl implements IUsuarioRepositorio {
 
-    /**
-     * Default constructor
-     */
     public UsuarioRepositorioImpl() {
+        // Constructor por defecto
     }
 
-    /**
-     * @param id 
-     * @return
-     */
+    @Override
     public Usuario obtenerPorId(String id) {
-        // TODO implement here
+        // TODO: Implementar búsqueda de usuario por ID
         return null;
     }
 
-    /**
-     * @return
-     */
+    @Override
     public List<Usuario> listarTodos() {
-        // TODO implement here
+        // TODO: Implementar consulta para listar todos los usuarios
         return null;
     }
 
-    /**
-     * @param usuario 
-     * @return
-     */
+    @Override
     public void guardar(Usuario usuario) {
-        // TODO implement here
-        return null;
+        // TODO: Implementar inserción o actualización del usuario
     }
 
-    /**
-     * @param id 
-     * @return
-     */
+    @Override
     public void eliminar(String id) {
-        // TODO implement here
-        return null;
+        // TODO: Implementar eliminación de usuario por ID
     }
 
-    /**
-     * @param correo 
-     * @return
-     */
-    public Usuario buscarPorCorreo(String correo) {
-        // TODO implement here
-        return null;
+    @Override
+    public Optional<Usuario> buscarPorCorreo(String correo) {
+        // TODO: Implementar búsqueda por correo electrónico
+        return Optional.empty();
     }
 
-    /**
-     * @param id 
-     * @return
-     */
+    @Override
     public Boolean existeUsuario(String id) {
-        // TODO implement here
-        return null;
+        // TODO: Verificar existencia de usuario por ID
+        return false;
     }
-
 }

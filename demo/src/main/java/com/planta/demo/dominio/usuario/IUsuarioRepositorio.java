@@ -2,47 +2,57 @@ package com.planta.demo.dominio.usuario;
 
 import com.planta.demo.dominio.usuario.modelo.Usuario;
 
-import java.io.*;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 /**
- * 
+ * Contrato del repositorio de Usuario para acceder a la persistencia.
+ * Parte del dominio de la solución.
  */
 public interface IUsuarioRepositorio {
 
     /**
-     * @param id 
-     * @return
+     * Obtiene un usuario por su ID.
+     * 
+     * @param id identificador único del usuario
+     * @return Usuario encontrado o null si no existe
      */
-    public Usuario obtenerPorId(String id);
+    Usuario obtenerPorId(String id);
 
     /**
-     * @return
+     * Lista todos los usuarios registrados.
+     * 
+     * @return Lista de usuarios
      */
-    public List<Usuario> listarTodos();
+    List<Usuario> listarTodos();
 
     /**
-     * @param usuario 
-     * @return
+     * Guarda o actualiza un usuario.
+     * 
+     * @param usuario objeto usuario a guardar
      */
-    public void guardar(Usuario usuario);
+    void guardar(Usuario usuario);
 
     /**
-     * @param id 
-     * @return
+     * Elimina un usuario por su ID.
+     * 
+     * @param id identificador del usuario a eliminar
      */
-    public void eliminar(String id);
+    void eliminar(String id);
 
     /**
-     * @param email 
-     * @return
+     * Busca un usuario por su correo electrónico.
+     * 
+     * @param email correo del usuario
+     * @return Optional del usuario si se encuentra
      */
-    public Optional<Usuario> buscarPorCorreo(String email);
+    Optional<Usuario> buscarPorCorreo(String email);
 
     /**
-     * @param id 
-     * @return
+     * Verifica si un usuario existe por su ID.
+     * 
+     * @param id identificador del usuario
+     * @return true si existe, false si no
      */
-    public Boolean existeUsuario(String id);
-
+    Boolean existeUsuario(String id);
 }

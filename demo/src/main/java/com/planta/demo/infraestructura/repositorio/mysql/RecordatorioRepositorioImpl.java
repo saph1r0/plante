@@ -1,168 +1,65 @@
-package repositorio.mysql;
+package com.planta.demo.infraestructura.repositorio.mysql;
 
-import dominio.modelo.IRecordatorioRepositorio;
-import dominio.modelo.recordatorio.Recordatorio;
+import com.planta.demo.dominio.modelo.recordatorio.Recordatorio;
+import com.planta.demo.dominio.modelo.IRecordatorioRepositorio;
+import org.springframework.stereotype.Repository;
 
-import java.io.*;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 /**
- * 
+ * Implementación del repositorio de Recordatorios usando MySQL.
+ * Esta clase forma parte de la capa de infraestructura.
  */
+@Repository
 public class RecordatorioRepositorioImpl implements IRecordatorioRepositorio {
 
-    /**
-     * Default constructor
-     */
     public RecordatorioRepositorioImpl() {
+        // Constructor por defecto (puede inyectarse JdbcTemplate o EntityManager aquí)
     }
 
-    /**
-     * @param id 
-     * @return
-     */
+    @Override
     public Recordatorio obtenerPorId(String id) {
-        // TODO implement here
+        // TODO: Implementar consulta SQL para obtener recordatorio por ID
         return null;
     }
 
-    /**
-     * @param plantaId 
-     * @return
-     */
+    @Override
     public List<Recordatorio> listarPorPlanta(String plantaId) {
-        // TODO implement here
+        // TODO: Implementar consulta para listar recordatorios por planta
         return null;
     }
 
-    /**
-     * @param recordatorio 
-     * @return
-     */
+    @Override
     public void guardar(Recordatorio recordatorio) {
-        // TODO implement here
-        return null;
+        // TODO: Implementar inserción o actualización del recordatorio
     }
 
-    /**
-     * @param id 
-     * @return
-     */
+    @Override
     public void eliminar(String id) {
-        // TODO implement here
-        return null;
+        // TODO: Implementar eliminación por ID
     }
 
-    /**
-     * @param usuarioId 
-     * @param fecha 
-     * @return
-     */
+    @Override
     public List<Recordatorio> obtenerProximosPorUsuario(String usuarioId, Date fecha) {
-        // TODO implement here
+        // TODO: Consulta con condición de fecha >= fecha y estado = ACTIVO
         return null;
     }
 
-    /**
-     * @param id 
-     * @return
-     */
+    @Override
     public void marcarComoCompletado(String id) {
-        // TODO implement here
-        return null;
+        // TODO: Actualizar estado del recordatorio a COMPLETADO
     }
 
-    /**
-     * @param usuarioId 
-     * @return
-     */
+    @Override
     public List<Recordatorio> listarPendientesPorUsuario(String usuarioId) {
-        // TODO implement here
+        // TODO: Listar recordatorios con estado pendiente para el usuario
         return null;
     }
 
-    /**
-     * @param tipo 
-     * @param usuarioId 
-     * @return
-     */
+    @Override
     public List<Recordatorio> listarPorTipo(String tipo, String usuarioId) {
-        // TODO implement here
+        // TODO: Filtrar por tipo de cuidado y usuario
         return null;
     }
-
-    /**
-     * @param id 
-     * @return
-     */
-    public Recordatorio obtenerPorId(String id) {
-        // TODO implement IRecordatorioRepositorio.obtenerPorId() here
-        return null;
-    }
-
-    /**
-     * @param plantaId 
-     * @return
-     */
-    public List<Recordatorio> listarPorPlanta(String plantaId) {
-        // TODO implement IRecordatorioRepositorio.listarPorPlanta() here
-        return null;
-    }
-
-    /**
-     * @param recordatorio 
-     * @return
-     */
-    public void guardar(Recordatorio recordatorio) {
-        // TODO implement IRecordatorioRepositorio.guardar() here
-        return null;
-    }
-
-    /**
-     * @param id 
-     * @return
-     */
-    public void eliminar(String id) {
-        // TODO implement IRecordatorioRepositorio.eliminar() here
-        return null;
-    }
-
-    /**
-     * @param usuarioId 
-     * @param fecha 
-     * @return
-     */
-    public List<Recordatorio> obtenerProximosPorUsuario(String usuarioId, Date fecha) {
-        // TODO implement IRecordatorioRepositorio.obtenerProximosPorUsuario() here
-        return null;
-    }
-
-    /**
-     * @param id 
-     * @return
-     */
-    public void marcarComoCompletado(String id) {
-        // TODO implement IRecordatorioRepositorio.marcarComoCompletado() here
-        return null;
-    }
-
-    /**
-     * @param usuarioId 
-     * @return
-     */
-    public List<Recordatorio> listarPendientesPorUsuario(String usuarioId) {
-        // TODO implement IRecordatorioRepositorio.listarPendientesPorUsuario() here
-        return null;
-    }
-
-    /**
-     * @param tipo 
-     * @param usuarioId 
-     * @return
-     */
-    public List<Recordatorio> listarPorTipo(String tipo, String usuarioId) {
-        // TODO implement IRecordatorioRepositorio.listarPorTipo() here
-        return null;
-    }
-
 }

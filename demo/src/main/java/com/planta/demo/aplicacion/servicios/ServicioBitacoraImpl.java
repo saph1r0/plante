@@ -1,7 +1,9 @@
  //servicios;
  package com.planta.demo.aplicacion.servicios;
 
-import dominio.modelo.IBitacoraRepositorio;
+import com.planta.demo.dominio.modelo.IBitacoraRepositorio;
+import com.planta.demo.dominio.modelo.bitacora.Bitacora;
+import com.planta.demo.dominio.modelo.servicios.ServicioBitacoraDominio;
 
 import java.io.*;
 import java.util.*;
@@ -20,7 +22,7 @@ public class ServicioBitacoraImpl {
     /**
      * 
      */
-    private void servicioDominio;
+    private ServicioBitacoraDominio servicioDominio;
 
     /**
      * 
@@ -34,7 +36,6 @@ public class ServicioBitacoraImpl {
      */
     public void registrarObservacion(Long plantaId, String descripcion) {
         // TODO implement here
-        return null;
     }
 
     /**
@@ -63,7 +64,6 @@ public class ServicioBitacoraImpl {
      */
     public void editarObservacion(Long bitacoraId, String nuevaDescripcion) {
         // TODO implement here
-        return null;
     }
 
     /**
@@ -72,7 +72,6 @@ public class ServicioBitacoraImpl {
      */
     public void eliminar(Long bitacoraId) {
         // TODO implement here
-        return null;
     }
 
     /**

@@ -1,7 +1,14 @@
-package servicios;
+package com.planta.demo.aplicacion.servicios;
 
 import java.io.*;
 import java.util.*;
+
+import com.planta.demo.dominio.modelo.IRecordatorioRepositorio;
+import com.planta.demo.dominio.modelo.planta.Planta;
+import com.planta.demo.dominio.modelo.recordatorio.Recordatorio;
+import com.planta.demo.dominio.modelo.servicios.ServicioRecordatorioDominio;
+import com.planta.demo.dominio.modelo.recordatorio.EstadoRecordatorio;
+
 
 /**
  * 
@@ -17,12 +24,12 @@ public class ServicioRecordatorioImpl {
     /**
      * 
      */
-    private void servicioDominio;
+    private ServicioRecordatorioDominio servicioDominio;
 
     /**
      * 
      */
-    private void repositorioRecordatorio;
+    private IRecordatorioRepositorio repositorioRecordatorio;
 
     /**
      * @return
@@ -35,10 +42,10 @@ public class ServicioRecordatorioImpl {
     /**
      * @return
      */
-    public List<RecordatorioPendientes> consultarPendientes() {
+    /*public List<RecordatorioPendientes> consultarPendientes() {
         // TODO implement here
         return null;
-    }
+    }*/
 
     /**
      * @param plantaId 
@@ -64,9 +71,8 @@ public class ServicioRecordatorioImpl {
      * @param mensaje 
      * @return
      */
-    public void crearRecordatorio(void planta, void estado, String mensaje) {
-        // TODO implement here
-        return null;
+    public void crearRecordatorio(Planta planta, EstadoRecordatorio estado, String mensaje) {
+    // TODO implement here
     }
 
     /**
@@ -76,7 +82,6 @@ public class ServicioRecordatorioImpl {
      */
     public void editarRecordatorio(Long id, String nuevoMensaje) {
         // TODO implement here
-        return null;
     }
 
     /**
@@ -85,7 +90,6 @@ public class ServicioRecordatorioImpl {
      */
     public void marcarComoRealizado(Long id) {
         // TODO implement here
-        return null;
     }
 
     /**
@@ -94,7 +98,6 @@ public class ServicioRecordatorioImpl {
      */
     public void eliminarRecordatorio(Long id) {
         // TODO implement here
-        return null;
     }
 
     /**
@@ -110,7 +113,7 @@ public class ServicioRecordatorioImpl {
      * @param estado 
      * @return
      */
-    public List<Recordatorio> consultarPorEstado(void estado) {
+    public List<Recordatorio> consultarPorEstado(EstadoRecordatorio estado) {
         // TODO implement here
         return null;
     }

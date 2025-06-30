@@ -1,7 +1,8 @@
-package presentacion.controlador;
+package com.planta.demo.presentacion.controlador;
 
-import servicios.IServicioPlanta;
-import dominio.modelo.planta.Planta;
+import com.planta.demo.aplicacion.interfaces.IServicioPlanta;
+import com.planta.demo.dominio.modelo.planta.Planta;
+
 
 import java.io.*;
 import java.util.*;
@@ -45,7 +46,6 @@ public class PlantaController {
      */
     public void guardar(Planta planta) {
         // TODO implement here
-        return null;
     }
 
     /**
@@ -54,7 +54,6 @@ public class PlantaController {
      */
     public void eliminar(Long id) {
         // TODO implement here
-        return null;
     }
 
     /**
@@ -65,7 +64,6 @@ public class PlantaController {
      */
     public void agregarCuidado(Long plantaId, String tipo, Date fecha) {
         // TODO implement here
-        return null;
     }
 
     /**

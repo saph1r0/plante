@@ -1,6 +1,8 @@
-package presentacion.controlador;
+package com.planta.demo.presentacion.controlador;
 
-import servicios.IServicioBitacora;
+import com.planta.demo.aplicacion.interfaces.IServicioBitacora;
+import com.planta.demo.dominio.modelo.bitacora.Bitacora;
+
 
 import java.io.*;
 import java.util.*;
@@ -46,7 +48,6 @@ public class BitacoraController {
      */
     public void registrarObservacion(Long plantaId, String descripcion) {
         // TODO implement here
-        return null;
     }
 
     /**
@@ -56,7 +57,6 @@ public class BitacoraController {
      */
     public void editarObservacion(Long bitacoraId, String nuevaDescripcion) {
         // TODO implement here
-        return null;
     }
 
     /**
@@ -65,7 +65,6 @@ public class BitacoraController {
      */
     public void eliminar(Long bitacoraId) {
         // TODO implement here
-        return null;
     }
 
 }

@@ -1,40 +1,49 @@
 package com.planta.demo.dominio.modelo.servicios;
 
 import com.planta.demo.dominio.modelo.planta.Planta;
+import com.planta.demo.dominio.modelo.cuidado.Cuidado;
 import com.planta.demo.dominio.modelo.cuidado.TipoCuidado;
 
-import java.io.*;
-import java.util.*;
+import java.time.LocalDateTime;
+//import java.util.List;
+import java.util.Objects;
 
 /**
- * 
+ * Servicio de dominio del problema para lógica relacionada a plantas.
  */
 public class ServicioPlantaDominio {
 
     /**
-     * Default constructor
+     * Agrega un cuidado a la planta, sin depender de infraestructura.
+     *
+     * @param planta Planta objetivo
+     * @param tipo Tipo de cuidado (riego, poda, etc.)
+     * @param frecuenciaDias Cada cuántos días debe repetirse
+     * @param notas Notas adicionales
      */
-    public ServicioPlantaDominio() {
+    public void agregarCuidado(Planta planta, TipoCuidado tipo, Integer frecuenciaDias, String notas) {
+        Objects.requireNonNull(planta, "Planta no puede ser null");
+        Objects.requireNonNull(tipo, "Tipo de cuidado no puede ser null");
+
+        Cuidado nuevoCuidado = new Cuidado(tipo, tipo.name(), frecuenciaDias);
+        nuevoCuidado.setFechaAplicacion(LocalDateTime.now());
+        nuevoCuidado.setNotas(notas);
+/* 
+        // Agregar directamente a la lista, si no hay método en Planta
+        List<Cuidado> lista = planta.getCuidados();
+        if (lista != null) {
+            lista.add(nuevoCuidado);
+        }*/
     }
 
     /**
-     * @param planta 
-     * @param tipo 
-     * @param fecha 
-     * @return
+     * Marca un cuidado como realizado y reprograma su próxima aplicación.
+     *
+     * @param cuidado Cuidado -><< actualizar
      */
-    public void agregarCuidado(Planta planta, TipoCuidado tipo, Date fecha) {
-        // TODO implement here
-      
+    public void marcarCuidadoComoRealizado(Cuidado cuidado) {
+        Objects.requireNonNull(cuidado, "El cuidado no puede ser null");
+        cuidado.setFechaAplicacion(LocalDateTime.now());
+        cuidado.programarProximo();
     }
-
-    /**
-     * @param realizado 
-     * @return
-     */
-    public void marcarEventoRealizado(Boolean realizado) {
-        // TODO implement here
-      
-    }
-
 }

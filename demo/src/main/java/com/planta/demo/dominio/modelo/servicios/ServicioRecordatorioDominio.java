@@ -1,39 +1,56 @@
 package com.planta.demo.dominio.modelo.servicios;
 
 import com.planta.demo.dominio.modelo.recordatorio.Recordatorio;
+import com.planta.demo.dominio.modelo.IRecordatorioRepositorio;
 import com.planta.demo.dominio.modelo.planta.Planta;
+import com.planta.demo.dominio.modelo.cuidado.TipoCuidado;
 
-import java.io.*;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 
 /**
- * 
+ * Servicio de dominio para reglas de negocio relacionadas con los recordatorios.
+ * No depende de infraestructura ni de frameworks.
  */
 public class ServicioRecordatorioDominio {
 
-    /**
-     * Default constructor
-     */
-    public ServicioRecordatorioDominio() {
+    private final IRecordatorioRepositorio repositorio;
+
+    public ServicioRecordatorioDominio(IRecordatorioRepositorio repositorio) {
+        this.repositorio = repositorio;
     }
 
     /**
-     * @return
+     * Devuelve los recordatorios que están activos y cuya fecha ya venció.
      */
-    public List<Recordatorio> consultarRecordatoriosPendientes() {
-        // TODO implement here
-        return null;
+    public List<Recordatorio> consultarRecordatoriosPendientes(String usuarioId) {
+        return repositorio.listarPendientesPorUsuario(usuarioId);
     }
 
     /**
-     * @param planta 
-     * @param estado 
-     * @param mensaje 
-     * @return
+     * Crea y guarda un nuevo recordatorio asociado a una planta.
      */
-    public Recordatorio crearRecordatorio(Planta planta, String estado, String mensaje) {
-        // TODO implement here
-        return null;
+    public Recordatorio crearRecordatorio(Planta planta, TipoCuidado tipoCuidado, String mensaje, LocalDateTime fechaEnvio) {
+        Objects.requireNonNull(planta, "La planta no puede ser null");
+        Objects.requireNonNull(tipoCuidado, "El tipo de cuidado no puede ser null");
+        Objects.requireNonNull(fechaEnvio, "La fecha de envío no puede ser null");
+
+        Recordatorio recordatorio = new Recordatorio(
+                mensaje != null ? mensaje : "Recordatorio generado automáticamente",
+                fechaEnvio,
+                tipoCuidado,
+                planta
+        );
+
+        repositorio.guardar(recordatorio);
+        return recordatorio;
     }
 
+    /**
+     * Marca un recordatorio como completado.
+     */
+    public void completarRecordatorio(String recordatorioId) {
+        repositorio.marcarComoCompletado(recordatorioId);
+    }
 }

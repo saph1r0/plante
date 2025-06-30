@@ -1,93 +1,63 @@
-package repositorio.mongodb;
+package com.planta.demo.infraestructura.repositorio.mongodb;
 
-import dominio.modelo.planta.Planta;
+import com.planta.demo.dominio.modelo.planta.Planta;
+import com.planta.demo.dominio.modelo.IPlantaRepositorio;
+import org.springframework.stereotype.Repository;
 
-import java.io.*;
-import java.util.*;
+import java.util.List;
 
 /**
- * 
+ * Implementación de IPlantaRepositorio usando MongoDB (infraestructura).
  */
-public class PlantaRepositorioImpl {
+@Repository
+public class PlantaRepositorioImpl implements IPlantaRepositorio {
 
-    /**
-     * Default constructor
-     */
     public PlantaRepositorioImpl() {
+        // Constructor por defecto (inyecciones si es necesario)
     }
 
-    /**
-     * @param id 
-     * @return
-     */
+    @Override
     public Planta obtenerPorId(String id) {
-        // TODO implement here
+        // TODO: Implementar búsqueda en MongoDB por ID
         return null;
     }
 
-    /**
-     * @param usuarioId 
-     * @return
-     */
+    @Override
     public List<Planta> listarPorUsuario(String usuarioId) {
-        // TODO implement here
+        // TODO: Consultar MongoDB por usuarioId
         return null;
     }
 
-    /**
-     * @param planta 
-     * @return
-     */
+    @Override
     public void guardar(Planta planta) {
-        // TODO implement here
-        return null;
+        // TODO: Insertar o actualizar la planta en MongoDB
     }
 
-    /**
-     * @param id 
-     * @return
-     */
+    @Override
     public void eliminar(String id) {
-        // TODO implement here
-        return null;
+        // TODO: Eliminar por ID en MongoDB
     }
 
-    /**
-     * @param nombre 
-     * @param usuarioId 
-     * @return
-     */
+    @Override
     public List<Planta> buscarPorNombre(String nombre, String usuarioId) {
-        // TODO implement here
+        // TODO: Buscar plantas por nombre y usuarioId
         return null;
     }
 
-    /**
-     * @param plantaId 
-     * @param estadoPlanta 
-     * @return
-     */
+    @Override
     public void actualizarEstado(String plantaId, String estadoPlanta) {
-        // TODO implement here
-        return null;
+        // TODO: Actualizar solo el campo estado de la planta
     }
 
-    /**
-     * @param tipo 
-     * @return
-     */
+    @Override
     public List<Planta> buscarPorTipo(String tipo) {
-        // TODO implement here
+        // TODO: Buscar plantas por tipo (etiqueta o especie)
         return null;
     }
 
-    /**
-     * @param usuarioId 
-     * @return
-     */
+    @Override
     public Long contarPorUsuario(String usuarioId) {
-        // TODO implement here
-        return null;
+        // TODO: Contar plantas asociadas al usuario
+        return 0L;
     }
-
 }

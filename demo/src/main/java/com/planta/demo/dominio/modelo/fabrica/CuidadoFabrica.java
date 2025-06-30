@@ -1,29 +1,35 @@
 package com.planta.demo.dominio.modelo.fabrica;
-
 import com.planta.demo.dominio.modelo.cuidado.Cuidado;
+import com.planta.demo.dominio.modelo.cuidado.TipoCuidado;
 
-import java.io.*;
-import java.util.*;
 
 /**
- * 
+ * Fábrica de aplicación para crear instancias de Cuidado.
+ * Pertenece al dominio de la solución.
  */
 public class CuidadoFabrica {
 
-    /**
-     * Default constructor
-     */
     public CuidadoFabrica() {
     }
 
     /**
-     * @param tipo 
-     * @param frecuenciaDias 
-     * @return
+     * Crea una instancia de Cuidado con los parámetros proporcionados.
+     *
+     * @param tipoTexto       Nombre del tipo de cuidado (debe coincidir con TipoCuidado)
+     * @param descripcion     Descripción del cuidado
+     * @param frecuenciaDias  Frecuencia sugerida en días (opcional, puede ser null)
+     * @return                Instancia de Cuidado o null si el tipo no es válido
      */
-    public Cuidado crearCuidado(String tipo, Integer frecuenciaDias) {
-        // TODO implement here
-        return null;
-    }
+    public Cuidado crearCuidado(String tipoTexto, String descripcion, Integer frecuenciaDias) {
+        if (tipoTexto == null || tipoTexto.isBlank()) return null;
 
+        TipoCuidado tipo;
+        try {
+            tipo = TipoCuidado.valueOf(tipoTexto.toUpperCase()); //  coincidir con el enum
+        } catch (IllegalArgumentException e) {
+            return null; 
+        }
+
+        return new Cuidado(tipo, descripcion, frecuenciaDias);
+    }
 }

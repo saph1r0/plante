@@ -1,89 +1,83 @@
 package com.planta.demo.dominio.modelo.planta;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
- * Documento MongoDB que representa una planta.
+ * Entidad del dominio que representa una planta.
  */
-@Document(collection = "plantas")
 public class Planta {
 
-    @Id
     private String id;
-
     private String nombreComun;
     private String nombreCientifico;
     private String descripcion;
     private String imagenURL;
+    private final List<Etiqueta> etiquetas;
 
-    // Constructor por defecto
-    public Planta() {
-    }
-
-    // Constructor completo
     public Planta(String nombreComun, String nombreCientifico, String descripcion, String imagenURL) {
+        if (nombreComun == null || nombreComun.isBlank())
+            throw new IllegalArgumentException("El nombre común no puede ser nulo o vacío.");
+        if (nombreCientifico == null || nombreCientifico.isBlank())
+            throw new IllegalArgumentException("El nombre científico no puede ser nulo o vacío.");
+
         this.nombreComun = nombreComun;
         this.nombreCientifico = nombreCientifico;
         this.descripcion = descripcion;
         this.imagenURL = imagenURL;
+        this.etiquetas = new ArrayList<>();
     }
 
-    // Getters y Setters
+    // Solo para uso controlado por persistencia o fábricas
+    protected Planta() {
+        this.etiquetas = new ArrayList<>();
+    }
+
+    // Métodos de comportamiento de dominio
+    public void cambiarDescripcion(String nuevaDescripcion) {
+        this.descripcion = nuevaDescripcion;
+    }
+
+    public void cambiarImagen(String nuevaImagenURL) {
+        this.imagenURL = nuevaImagenURL;
+    }
+
+    public void agregarEtiqueta(Etiqueta etiqueta) {
+        if (etiqueta != null && !this.etiquetas.contains(etiqueta)) {
+            this.etiquetas.add(etiqueta);
+        }
+    }
+
+    public void quitarEtiqueta(Etiqueta etiqueta) {
+        this.etiquetas.remove(etiqueta);
+    }
+
+    // Getters
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getNombreComun() {
         return nombreComun;
     }
 
-    public void setNombreComun(String nombreComun) {
-        this.nombreComun = nombreComun;
-    }
-
     public String getNombreCientifico() {
         return nombreCientifico;
-    }
-
-    public void setNombreCientifico(String nombreCientifico) {
-        this.nombreCientifico = nombreCientifico;
     }
 
     public String getDescripcion() {
         return descripcion;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
     public String getImagenURL() {
         return imagenURL;
     }
 
-    public void setImagenURL(String imagenURL) {
-        this.imagenURL = imagenURL;
+    public List<Etiqueta> getEtiquetas() {
+        return new ArrayList<>(etiquetas);
     }
-
-    // Métodos útiles
-    @Override
-    public String toString() {
-        return "Planta{" +
-                "id='" + id + '\'' +
-                ", nombreComun='" + nombreComun + '\'' +
-                ", nombreCientifico='" + nombreCientifico + '\'' +
-                ", descripcion='" + descripcion + '\'' +
-                ", imagenURL='" + imagenURL + '\'' +
-                '}';
-    }
-
+    // equals/hashCode por identidad
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

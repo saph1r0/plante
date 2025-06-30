@@ -1,6 +1,8 @@
-package presentacion.controlador;
+package com.planta.demo.presentacion.controlador;
 
-import dominio.modelo.planta.Planta;
+import com.planta.demo.dominio.modelo.planta.Planta;
+import com.planta.demo.dominio.modelo.recordatorio.Recordatorio;
+import com.planta.demo.aplicacion.interfaces.IServicioRecordatorio;
 
 import java.io.*;
 import java.util.*;
@@ -19,7 +21,7 @@ public class RecordatorioController {
     /**
      * 
      */
-    public void servicioRecordatorio;
+    private IServicioRecordatorio servicioRecordatorio;
 
     /**
      * @return
@@ -54,7 +56,6 @@ public class RecordatorioController {
      */
     public void crearRecordatorio(Planta planta, String estado, String mensaje) {
         // TODO implement here
-        return null;
     }
 
     /**
@@ -63,7 +64,6 @@ public class RecordatorioController {
      */
     public void marcarComoRealizado(Long id) {
         // TODO implement here
-        return null;
     }
 
     /**
@@ -72,7 +72,6 @@ public class RecordatorioController {
      */
     public void eliminarRecordatorio(Long id) {
         // TODO implement here
-        return null;
     }
 
 }

@@ -2,62 +2,68 @@ package com.planta.demo.dominio.modelo;
 
 import com.planta.demo.dominio.modelo.planta.Planta;
 
-import java.io.*;
-import java.util.*;
+import java.util.List;
 
 /**
- * 
+ * Repositorio del dominio para gestionar plantas.
+ *
+ * Esta interfaz define las operaciones del modelo del problema, 
+ * sin depender de detalles de infraestructura o persistencia.
  */
 public interface IPlantaRepositorio {
 
     /**
-     * @param id 
-     * @return
+     * Obtiene una planta por su identificador único.
+     * @param id Identificador de la planta
+     * @return Planta correspondiente o null si no existe
      */
-    public Planta obtenerPorId(String id);
+    Planta obtenerPorId(String id);
 
     /**
-     * @param usuarioId 
-     * @return
+     * Lista todas las plantas asociadas a un usuario.
+     * @param usuarioId Identificador del usuario
+     * @return Lista de plantas del usuario
      */
-    public List<Planta> listarPorUsuario(String usuarioId);
+    List<Planta> listarPorUsuario(String usuarioId);
 
     /**
-     * @param planta 
-     * @return
+     * Guarda una planta nueva o actualiza una existente.
+     * @param planta Planta a guardar
      */
-    public void guardar(Planta planta);
+    void guardar(Planta planta);
 
     /**
-     * @param id 
-     * @return
+     * Elimina una planta por su ID.
+     * @param id Identificador de la planta a eliminar
      */
-    public void eliminar(String id);
+    void eliminar(String id);
 
     /**
-     * @param nombre 
-     * @param usuarioId 
-     * @return
+     * Busca plantas por nombre asociado a un usuario.
+     * @param nombre Nombre (parcial o completo) de la planta
+     * @param usuarioId Identificador del usuario
+     * @return Lista de coincidencias
      */
-    public List<Planta> buscarPorNombre(String nombre, String usuarioId);
+    List<Planta> buscarPorNombre(String nombre, String usuarioId);
 
     /**
-     * @param plantaId 
-     * @param estadoPlanta 
-     * @return
+     * Actualiza el estado general de una planta.
+     * @param plantaId Identificador de la planta
+     * @param estadoPlanta Estado nuevo a aplicar (ej. "enferma", "saludable")
      */
-    public void actualizarEstado(String plantaId, String estadoPlanta);
+    void actualizarEstado(String plantaId, String estadoPlanta);
 
     /**
-     * @param tipo 
-     * @return
+     * Busca plantas por tipo (etiqueta, especie, etc.).
+     * @param tipo Tipo a filtrar (puede ser una categoría, etiqueta u otro criterio)
+     * @return Lista de plantas que coinciden
      */
-    public List<Planta> buscarPorTipo(String tipo);
+    List<Planta> buscarPorTipo(String tipo);
 
     /**
-     * @param usuarioId 
-     * @return
+     * Cuenta cuántas plantas tiene un usuario.
+     * @param usuarioId ID del usuario
+     * @return Número total de plantas registradas por ese usuario
      */
-    public Long contarPorUsuario(String usuarioId);
-
+    Long contarPorUsuario(String usuarioId);
 }

@@ -2,62 +2,68 @@ package com.planta.demo.dominio.modelo;
 
 import com.planta.demo.dominio.modelo.recordatorio.Recordatorio;
 
-import java.io.*;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 /**
+ * Repositorio del dominio para gestionar recordatorios asociados a plantas y usuarios.
  * 
+ * Define las operaciones que el modelo necesita sin depender de la infraestructura.
  */
 public interface IRecordatorioRepositorio {
 
     /**
-     * @param id 
-     * @return
+     * Obtiene un recordatorio por su ID.
+     * @param id Identificador del recordatorio
+     * @return Recordatorio correspondiente o null si no existe
      */
-    public Recordatorio obtenerPorId(String id);
+    Recordatorio obtenerPorId(String id);
 
     /**
-     * @param plantaId 
-     * @return
+     * Lista todos los recordatorios asociados a una planta.
+     * @param plantaId ID de la planta
+     * @return Lista de recordatorios
      */
-    public List<Recordatorio> listarPorPlanta(String plantaId);
+    List<Recordatorio> listarPorPlanta(String plantaId);
 
     /**
-     * @param recordatorio 
-     * @return
+     * Guarda un nuevo recordatorio o actualiza uno existente.
+     * @param recordatorio Instancia a guardar
      */
-    public void guardar(Recordatorio recordatorio);
+    void guardar(Recordatorio recordatorio);
 
     /**
-     * @param id 
-     * @return
+     * Elimina un recordatorio por su ID.
+     * @param id Identificador del recordatorio a eliminar
      */
-    public void eliminar(String id);
+    void eliminar(String id);
 
     /**
-     * @param usuarioId 
-     * @param fecha 
-     * @return
+     * Obtiene los recordatorios programados a partir de cierta fecha para un usuario.
+     * @param usuarioId ID del usuario
+     * @param fecha Fecha desde la cual buscar recordatorios
+     * @return Lista de recordatorios próximos
      */
-    public List<Recordatorio> obtenerProximosPorUsuario(String usuarioId, Date fecha);
+    List<Recordatorio> obtenerProximosPorUsuario(String usuarioId, Date fecha);
 
     /**
-     * @param id 
-     * @return
+     * Marca como completado un recordatorio.
+     * @param id ID del recordatorio
      */
-    public void marcarComoCompletado(String id);
+    void marcarComoCompletado(String id);
 
     /**
-     * @param usuarioId 
-     * @return
+     * Lista todos los recordatorios pendientes (activos y no vencidos) de un usuario.
+     * @param usuarioId ID del usuario
+     * @return Lista de recordatorios pendientes
      */
-    public List<Recordatorio> listarPendientesPorUsuario(String usuarioId);
+    List<Recordatorio> listarPendientesPorUsuario(String usuarioId);
 
     /**
-     * @param tipo 
-     * @param usuarioId 
-     * @return
+     * Lista recordatorios por tipo de cuidado (riego, poda, fertilización, etc.) y usuario.
+     * @param tipo Tipo de cuidado
+     * @param usuarioId ID del usuario
+     * @return Lista filtrada por tipo
      */
-    public List<Recordatorio> listarPorTipo(String tipo, String usuarioId);
-
+    List<Recordatorio> listarPorTipo(String tipo, String usuarioId);
 }

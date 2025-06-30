@@ -1,106 +1,73 @@
-package servicios;
+package com.planta.demo.aplicacion.servicios;
 
-import java.io.*;
-import java.util.*;
+import com.planta.demo.dominio.usuario.IUsuarioRepositorio;
+import com.planta.demo.dominio.usuario.modelo.Usuario;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
- * 
+ * Servicio de aplicación para gestionar operaciones de usuario.
  */
 public class ServicioUsuarioImpl {
 
-    /**
-     * Default constructor
-     */
-    public ServicioUsuarioImpl() {
+    private final IUsuarioRepositorio repositorioUsuario;
+
+    public ServicioUsuarioImpl(IUsuarioRepositorio repositorioUsuario) {
+        this.repositorioUsuario = repositorioUsuario;
     }
 
-    /**
-     * 
-     */
-    private void repositorioUsuario;
-
-    /**
-     * @param nombre 
-     * @param email 
-     * @param contraseña 
-     * @return
-     */
     public void registrarUsuario(String nombre, String email, String contraseña) {
-        // TODO implement here
-        return null;
+        Optional<Usuario> existente = repositorioUsuario.buscarPorCorreo(email);
+        if (existente.isPresent()) {
+            throw new IllegalArgumentException("El correo ya está registrado");
+        }
+
+        Usuario nuevo = new Usuario(nombre, email, contraseña);
+        repositorioUsuario.guardar(nuevo);
     }
 
-    /**
-     * @param email 
-     * @param contraseña 
-     * @return
-     */
     public boolean autenticarUsuario(String email, String contraseña) {
-        // TODO implement here
-        return false;
+        Optional<Usuario> usuarioOpt = repositorioUsuario.buscarPorCorreo(email);
+        return usuarioOpt.isPresent() && usuarioOpt.get().getPassword().equals(contraseña);
     }
 
-    /**
-     * @param id 
-     * @return
-     */
-    public void obtenerUsuarioPorId(int id) {
-        // TODO implement here
-        return null;
+    public Usuario obtenerUsuarioPorId(String id) {
+        return repositorioUsuario.obtenerPorId(id);
     }
 
-    /**
-     * @param usuario 
-     * @return
-     */
-    public boolean actualizarPerfil(void usuario) {
-        // TODO implement here
-        return false;
+    public boolean actualizarPerfil(Usuario usuario) {
+        if (usuario == null || usuario.getId() == null) return false;
+        repositorioUsuario.guardar(usuario); // usar guardar también para actualizar
+        return true;
     }
 
-    /**
-     * @param id 
-     * @return
-     */
-    public boolean eliminarUsuario(int id) {
-        // TODO implement here
-        return false;
+    public boolean eliminarUsuario(String id) {
+        if (!repositorioUsuario.existeUsuario(id)) return false;
+        repositorioUsuario.eliminar(id);
+        return true;
     }
 
-    /**
-     * @return
-     */
     public List<Usuario> listarUsuarios() {
-        // TODO implement here
-        return null;
+        return repositorioUsuario.listarTodos();
     }
 
-    /**
-     * @param email 
-     * @return
-     */
     public boolean existeCorreo(String email) {
-        // TODO implement here
-        return false;
+        return repositorioUsuario.buscarPorCorreo(email).isPresent();
     }
 
-    /**
-     * @param email 
-     * @return
-     */
     public void recuperarContraseña(String email) {
-        // TODO implement here
-        return null;
+        if (!existeCorreo(email)) {
+            throw new IllegalArgumentException("Correo no registrado");
+        }
+        // lógica de envío de correo u otro mecanismo va aquí
     }
 
-    /**
-     * @param id 
-     * @param nuevaContraseña 
-     * @return
-     */
-    public boolean cambiarContraseña(int id, String nuevaContraseña) {
-        // TODO implement here
-        return false;
+    public boolean cambiarContraseña(String id, String nuevaContraseña) {
+        Usuario usuario = repositorioUsuario.obtenerPorId(id);
+        if (usuario == null) return false;
+        usuario.setPassword(nuevaContraseña);
+        repositorioUsuario.guardar(usuario);
+        return true;
     }
-
 }

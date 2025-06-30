@@ -1,32 +1,20 @@
 package com.planta.demo.dominio.modelo.bitacora;
 
 import com.planta.demo.dominio.modelo.planta.Planta;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.Date;
+import java.util.Objects;
 
-@Document(collection = "bitacoras")
+/**
+ * Entidad de dominio que representa una entrada de bitácora de cuidado de una planta.
+ */
 public class Bitacora {
 
-    @Id
     private String id;
-
     private Date fecha;
-
     private String descripcion;
-
     private String fotoOpcional;
-
-    @DBRef
     private Planta planta;
-
-    // Constructores
-
-    public Bitacora() {
-        this.fecha = new Date();
-    }
 
     public Bitacora(String descripcion, String fotoOpcional, Planta planta) {
         this.fecha = new Date();
@@ -35,7 +23,12 @@ public class Bitacora {
         this.planta = planta;
     }
 
-    // Getters y Setters
+    // Constructor vacío útil para instanciación sin parámetros (por ejemplo, tests)
+    public Bitacora() {
+        this.fecha = new Date();
+    }
+
+    // Getters y setters
 
     public String getId() {
         return id;
@@ -75,5 +68,27 @@ public class Bitacora {
 
     public void setPlanta(Planta planta) {
         this.planta = planta;
+    }
+
+    @Override
+    public String toString() {
+        return "Bitacora{" +
+                "fecha=" + fecha +
+                ", descripcion='" + descripcion + '\'' +
+                ", planta=" + (planta != null ? planta.getNombreComun() : "N/A") +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Bitacora)) return false;
+        Bitacora bitacora = (Bitacora) o;
+        return Objects.equals(id, bitacora.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

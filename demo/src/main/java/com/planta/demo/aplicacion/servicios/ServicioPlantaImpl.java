@@ -1,7 +1,12 @@
-package servicios;
+package com.planta.demo.aplicacion.servicios;
 
 import java.io.*;
 import java.util.*;
+
+import com.planta.demo.dominio.modelo.IPlantaRepositorio;
+import com.planta.demo.dominio.modelo.cuidado.TipoCuidado;
+import com.planta.demo.dominio.modelo.planta.Planta;
+import com.planta.demo.dominio.modelo.servicios.ServicioPlantaDominio;
 
 /**
  * 
@@ -17,12 +22,12 @@ public class ServicioPlantaImpl {
     /**
      * 
      */
-    private void repositorioPlanta;
+    private IPlantaRepositorio repositorioPlanta;
 
     /**
      * 
      */
-    private void servicioDominio;
+    private ServicioPlantaDominio servicioDominio;
 
     /**
      * @return
@@ -45,9 +50,8 @@ public class ServicioPlantaImpl {
      * @param planta 
      * @return
      */
-    public void guardar(void planta) {
+    public void guardar(Planta planta) {
         // TODO implement here
-        return null;
     }
 
     /**
@@ -56,7 +60,6 @@ public class ServicioPlantaImpl {
      */
     public void eliminar(Long id) {
         // TODO implement here
-        return null;
     }
 
     /**
@@ -65,19 +68,17 @@ public class ServicioPlantaImpl {
      * @param fecha 
      * @return
      */
-    public void agregarCuidado(Long plantaId, void tipo, Date fecha) {
-        // TODO implement here
-        return null;
-    }
+    public void agregarCuidado(Long plantaId, TipoCuidado tipo, Date fecha) {
+        // ...
+    }   
 
     /**
      * @param plantaId 
      * @param realizado 
      * @return
      */
-    public void marcarEventoRealizado(Long plantaId, bool realizado) {
+    public void marcarEventoRealizado(Long plantaId, boolean realizado) {
         // TODO implement here
-        return null;
     }
 
     /**

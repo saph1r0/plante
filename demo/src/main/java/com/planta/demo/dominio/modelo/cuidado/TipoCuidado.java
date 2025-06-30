@@ -1,6 +1,5 @@
 package com.planta.demo.dominio.modelo.cuidado;
 
-
 /**
  * Enumeración que representa los tipos de cuidado que se pueden aplicar a una planta
  */

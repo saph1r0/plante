@@ -1,43 +1,30 @@
 package com.planta.demo.dominio.modelo.cuidado;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-@Document(collection = "cuidados")
+/**
+ * Entidad de dominio que representa un cuidado aplicado a una planta.
+ */
 public class Cuidado {
 
-    @Id
-    private String id;
-
     private TipoCuidado tipo;
-
     private String descripcion;
-
     private Integer frecuenciaDias;
-
     private LocalDateTime fechaAplicacion;
-
     private LocalDateTime fechaProxima;
-
     private String notas;
 
-    public Cuidado() {
-        this.fechaAplicacion = LocalDateTime.now();
-        this.fechaProxima = null;
-    }
-
     public Cuidado(TipoCuidado tipo, String descripcion, Integer frecuenciaDias) {
-        this();
         this.tipo = tipo;
         this.descripcion = descripcion;
         this.frecuenciaDias = frecuenciaDias;
-        this.programarProximo();
+        this.fechaAplicacion = LocalDateTime.now();
+        programarProximo();
     }
 
     public void programarProximo() {
-        if (frecuenciaDias != null) {
+        if (frecuenciaDias != null && frecuenciaDias > 0) {
             this.fechaProxima = this.fechaAplicacion.plusDays(frecuenciaDias);
         }
     }
@@ -46,11 +33,7 @@ public class Cuidado {
         return fechaProxima != null && fechaProxima.isAfter(LocalDateTime.now());
     }
 
-    // Getters y Setters
-
-    public String getId() {
-        return id;
-    }
+    // Getters y setters
 
     public TipoCuidado getTipo() {
         return tipo;
@@ -98,5 +81,34 @@ public class Cuidado {
 
     public void setNotas(String notas) {
         this.notas = notas;
+    }
+
+    // Métodos de utilidad
+
+    @Override
+    public String toString() {
+        return "Cuidado{" +
+                "tipo=" + tipo +
+                ", descripcion='" + descripcion + '\'' +
+                ", frecuenciaDias=" + frecuenciaDias +
+                ", fechaAplicacion=" + fechaAplicacion +
+                ", fechaProxima=" + fechaProxima +
+                ", notas='" + notas + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Cuidado)) return false;
+        Cuidado cuidado = (Cuidado) o;
+        return tipo == cuidado.tipo &&
+                Objects.equals(descripcion, cuidado.descripcion) &&
+                Objects.equals(fechaAplicacion, cuidado.fechaAplicacion);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tipo, descripcion, fechaAplicacion);
     }
 }
