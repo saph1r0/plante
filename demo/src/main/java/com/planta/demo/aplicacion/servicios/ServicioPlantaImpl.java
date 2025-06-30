@@ -1,111 +1,77 @@
 package com.planta.demo.aplicacion.servicios;
 
-import java.io.*;
-import java.util.*;
-
 import com.planta.demo.dominio.modelo.IPlantaRepositorio;
 import com.planta.demo.dominio.modelo.cuidado.TipoCuidado;
 import com.planta.demo.dominio.modelo.planta.Planta;
 import com.planta.demo.dominio.modelo.servicios.ServicioPlantaDominio;
 
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
- * 
+ * Servicio de aplicación para gestionar plantas.
+ * Orquesta la lógica entre el dominio y la infraestructura.
  */
 public class ServicioPlantaImpl {
 
-    /**
-     * Default constructor
-     */
-    public ServicioPlantaImpl() {
+    private final IPlantaRepositorio repositorioPlanta;
+    private final ServicioPlantaDominio servicioDominio;
+
+    public ServicioPlantaImpl(IPlantaRepositorio repositorioPlanta, ServicioPlantaDominio servicioDominio) {
+        this.repositorioPlanta = repositorioPlanta;
+        this.servicioDominio = servicioDominio;
     }
 
-    /**
-     * 
-     */
-    private IPlantaRepositorio repositorioPlanta;
-
-    /**
-     * 
-     */
-    private ServicioPlantaDominio servicioDominio;
-
-    /**
-     * @return
-     */
     public List<Planta> obtenerTodas() {
-        // TODO implement here
-        return null;
+        // Suponiendo que el repositorio tiene listarPorUsuario u otra forma global
+        return repositorioPlanta.listarPorUsuario("global"); // cambiar si hay un método más adecuado
     }
 
-    /**
-     * @param id 
-     * @return
-     */
     public Planta obtenerPorId(Long id) {
-        // TODO implement here
-        return null;
+        return repositorioPlanta.obtenerPorId(id.toString());
     }
 
-    /**
-     * @param planta 
-     * @return
-     */
     public void guardar(Planta planta) {
-        // TODO implement here
+        repositorioPlanta.guardar(planta);
     }
 
-    /**
-     * @param id 
-     * @return
-     */
     public void eliminar(Long id) {
-        // TODO implement here
+        repositorioPlanta.eliminar(id.toString());
     }
 
-    /**
-     * @param plantaId 
-     * @param tipo 
-     * @param fecha 
-     * @return
-     */
-    public void agregarCuidado(Long plantaId, TipoCuidado tipo, Date fecha) {
-        // ...
-    }   
-
-    /**
-     * @param plantaId 
-     * @param realizado 
-     * @return
-     */
-    public void marcarEventoRealizado(Long plantaId, boolean realizado) {
-        // TODO implement here
+    public void agregarCuidado(Long plantaId, TipoCuidado tipo, Integer frecuenciaDias, String notas) {
+        Planta planta = repositorioPlanta.obtenerPorId(plantaId.toString());
+        if (planta != null) {
+            servicioDominio.agregarCuidado(planta, tipo, frecuenciaDias, notas);
+            repositorioPlanta.guardar(planta);
+        } else {
+            throw new IllegalArgumentException("Planta no encontrada con ID: " + plantaId);
+        }
     }
-
-    /**
-     * @param tipo 
-     * @return
-     */
+    
+    /*public void marcarEventoRealizado(Long plantaId) {
+        Planta planta = repositorioPlanta.obtenerPorId(plantaId.toString());
+        if (planta != null) {
+            servicioDominio.marcarEventoRealizado(planta);
+            repositorioPlanta.guardar(planta);
+        } else {
+            throw new IllegalArgumentException("Planta no encontrada con ID: " + plantaId);
+        }
+    }*/
+    
     public List<Planta> buscarPorTipo(String tipo) {
-        // TODO implement here
-        return null;
+        return repositorioPlanta.buscarPorTipo(tipo);
     }
 
-    /**
-     * @param usuarioId 
-     * @return
-     */
     public List<Planta> listarPorUsuario(Long usuarioId) {
-        // TODO implement here
-        return null;
+        return repositorioPlanta.listarPorUsuario(usuarioId.toString());
     }
 
-    /**
-     * @param estado 
-     * @return
-     */
     public int contarPorEstado(String estado) {
-        // TODO implement here
-        return 0;
+        List<Planta> todas = obtenerTodas();
+        return (int) todas.stream()
+                .filter(p -> estado.equalsIgnoreCase(p.getEstado()))
+                .count();
     }
-
 }

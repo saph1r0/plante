@@ -1,104 +1,90 @@
- //servicios;
- package com.planta.demo.aplicacion.servicios;
+package com.planta.demo.aplicacion.servicios;
 
 import com.planta.demo.dominio.modelo.IBitacoraRepositorio;
 import com.planta.demo.dominio.modelo.bitacora.Bitacora;
+import com.planta.demo.dominio.modelo.planta.Planta;
 import com.planta.demo.dominio.modelo.servicios.ServicioBitacoraDominio;
 
-import java.io.*;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 /**
- * 
+ * Servicio de aplicación que orquesta el uso del dominio para gestionar bitácoras.
+ * Forma parte del dominio de la solución.
  */
 public class ServicioBitacoraImpl {
 
-    /**
-     * Default constructor
-     */
-    public ServicioBitacoraImpl() {
+    private final ServicioBitacoraDominio servicioDominio;
+    private final IBitacoraRepositorio repositorioBitacora;
+
+    public ServicioBitacoraImpl(ServicioBitacoraDominio servicioDominio, IBitacoraRepositorio repositorioBitacora) {
+        this.servicioDominio = servicioDominio;
+        this.repositorioBitacora = repositorioBitacora;
     }
 
     /**
-     * 
+     * Registra una nueva observación para una planta.
      */
-    private ServicioBitacoraDominio servicioDominio;
-
-    /**
-     * 
-     */
-    private IBitacoraRepositorio repositorioBitacora;
-
-    /**
-     * @param plantaId 
-     * @param descripcion 
-     * @return
-     */
-    public void registrarObservacion(Long plantaId, String descripcion) {
-        // TODO implement here
+    public void registrarObservacion(String plantaId, String descripcion) {
+        Bitacora nueva = new Bitacora(descripcion, null, new Planta(plantaId));
+        repositorioBitacora.guardar(nueva);
     }
 
     /**
-     * @param plantaId 
-     * @return
+     * Obtiene todas las bitácoras asociadas a una planta.
      */
-    public List<Bitacora> obtenerPorPlanta(Long plantaId) {
-        // TODO implement here
-        return null;
+    public List<Bitacora> obtenerPorPlanta(String plantaId) {
+        return repositorioBitacora.listarPorPlanta(plantaId);
     }
 
     /**
-     * @param desde 
-     * @param hasta 
-     * @return
+     * Obtiene bitácoras dentro de un rango de fechas.
      */
     public List<Bitacora> obtenerPorFechaRango(Date desde, Date hasta) {
-        // TODO implement here
-        return null;
+        return repositorioBitacora.listarPorFecha(desde, hasta);
     }
 
     /**
-     * @param bitacoraId 
-     * @param nuevaDescripcion 
-     * @return
+     * Edita la descripción de una bitácora si existe.
      */
-    public void editarObservacion(Long bitacoraId, String nuevaDescripcion) {
-        // TODO implement here
+    public void editarObservacion(String bitacoraId, String nuevaDescripcion) {
+        Bitacora bitacora = repositorioBitacora.obtenerPorId(bitacoraId);
+        if (bitacora != null) {
+            bitacora.setDescripcion(nuevaDescripcion);
+            repositorioBitacora.actualizar(bitacora);
+        }
     }
 
     /**
-     * @param bitacoraId 
-     * @return
+     * Elimina una bitácora si existe.
      */
-    public void eliminar(Long bitacoraId) {
-        // TODO implement here
+    public void eliminar(String bitacoraId) {
+        repositorioBitacora.eliminar(bitacoraId);
     }
 
     /**
-     * @param plantaId 
-     * @return
+     * Exporta el historial en bytes (ejemplo simple, podría generar PDF o CSV).
      */
-    public byte exportarHistorial(Long plantaId) {
-        // TODO implement here
-        return 0;
+    public byte[] exportarHistorial(String plantaId) {
+        List<Bitacora> historial = repositorioBitacora.listarPorPlanta(plantaId);
+        return historial.toString().getBytes(); // Mejor reemplazar con lógica de exportación real
     }
 
     /**
-     * @param tipo 
-     * @return
+     * Busca bitácoras por tipo de actividad (riego, poda, etc.).
      */
     public List<Bitacora> buscarPorTipo(String tipo) {
-        // TODO implement here
-        return null;
+        return repositorioBitacora.listarPorTipoActividad(tipo);
     }
 
     /**
-     * @param usuarioId 
-     * @return
+     * Lista todas las bitácoras pendientes de atención por usuario.
      */
-    public List<Bitacora> listarPendientesPorUsuario(Long usuarioId) {
-        // TODO implement here
-        return null;
+    public List<Bitacora> listarPendientesPorUsuario(String usuarioId) {
+        return repositorioBitacora.listarPorUsuario(usuarioId)
+                .stream()
+                .filter(bitacora -> bitacora.getDescripcion() != null && bitacora.getDescripcion().contains("pendiente"))
+                .toList(); // Filtro de ejemplo, depende de cómo se marca lo "pendiente"
     }
-
 }

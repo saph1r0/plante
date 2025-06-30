@@ -10,6 +10,7 @@ import java.util.Objects;
 public class Planta {
 
     private String id;
+    private String estado;
     private String nombreComun;
     private String nombreCientifico;
     private String descripcion;
@@ -26,6 +27,10 @@ public class Planta {
         this.nombreCientifico = nombreCientifico;
         this.descripcion = descripcion;
         this.imagenURL = imagenURL;
+        this.etiquetas = new ArrayList<>();
+    }
+    public Planta(String id) {
+        this.id = id;
         this.etiquetas = new ArrayList<>();
     }
 
@@ -72,6 +77,9 @@ public class Planta {
 
     public String getImagenURL() {
         return imagenURL;
+    }
+    public String getEstado() {
+        return estado;
     }
 
     public List<Etiqueta> getEtiquetas() {
