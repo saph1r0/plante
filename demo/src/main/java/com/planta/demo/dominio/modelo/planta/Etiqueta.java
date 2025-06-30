@@ -1,4 +1,4 @@
-package dominio.modelo.planta;
+package com.planta.demo.dominio.modelo.planta;
 
 import java.io.*;
 import java.util.*;
@@ -22,12 +22,12 @@ public class Etiqueta {
     /**
      * 
      */
-    public string nombre;
+    public String nombre;
 
     /**
      * 
      */
-    public string color;
+    public String color;
 
 
 

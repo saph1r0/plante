@@ -1,7 +1,7 @@
-package dominio.modelo.servicios;
+package com.planta.demo.dominio.modelo.servicios;
 
-import dominio.modelo.planta.Planta;
-import dominio.modelo.cuidado.TipoCuidado;
+import com.planta.demo.dominio.modelo.planta.Planta;
+import com.planta.demo.dominio.modelo.cuidado.TipoCuidado;
 
 import java.io.*;
 import java.util.*;
@@ -25,7 +25,7 @@ public class ServicioPlantaDominio {
      */
     public void agregarCuidado(Planta planta, TipoCuidado tipo, Date fecha) {
         // TODO implement here
-        return null;
+      
     }
 
     /**
@@ -34,7 +34,7 @@ public class ServicioPlantaDominio {
      */
     public void marcarEventoRealizado(Boolean realizado) {
         // TODO implement here
-        return null;
+      
     }
 
 }

@@ -1,4 +1,4 @@
-package dominio.modelo.planta;
+package com.planta.demo.dominio.modelo.planta;
 
 /**
  * 

@@ -1,8 +1,8 @@
-package dominio.modelo.recordatorio;
+package com.planta.demo.dominio.modelo.recordatorio;
 
 import java.io.*;
 import java.util.*;
-
+import java.util.Date;
 /**
  * 
  */
@@ -22,7 +22,7 @@ public class Recordatorio {
     /**
      * 
      */
-    public DateTime fechaEnvio;
+    public Date fechaEnvio;
 
     /**
      * 
@@ -32,7 +32,7 @@ public class Recordatorio {
     /**
      * 
      */
-    public string mensaje;
+    public String mensaje;
 
 
 }

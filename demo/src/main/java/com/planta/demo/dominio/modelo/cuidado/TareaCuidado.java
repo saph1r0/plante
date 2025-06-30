@@ -1,4 +1,4 @@
-package dominio.modelo.cuidado;
+package com.planta.demo.dominio.modelo.cuidado;
 
 import java.io.*;
 import java.util.*;
@@ -37,12 +37,12 @@ public class TareaCuidado {
     /**
      * 
      */
-    public bool realizado;
+    public boolean realizado;
 
     /**
      * 
      */
-    public string nota;
+    public String nota;
 
 
 

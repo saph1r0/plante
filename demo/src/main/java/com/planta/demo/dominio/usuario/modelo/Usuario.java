@@ -1,4 +1,5 @@
-package dominio.usuario.modelo;
+
+package com.planta.demo.dominio.usuario.modelo;
 
 import java.io.*;
 import java.util.*;
@@ -22,12 +23,12 @@ public class Usuario {
     /**
      * 
      */
-    public string nombre;
+    public String nombre;
 
     /**
      * 
      */
-    public string email;
+    public String email;
 
 
 

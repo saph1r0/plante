@@ -1,52 +1,20 @@
-package dominio.modelo.planta;
+package com.planta.demo.dominio.modelo.planta;
 
-import dominio.usuario.modelo.Usuario;
-import dominio.modelo.bitacora.Bitacora;
+import com.planta.demo.dominio.usuario.modelo.Usuario;
+import com.planta.demo.dominio.modelo.bitacora.Bitacora;
 
-import java.io.*;
-import java.util.*;
+import java.util.Date;
+import java.util.Set;
 
-/**
- * 
- */
 public class RegistroPlanta extends Usuario {
 
-    /**
-     * Default constructor
-     */
     public RegistroPlanta() {
     }
 
-    /**
-     * 
-     */
     public int id;
-
-    /**
-     * 
-     */
-    public string apodo;
-
-    /**
-     * 
-     */
+    public String apodo;
     public Date fechaRegistro;
-
-    /**
-     * 
-     */
     public EstadoPlanta estado;
 
-
-
-
-    /**
-     * 
-     */
-    public Set<Bitacora> BitacoraId;
-
-
-
-
-
+    public Set<Bitacora> bitacoras; // nombre en minúscula
 }

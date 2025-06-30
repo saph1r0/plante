@@ -1,6 +1,6 @@
-package dominio.modelo;
+package com.planta.demo.dominio.modelo;
 
-import dominio.modelo.bitacora.Bitacora;
+import com.planta.demo.dominio.modelo.bitacora.Bitacora;
 
 import java.io.*;
 import java.util.*;

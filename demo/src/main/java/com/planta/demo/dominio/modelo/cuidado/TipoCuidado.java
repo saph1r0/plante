@@ -1,4 +1,4 @@
-package dominio.modelo.cuidado;
+package com.planta.demo.dominio.modelo.cuidado;
 
 /**
  * 

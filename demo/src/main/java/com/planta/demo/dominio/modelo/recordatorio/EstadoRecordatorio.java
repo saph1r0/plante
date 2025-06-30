@@ -1,4 +1,4 @@
-package dominio.modelo.recordatorio;
+package com.planta.demo.dominio.modelo.recordatorio;
 
 /**
  * 

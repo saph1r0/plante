@@ -1,4 +1,4 @@
-package dominio.modelo.bitacora;
+package com.planta.demo.dominio.modelo.bitacora;
 
 import java.io.*;
 import java.util.*;
@@ -27,12 +27,12 @@ public class Bitacora {
     /**
      * 
      */
-    public string descripcion;
+    public String descripcion;
 
     /**
      * 
      */
-    public string fotoOpcional;
+    public String fotoOpcional;
 
 
 }

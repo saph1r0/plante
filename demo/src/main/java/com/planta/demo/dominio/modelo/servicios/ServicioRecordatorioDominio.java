@@ -1,7 +1,7 @@
-package dominio.modelo.servicios;
+package com.planta.demo.dominio.modelo.servicios;
 
-import dominio.modelo.recordatorio.Recordatorio;
-import dominio.modelo.planta.Planta;
+import com.planta.demo.dominio.modelo.recordatorio.Recordatorio;
+import com.planta.demo.dominio.modelo.planta.Planta;
 
 import java.io.*;
 import java.util.*;

@@ -1,5 +1,4 @@
-package dominio.modelo.planta;
-
+package com.planta.demo.dominio.modelo.planta;
 import java.io.*;
 import java.util.*;
 
@@ -22,22 +21,22 @@ public class Planta {
     /**
      * 
      */
-    public string nombreComun;
+    public String nombreComun;
 
     /**
      * 
      */
-    public string nombreCientifico;
+    public String nombreCientifico;
 
     /**
      * 
      */
-    public string descripcion;
+    public String descripcion;
 
     /**
      * 
      */
-    public string imagenURL;
+    public String imagenURL;
 
 
 

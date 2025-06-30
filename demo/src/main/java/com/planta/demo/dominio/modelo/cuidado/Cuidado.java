@@ -1,4 +1,4 @@
-package dominio.modelo.cuidado;
+package com.planta.demo.dominio.modelo.cuidado;
 
 import java.io.*;
 import java.util.*;
@@ -27,7 +27,7 @@ public class Cuidado {
     /**
      * 
      */
-    public string descripcion;
+    public String descripcion;
 
     /**
      * 

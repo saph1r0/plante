@@ -1,6 +1,6 @@
-package dominio.modelo;
+package com.planta.demo.dominio.modelo.fabrica;
 
-import dominio.modelo.cuidado.Cuidado;
+import com.planta.demo.dominio.modelo.cuidado.Cuidado;
 
 import java.io.*;
 import java.util.*;
