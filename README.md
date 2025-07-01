@@ -1,4 +1,4 @@
-# 🌱**PlantApp**
+# 🌱**PlanTapp**
 
 PlantApp es una aplicación web diseñada especialmente para personas principiantes interesadas en el cuidado de plantas. Su objetivo es ffacilitar la gestión, el seguimiento y el aprendizaje sobre el cuidado de distintas especies vegetales a través de recordatorios, bitácoras de cuidado y registro organizado de información relevante.
 
