@@ -1,7 +1,7 @@
-package com.planta.demo.presentacion.controlador;
+package com.planta.plantapp.presentacion.controlador;
 
-import com.planta.demo.aplicacion.interfaces.IServicioBitacora;
-import com.planta.demo.dominio.modelo.bitacora.Bitacora;
+import com.planta.plantapp.aplicacion.interfaces.IServicioBitacora;
+import com.planta.plantapp.dominio.modelo.bitacora.Bitacora;
 
 
 import java.io.*;

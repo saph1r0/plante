@@ -1,4 +1,4 @@
-package com.planta.demo.dominio.modelo.planta;
+package com.planta.plantapp.dominio.modelo.planta;
 /**
  * Enumeración que representa los posibles estados de una planta
  */

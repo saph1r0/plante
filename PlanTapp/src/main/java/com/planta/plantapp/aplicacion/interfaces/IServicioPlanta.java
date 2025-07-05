@@ -7,6 +7,6 @@ import java.util.*;
 /**
  * 
  */
-public interface IServicioRecordatorio {
+public interface IServicioPlanta {
 
 }

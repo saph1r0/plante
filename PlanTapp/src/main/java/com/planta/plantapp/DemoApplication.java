@@ -1,4 +1,4 @@
-package com.planta.demo;
+package com.planta.plantapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

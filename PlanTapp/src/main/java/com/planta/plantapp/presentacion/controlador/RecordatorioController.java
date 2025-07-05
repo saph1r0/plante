@@ -1,8 +1,8 @@
-package com.planta.demo.presentacion.controlador;
+package com.planta.plantapp.presentacion.controlador;
 
-import com.planta.demo.dominio.modelo.planta.Planta;
-import com.planta.demo.dominio.modelo.recordatorio.Recordatorio;
-import com.planta.demo.aplicacion.interfaces.IServicioRecordatorio;
+import com.planta.plantapp.dominio.modelo.planta.Planta;
+import com.planta.plantapp.dominio.modelo.recordatorio.Recordatorio;
+import com.planta.plantapp.aplicacion.interfaces.IServicioRecordatorio;
 
 import java.io.*;
 import java.util.*;

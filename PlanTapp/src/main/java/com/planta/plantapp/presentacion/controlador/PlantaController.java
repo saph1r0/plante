@@ -1,7 +1,7 @@
-package com.planta.demo.presentacion.controlador;
+package com.planta.plantapp.presentacion.controlador;
 
-import com.planta.demo.aplicacion.interfaces.IServicioPlanta;
-import com.planta.demo.dominio.modelo.planta.Planta;
+import com.planta.plantapp.aplicacion.interfaces.IServicioPlanta;
+import com.planta.plantapp.dominio.modelo.planta.Planta;
 
 
 import java.io.*;
