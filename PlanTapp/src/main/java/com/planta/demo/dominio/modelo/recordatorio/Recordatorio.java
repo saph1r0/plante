@@ -1,4 +1,4 @@
-package com.planta.demo.dominio.modelo.recordatorio;
+package com.planta.plantapp.dominio.modelo.recordatorio;
 
 import com.planta.demo.dominio.modelo.planta.Planta;
 import com.planta.demo.dominio.modelo.cuidado.TipoCuidado;

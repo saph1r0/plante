@@ -1,6 +1,6 @@
-package com.planta.demo.dominio.usuario.modelo;
+package com.planta.plantapp.dominio.usuario.modelo;
 
-import com.planta.demo.dominio.modelo.planta.Planta;
+import com.planta.plantapp.dominio.modelo.planta.Planta;
 
 import java.time.LocalDateTime;
 import java.util.List;

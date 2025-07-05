@@ -1,13 +1,13 @@
-package com.planta.demo.aplicacion.servicios;
+package com.planta.plantapp.aplicacion.servicios;
 
 import java.io.*;
 import java.util.*;
 
-import com.planta.demo.dominio.modelo.IRecordatorioRepositorio;
-import com.planta.demo.dominio.modelo.planta.Planta;
-import com.planta.demo.dominio.modelo.recordatorio.Recordatorio;
-import com.planta.demo.dominio.modelo.servicios.ServicioRecordatorioDominio;
-import com.planta.demo.dominio.modelo.recordatorio.EstadoRecordatorio;
+import com.planta.plantapp.dominio.modelo.IRecordatorioRepositorio;
+import com.planta.plantapp.dominio.modelo.planta.Planta;
+import com.planta.plantapp.dominio.modelo.recordatorio.Recordatorio;
+import com.planta.plantapp.dominio.modelo.servicios.ServicioRecordatorioDominio;
+import com.planta.plantapp.dominio.modelo.recordatorio.EstadoRecordatorio;
 
 
 /**

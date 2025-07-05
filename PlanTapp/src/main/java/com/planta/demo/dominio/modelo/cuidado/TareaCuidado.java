@@ -1,4 +1,4 @@
-package com.planta.demo.dominio.modelo.cuidado;
+package com.planta.plantapp.dominio.modelo.cuidado;
 
 import java.util.Date;
 

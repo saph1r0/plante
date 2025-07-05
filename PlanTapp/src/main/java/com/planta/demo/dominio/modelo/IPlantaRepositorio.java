@@ -1,6 +1,6 @@
-package com.planta.demo.dominio.modelo;
+package com.planta.plantapp.dominio.modelo;
 
-import com.planta.demo.dominio.modelo.planta.Planta;
+import com.planta.plantapp.dominio.modelo.planta.Planta;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
-package com.planta.demo.dominio.modelo.planta;
+package com.planta.plantapp.dominio.modelo.planta;
 
-import com.planta.demo.dominio.modelo.bitacora.Bitacora;
-import com.planta.demo.dominio.usuario.modelo.Usuario;
+import com.planta.plantapp.dominio.modelo.bitacora.Bitacora;
+import com.planta.plantapp.dominio.usuario.modelo.Usuario;
 
 import java.util.Date;
 import java.util.HashSet;

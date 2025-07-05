@@ -1,8 +1,8 @@
-package com.planta.demo.dominio.modelo.servicios;
+package com.planta.plantapp.dominio.modelo.servicios;
 
-import com.planta.demo.dominio.modelo.planta.Planta;
-import com.planta.demo.dominio.modelo.cuidado.Cuidado;
-import com.planta.demo.dominio.modelo.cuidado.TipoCuidado;
+import com.planta.plantapp.dominio.modelo.planta.Planta;
+import com.planta.plantapp.dominio.modelo.cuidado.Cuidado;
+import com.planta.plantapp.dominio.modelo.cuidado.TipoCuidado;
 
 import java.time.LocalDateTime;
 //import java.util.List;

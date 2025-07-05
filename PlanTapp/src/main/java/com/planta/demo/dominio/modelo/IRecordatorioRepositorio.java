@@ -1,6 +1,6 @@
-package com.planta.demo.dominio.modelo;
+package com.planta.plantapp.dominio.modelo;
 
-import com.planta.demo.dominio.modelo.recordatorio.Recordatorio;
+import com.planta.plantapp.dominio.modelo.recordatorio.Recordatorio;
 
 import java.util.Date;
 import java.util.List;

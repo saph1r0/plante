@@ -1,6 +1,6 @@
-package com.planta.demo.dominio.modelo.fabrica;
-import com.planta.demo.dominio.modelo.cuidado.Cuidado;
-import com.planta.demo.dominio.modelo.cuidado.TipoCuidado;
+package com.planta.plantapp.dominio.modelo.fabrica;
+import com.planta.plantapp.dominio.modelo.cuidado.Cuidado;
+import com.planta.plantapp.dominio.modelo.cuidado.TipoCuidado;
 
 
 /**

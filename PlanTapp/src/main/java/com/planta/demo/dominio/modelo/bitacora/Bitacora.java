@@ -1,6 +1,6 @@
-package com.planta.demo.dominio.modelo.bitacora;
+package com.planta.plantapp.dominio.modelo.bitacora;
 
-import com.planta.demo.dominio.modelo.planta.Planta;
+import com.planta.plantapp.dominio.modelo.planta.Planta;
 
 import java.util.Date;
 import java.util.Objects;

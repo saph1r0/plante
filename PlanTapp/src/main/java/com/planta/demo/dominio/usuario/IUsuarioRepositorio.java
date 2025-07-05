@@ -1,6 +1,6 @@
-package com.planta.demo.dominio.usuario;
+package com.planta.plantapp.dominio.usuario;
 
-import com.planta.demo.dominio.usuario.modelo.Usuario;
+import com.planta.plantapp.dominio.usuario.modelo.Usuario;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,7 +1,7 @@
-package com.planta.demo.aplicacion.servicios;
+package com.planta.plantapp.aplicacion.servicios;
 
-import com.planta.demo.dominio.usuario.IUsuarioRepositorio;
-import com.planta.demo.dominio.usuario.modelo.Usuario;
+import com.planta.plantapp.dominio.usuario.IUsuarioRepositorio;
+import com.planta.plantapp.dominio.usuario.modelo.Usuario;
 
 import java.util.List;
 import java.util.Optional;

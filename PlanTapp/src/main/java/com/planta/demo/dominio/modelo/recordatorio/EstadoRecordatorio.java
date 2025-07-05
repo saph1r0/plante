@@ -1,4 +1,4 @@
-package com.planta.demo.dominio.modelo.recordatorio;
+package com.planta.plantapp.dominio.modelo.recordatorio;
 
 /**
  * Enumeración que representa los estados de un recordatorio
