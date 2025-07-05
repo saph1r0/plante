@@ -1,7 +1,7 @@
-package com.planta.demo.infraestructura.repositorio.mysql;
+package com.planta.plantapp.infraestructura.repositorio.mysql;
 
-import com.planta.demo.dominio.usuario.IUsuarioRepositorio;
-import com.planta.demo.dominio.usuario.modelo.Usuario;
+import com.planta.plantapp.dominio.usuario.IUsuarioRepositorio;
+import com.planta.plantapp.dominio.usuario.modelo.Usuario;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

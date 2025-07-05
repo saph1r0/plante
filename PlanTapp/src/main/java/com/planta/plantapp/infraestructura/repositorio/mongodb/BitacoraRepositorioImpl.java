@@ -1,7 +1,7 @@
-package com.planta.demo.infraestructura.repositorio.mongodb;
+package com.planta.plantapp.infraestructura.repositorio.mongodb;
 
-import com.planta.demo.dominio.modelo.bitacora.Bitacora;
-import com.planta.demo.dominio.modelo.IBitacoraRepositorio;
+import com.planta.plantapp.dominio.modelo.bitacora.Bitacora;
+import com.planta.plantapp.dominio.modelo.IBitacoraRepositorio;
 
 import java.util.Date;
 import java.util.List;

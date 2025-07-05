@@ -1,7 +1,7 @@
-package com.planta.demo.infraestructura.repositorio.mongodb;
+package com.planta.plantapp.infraestructura.repositorio.mongodb;
 
-import com.planta.demo.dominio.modelo.planta.Planta;
-import com.planta.demo.dominio.modelo.IPlantaRepositorio;
+import com.planta.plantapp.dominio.modelo.planta.Planta;
+import com.planta.plantapp.dominio.modelo.IPlantaRepositorio;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

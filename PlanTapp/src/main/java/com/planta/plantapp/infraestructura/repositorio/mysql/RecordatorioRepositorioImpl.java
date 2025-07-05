@@ -1,7 +1,7 @@
-package com.planta.demo.infraestructura.repositorio.mysql;
+package com.planta.plantapp.infraestructura.repositorio.mysql;
 
-import com.planta.demo.dominio.modelo.recordatorio.Recordatorio;
-import com.planta.demo.dominio.modelo.IRecordatorioRepositorio;
+import com.planta.plantapp.dominio.modelo.recordatorio.Recordatorio;
+import com.planta.plantapp.dominio.modelo.IRecordatorioRepositorio;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
