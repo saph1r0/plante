@@ -1,9 +1,9 @@
-package com.planta.demo.aplicacion.servicios;
+package com.planta.plantapp.aplicacion.servicios;
 
-import com.planta.demo.dominio.modelo.IPlantaRepositorio;
-import com.planta.demo.dominio.modelo.cuidado.TipoCuidado;
-import com.planta.demo.dominio.modelo.planta.Planta;
-import com.planta.demo.dominio.modelo.servicios.ServicioPlantaDominio;
+import com.planta.plantapp.dominio.modelo.IPlantaRepositorio;
+import com.planta.plantapp.dominio.modelo.cuidado.TipoCuidado;
+import com.planta.plantapp.dominio.modelo.planta.Planta;
+import com.planta.plantapp.dominio.modelo.servicios.ServicioPlantaDominio;
 
 import java.util.Date;
 import java.util.List;

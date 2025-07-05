@@ -1,9 +1,9 @@
-package com.planta.demo.aplicacion.servicios;
+package com.planta.plantapp.aplicacion.servicios;
 
-import com.planta.demo.dominio.modelo.IBitacoraRepositorio;
-import com.planta.demo.dominio.modelo.bitacora.Bitacora;
-import com.planta.demo.dominio.modelo.planta.Planta;
-import com.planta.demo.dominio.modelo.servicios.ServicioBitacoraDominio;
+import com.planta.plantapp.dominio.modelo.IBitacoraRepositorio;
+import com.planta.plantapp.dominio.modelo.bitacora.Bitacora;
+import com.planta.plantapp.dominio.modelo.planta.Planta;
+import com.planta.plantapp.dominio.modelo.servicios.ServicioBitacoraDominio;
 
 import java.util.Date;
 import java.util.List;

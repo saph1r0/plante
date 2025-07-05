@@ -1,5 +1,5 @@
 /*package servicios;*/
-package com.planta.demo.aplicacion.interfaces;
+package com.planta.plantapp.aplicacion.interfaces;
 import java.io.*;
 import java.util.*;
 
