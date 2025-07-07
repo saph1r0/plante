@@ -19,12 +19,16 @@ public class RegistroPlanta {
     private Date fechaRegistro;
     private EstadoPlanta estado;
 
-    private Usuario usuario; // Relación de composición: quién registró la planta
-    private Set<Bitacora> bitacoras;
+    /**
+     * Usuario que registró la planta (composición).
+     */
+    private Usuario usuario;
+    /** Registro histórico (bitácoras) de eventos de la planta. */
+    private final Set<Bitacora> bitacoras;
 
     public RegistroPlanta(String apodo, Usuario usuario) {
-        this.apodo = apodo;
-        this.usuario = usuario;
+        this.apodo = Objects.requireNonNull(apodo, "apodo no puede ser null");
+        this.usuario = Objects.requireNonNull(usuario, "usuario no puede ser null");
         this.fechaRegistro = new Date();
         this.estado = EstadoPlanta.SALUDABLE; // por defecto
         this.bitacoras = new HashSet<>();

@@ -3,9 +3,7 @@ package com.planta.demo.dominio.modelo.servicios;
 import com.planta.demo.dominio.modelo.planta.Planta;
 import com.planta.demo.dominio.modelo.cuidado.Cuidado;
 import com.planta.demo.dominio.modelo.cuidado.TipoCuidado;
-
 import java.time.LocalDateTime;
-//import java.util.List;
 import java.util.Objects;
 
 /**
@@ -28,12 +26,8 @@ public class ServicioPlantaDominio {
         Cuidado nuevoCuidado = new Cuidado(tipo, tipo.name(), frecuenciaDias);
         nuevoCuidado.setFechaAplicacion(LocalDateTime.now());
         nuevoCuidado.setNotas(notas);
-/* 
-        // Agregar directamente a la lista, si no hay método en Planta
-        List<Cuidado> lista = planta.getCuidados();
-        if (lista != null) {
-            lista.add(nuevoCuidado);
-        }*/
+
+        throw new UnsupportedOperationException("Método agregarCuidado no implementado completamente");
     }
 
     /**
@@ -43,6 +37,7 @@ public class ServicioPlantaDominio {
      */
     public void marcarCuidadoComoRealizado(Cuidado cuidado) {
         Objects.requireNonNull(cuidado, "El cuidado no puede ser null");
+
         cuidado.setFechaAplicacion(LocalDateTime.now());
         cuidado.programarProximo();
     }
