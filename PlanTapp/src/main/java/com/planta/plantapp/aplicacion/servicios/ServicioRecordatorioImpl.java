@@ -1,121 +1,120 @@
 package com.planta.plantapp.aplicacion.servicios;
 
-import java.io.*;
-import java.util.*;
-
 import com.planta.plantapp.dominio.modelo.IRecordatorioRepositorio;
 import com.planta.plantapp.dominio.modelo.planta.Planta;
 import com.planta.plantapp.dominio.modelo.recordatorio.Recordatorio;
 import com.planta.plantapp.dominio.modelo.servicios.ServicioRecordatorioDominio;
 import com.planta.plantapp.dominio.modelo.recordatorio.EstadoRecordatorio;
 
+import java.util.Date;
+import java.util.List;
 
 /**
- * 
+ * Implementación del servicio de recordatorios de aplicación.
  */
 public class ServicioRecordatorioImpl {
 
-    /**
-     * Default constructor
-     */
     public ServicioRecordatorioImpl() {
+        // Constructor por defecto
     }
 
-    /**
-     * 
-     */
     private ServicioRecordatorioDominio servicioDominio;
-
-    /**
-     * 
-     */
     private IRecordatorioRepositorio repositorioRecordatorio;
 
     /**
-     * @return
+     * Consulta todos los recordatorios existentes.
+     *
+     * @return Lista de recordatorios.
      */
     public List<Recordatorio> consultarTodos() {
-        // TODO implement here
-        return null;
+        throw new UnsupportedOperationException("Método consultarTodos() no implementado.");
     }
 
     /**
-     * @return
+     * Consulta los recordatorios pendientes.
+     *
+     * Este método no está implementado en esta versión.
      */
-    /*public List<RecordatorioPendientes> consultarPendientes() {
-        // TODO implement here
-        return null;
-    }*/
+    // public List<RecordatorioPendientes> consultarPendientes() {
+    //     throw new UnsupportedOperationException("Método consultarPendientes() no implementado.");
+    // }
 
     /**
-     * @param plantaId 
-     * @return
+     * Consulta los recordatorios de una planta específica.
+     *
+     * @param plantaId ID de la planta.
+     * @return Lista de recordatorios asociados a la planta.
      */
     public List<Recordatorio> consultarPorPlanta(Long plantaId) {
-        // TODO implement here
-        return null;
+        throw new UnsupportedOperationException("Método consultarPorPlanta() no implementado.");
     }
 
     /**
-     * @param usuarioId 
-     * @return
+     * Consulta los recordatorios asociados a un usuario.
+     *
+     * @param usuarioId ID del usuario.
+     * @return Lista de recordatorios del usuario.
      */
     public List<Recordatorio> consultarPorUsuario(Long usuarioId) {
-        // TODO implement here
-        return null;
+        throw new UnsupportedOperationException("Método consultarPorUsuario() no implementado.");
     }
 
     /**
-     * @param planta 
-     * @param estado 
-     * @param mensaje 
-     * @return
+     * Crea un nuevo recordatorio para una planta.
+     *
+     * @param planta Planta asociada.
+     * @param estado Estado del recordatorio.
+     * @param mensaje Mensaje del recordatorio.
      */
     public void crearRecordatorio(Planta planta, EstadoRecordatorio estado, String mensaje) {
-    // TODO implement here
+        throw new UnsupportedOperationException("Método crearRecordatorio() no implementado.");
     }
 
     /**
-     * @param id 
-     * @param nuevoMensaje 
-     * @return
+     * Edita el mensaje de un recordatorio existente.
+     *
+     * @param id ID del recordatorio.
+     * @param nuevoMensaje Nuevo mensaje a actualizar.
      */
     public void editarRecordatorio(Long id, String nuevoMensaje) {
-        // TODO implement here
+        throw new UnsupportedOperationException("Método editarRecordatorio() no implementado.");
     }
 
     /**
-     * @param id 
-     * @return
+     * Marca un recordatorio como realizado.
+     *
+     * @param id ID del recordatorio.
      */
     public void marcarComoRealizado(Long id) {
-        // TODO implement here
+        throw new UnsupportedOperationException("Método marcarComoRealizado() no implementado.");
     }
 
     /**
-     * @param id 
-     * @return
+     * Elimina un recordatorio por su ID.
+     *
+     * @param id ID del recordatorio.
      */
     public void eliminarRecordatorio(Long id) {
-        // TODO implement here
+        throw new UnsupportedOperationException("Método eliminarRecordatorio() no implementado.");
     }
 
     /**
-     * @param fecha 
-     * @return
+     * Consulta recordatorios por fecha.
+     *
+     * @param fecha Fecha a consultar.
+     * @return Lista de recordatorios.
      */
     public List<Recordatorio> consultarPorFecha(Date fecha) {
-        // TODO implement here
-        return null;
+        throw new UnsupportedOperationException("Método consultarPorFecha() no implementado.");
     }
 
     /**
-     * @param estado 
-     * @return
+     * Consulta recordatorios por estado.
+     *
+     * @param estado Estado del recordatorio.
+     * @return Lista de recordatorios.
      */
     public List<Recordatorio> consultarPorEstado(EstadoRecordatorio estado) {
-        // TODO implement here
-        return null;
+        throw new UnsupportedOperationException("Método consultarPorEstado() no implementado.");
     }
-
 }

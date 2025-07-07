@@ -15,6 +15,7 @@ import java.util.Date;
 public class RecordatorioFabrica {
 
     public RecordatorioFabrica() {
+        // Constructor vacío requerido por posibles frameworks o inyección de dependencias.
     }
 
     /**

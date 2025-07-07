@@ -9,6 +9,7 @@ import java.util.List;
 public class BitacoraRepositorioImpl implements IBitacoraRepositorio {
 
     public BitacoraRepositorioImpl() {
+        // Constructor por defecto
     }
 
     @Override

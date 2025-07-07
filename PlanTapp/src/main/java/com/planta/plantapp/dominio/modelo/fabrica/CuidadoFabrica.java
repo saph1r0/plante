@@ -10,6 +10,7 @@ import com.planta.plantapp.dominio.modelo.cuidado.TipoCuidado;
 public class CuidadoFabrica {
 
     public CuidadoFabrica() {
+        // Constructor vacío necesario para frameworks o instanciación reflexiva
     }
 
     /**
