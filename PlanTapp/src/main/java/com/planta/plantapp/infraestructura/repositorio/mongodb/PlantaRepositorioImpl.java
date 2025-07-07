@@ -2,9 +2,14 @@ package com.planta.plantapp.infraestructura.repositorio.mongodb;
 
 import com.planta.plantapp.dominio.modelo.planta.Planta;
 import com.planta.plantapp.dominio.modelo.IPlantaRepositorio;
+import com.planta.plantapp.infraestructura.documento.PlantaDocumento;
+import com.planta.plantapp.infraestructura.mapper.PlantaMapper;
+import com.planta.plantapp.infraestructura.repositorio.mongodb.mongo.PlantaMongoRepositorio;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Implementación de IPlantaRepositorio usando MongoDB (infraestructura).
@@ -33,18 +38,29 @@ public class PlantaRepositorioImpl implements IPlantaRepositorio {
     }
 
     @Override
-    public void guardar(Planta planta) {
-        // TODO: Insertar o actualizar la planta en MongoDB
+    public Planta guardar(Planta planta) {
+        PlantaDocumento documento = PlantaMapper.aDocumento(planta);
+        PlantaDocumento guardado = mongoRepositorio.save(documento);
+        return PlantaMapper.aDominio(guardado);
     }
 
     @Override
     public void eliminar(String id) {
-        // TODO: Eliminar por ID en MongoDB
+        mongoRepositorio.deleteById(id);
     }
 
     @Override
     public List<Planta> buscarPorNombre(String nombre) {
-        return mongoRepositorio.findByNombreComunContainingIgnoreCase(nombre);
+        // MongoRepository no tiene esto por defecto, pero puedes extenderlo
+        List<PlantaDocumento> documentos = mongoRepositorio.findAll(); // luego optimizaremos con búsqueda personalizada
+        return documentos.stream()
+                .filter(p -> p.getNombreComun().toLowerCase().contains(nombre.toLowerCase()))
+                .map(PlantaMapper::aDominio)
+                .collect(Collectors.toList());
+    }
+    @Override
+    public Optional<Planta> buscarPorId(String id) {
+        return mongoRepositorio.findById(id).map(PlantaMapper::aDominio);
     }
 
     @Override
