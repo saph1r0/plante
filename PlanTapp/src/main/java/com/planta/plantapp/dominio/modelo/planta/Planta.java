@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.data.annotation.Id;
+import com.planta.plantapp.dominio.modelo.cuidado.Cuidado;
 import org.springframework.data.mongodb.core.mapping.Document;
 /**
  * Entidad del dominio que representa una planta.

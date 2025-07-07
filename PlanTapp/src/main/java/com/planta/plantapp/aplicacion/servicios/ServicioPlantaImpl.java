@@ -3,10 +3,12 @@ package com.planta.plantapp.aplicacion.servicios;
 import com.planta.plantapp.dominio.modelo.IPlantaRepositorio;
 import com.planta.plantapp.dominio.modelo.cuidado.TipoCuidado;
 import com.planta.plantapp.dominio.modelo.planta.Planta;
+import com.planta.plantapp.aplicacion.interfaces.IServicioPlanta;
 import com.planta.plantapp.dominio.modelo.servicios.ServicioPlantaDominio;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -26,7 +28,7 @@ public class ServicioPlantaImpl implements IServicioPlanta{
 
     @Override
     public List<Planta> buscarPorNombre(String nombre) {
-        return plantaRepositorio.buscarPorNombre(nombre);
+        return repositorioPlanta.buscarPorNombre(nombre);
     }
 
     public List<Planta> obtenerTodas() {

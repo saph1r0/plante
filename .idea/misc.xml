@@ -5,6 +5,7 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/planta/pom.xml" />
+        <option value="$PROJECT_DIR$/PlanTapp/pom.xml" />
       </list>
     </option>
   </component>

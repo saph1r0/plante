@@ -26,17 +26,17 @@ public class PlantaController {
 
     // Endpoint para buscar por nombre común
     @GetMapping("/buscar")
-    public List<Planta> buscarPorNombre(@RequestParam("nombre") String nombre) {
+    public List<Planta> buscarPorNombre(@RequestParam String nombre) {
         return servicioPlanta.buscarPorNombre(nombre);
     }
-
     /**
      * Obtiene la lista de todas las plantas.
      *
      * @return Lista de plantas (no implementado aún)
      */
+    @GetMapping
     public List<Planta> obtenerTodas() {
-        throw new UnsupportedOperationException("Método obtenerTodas() no implementado aún.");
+        return servicioPlanta.obtenerTodas();
     }
 
     /**
@@ -45,8 +45,9 @@ public class PlantaController {
      * @param id ID de la planta
      * @return Planta encontrada o null
      */
-    public Planta obtenerPorId(Long id) {
-        throw new UnsupportedOperationException("Método obtenerPorId() no implementado aún.");
+    @GetMapping("/{id}")
+    public Planta obtenerPorId(@PathVariable Long id) {
+        return servicioPlanta.obtenerPorId(id);
     }
 
     /**
@@ -54,8 +55,9 @@ public class PlantaController {
      *
      * @param planta Planta a guardar
      */
-    public void guardar(Planta planta) {
-        throw new UnsupportedOperationException("Método guardar() no implementado aún.");
+    @PostMapping
+    public void guardar(@RequestBody Planta planta) {
+        servicioPlanta.guardar(planta);
     }
 
     /**
@@ -63,8 +65,9 @@ public class PlantaController {
      *
      * @param id ID de la planta a eliminar
      */
-    public void eliminar(Long id) {
-        throw new UnsupportedOperationException("Método eliminar() no implementado aún.");
+    @DeleteMapping("/{id}")
+    public void eliminar(@PathVariable Long id) {
+        servicioPlanta.eliminar(id);
     }
 
     /**
@@ -94,7 +97,8 @@ public class PlantaController {
      * @param usuarioId ID del usuario
      * @return Lista de plantas del usuario
      */
-    public List<Planta> listarPorUsuario(Long usuarioId) {
-        throw new UnsupportedOperationException("Método listarPorUsuario() no implementado aún.");
+    @GetMapping("/usuario/{usuarioId}")
+    public List<Planta> listarPorUsuario(@PathVariable Long usuarioId) {
+        return servicioPlanta.listarPorUsuario(usuarioId);
     }
 }
