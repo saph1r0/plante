@@ -2,81 +2,46 @@ package com.planta.plantapp.presentacion.controlador;
 
 import com.planta.plantapp.aplicacion.interfaces.IServicioUsuario;
 import com.planta.plantapp.dominio.usuario.modelo.Usuario;
-import java.io.*;
-import java.util.*;
 
-/**
- * 
- */
+import java.util.List;
+
 public class UsuarioController {
 
-    /**
-     * Default constructor
-     */
-    public UsuarioController() {
+    private IServicioUsuario usuarioServicio;
+
+    public UsuarioController(IServicioUsuario servicioUsuario) {
+        this.usuarioServicio = servicioUsuario;
     }
 
-    /**
-     * 
-     */
-    public IServicioUsuario usuarioServicio;
-
-    /**
-     * @param nombre 
-     * @param email 
-     * @param contraseña 
-     * @return
-     */
     public boolean registrarUsuario(String nombre, String email, String contraseña) {
-        // TODO implement here
-        return false;
+        throw new UnsupportedOperationException("Método registrarUsuario() no implementado aún.");
     }
 
-    /**
-     * @param email 
-     * @param contraseña 
-     * @return
-     */
     public Usuario autenticarUsuario(String email, String contraseña) {
-        // TODO implement here
-        return null;
+        throw new UnsupportedOperationException("Método autenticarUsuario() no implementado aún.");
     }
 
-    /**
-     * @param id 
-     * @return
-     */
     public Usuario obtenerUsuarioPorId(int id) {
-        // TODO implement here
-        return null;
+        throw new UnsupportedOperationException("Método obtenerUsuarioPorId() no implementado aún.");
     }
 
-    /**
-     * @param usuarioId 
-     * @return
-     */
     public boolean actualizarPerfil(Long usuarioId) {
-        // TODO implement here
-        return false;
+        throw new UnsupportedOperationException("Método actualizarPerfil() no implementado aún.");
     }
 
-    /**
-     * @param id 
-     * @param nuevaContraseña 
-     * @return
-     */
     public boolean cambiarContraseña(int id, String nuevaContraseña) {
-        // TODO implement here
-        return false;
+        throw new UnsupportedOperationException("Método cambiarContraseña() no implementado aún.");
     }
 
-    /**
-     * @param id 
-     * @return
-     */
     public boolean eliminarUsuario(int id) {
-        // TODO implement here
-        return false;
+        throw new UnsupportedOperationException("Método eliminarUsuario() no implementado aún.");
     }
 
+    public IServicioUsuario getUsuarioServicio() {
+        return usuarioServicio;
+    }
+
+    public void setUsuarioServicio(IServicioUsuario servicioUsuario) {
+        this.usuarioServicio = servicioUsuario;
+    }
 }

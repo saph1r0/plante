@@ -2,86 +2,85 @@ package com.planta.plantapp.presentacion.controlador;
 
 import com.planta.plantapp.aplicacion.interfaces.IServicioPlanta;
 import com.planta.plantapp.dominio.modelo.planta.Planta;
-
-
-import java.io.*;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 /**
- * 
+ * Controlador para gestionar las operaciones relacionadas con las plantas.
  */
 public class PlantaController {
 
-    /**
-     * Default constructor
-     */
+    private IServicioPlanta servicioPlanta;
+
     public PlantaController() {
+        // Constructor por defecto (válido y permitido por SonarLint)
     }
 
     /**
-     * 
-     */
-    public IServicioPlanta servicioPlanta;
-
-    /**
-     * @return
+     * Obtiene la lista de todas las plantas.
+     *
+     * @return Lista de plantas (no implementado aún)
      */
     public List<Planta> obtenerTodas() {
-        // TODO implement here
-        return null;
+        throw new UnsupportedOperationException("Método obtenerTodas() no implementado aún.");
     }
 
     /**
-     * @param id 
-     * @return
+     * Obtiene una planta por su ID.
+     *
+     * @param id ID de la planta
+     * @return Planta encontrada o null
      */
     public Planta obtenerPorId(Long id) {
-        // TODO implement here
-        return null;
+        throw new UnsupportedOperationException("Método obtenerPorId() no implementado aún.");
     }
 
     /**
-     * @param planta 
-     * @return
+     * Guarda una planta en el sistema.
+     *
+     * @param planta Planta a guardar
      */
     public void guardar(Planta planta) {
-        // TODO implement here
+        throw new UnsupportedOperationException("Método guardar() no implementado aún.");
     }
 
     /**
-     * @param id 
-     * @return
+     * Elimina una planta por su ID.
+     *
+     * @param id ID de la planta a eliminar
      */
     public void eliminar(Long id) {
-        // TODO implement here
+        throw new UnsupportedOperationException("Método eliminar() no implementado aún.");
     }
 
     /**
-     * @param plantaId 
-     * @param tipo 
-     * @param fecha 
-     * @return
+     * Agrega un cuidado a una planta específica.
+     *
+     * @param plantaId ID de la planta
+     * @param tipo Tipo de cuidado
+     * @param fecha Fecha del cuidado
      */
     public void agregarCuidado(Long plantaId, String tipo, Date fecha) {
-        // TODO implement here
+        throw new UnsupportedOperationException("Método agregarCuidado() no implementado aún.");
     }
 
     /**
-     * @param tipo 
-     * @return
+     * Busca plantas por tipo.
+     *
+     * @param tipo Tipo de planta
+     * @return Lista de plantas que coinciden
      */
     public List<Planta> buscarPorTipo(String tipo) {
-        // TODO implement here
-        return null;
+        throw new UnsupportedOperationException("Método buscarPorTipo() no implementado aún.");
     }
 
     /**
-     * @param usuarioId 
-     * @return
+     * Lista las plantas asociadas a un usuario.
+     *
+     * @param usuarioId ID del usuario
+     * @return Lista de plantas del usuario
      */
     public List<Planta> listarPorUsuario(Long usuarioId) {
-        // TODO implement here
-        return null;
+        throw new UnsupportedOperationException("Método listarPorUsuario() no implementado aún.");
     }
-
 }

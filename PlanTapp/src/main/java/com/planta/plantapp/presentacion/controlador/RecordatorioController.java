@@ -4,74 +4,73 @@ import com.planta.plantapp.dominio.modelo.planta.Planta;
 import com.planta.plantapp.dominio.modelo.recordatorio.Recordatorio;
 import com.planta.plantapp.aplicacion.interfaces.IServicioRecordatorio;
 
-import java.io.*;
-import java.util.*;
+import java.util.List;
 
 /**
- * 
+ * Controlador para la gestión de recordatorios.
  */
 public class RecordatorioController {
 
-    /**
-     * Default constructor
-     */
-    public RecordatorioController() {
-    }
-
-    /**
-     * 
-     */
     private IServicioRecordatorio servicioRecordatorio;
 
+    public RecordatorioController() {
+        // Constructor vacío permitido
+    }
+
     /**
-     * @return
+     * Consulta todos los recordatorios existentes.
+     *
+     * @return Lista de recordatorios
      */
     public List<Recordatorio> consultarTodos() {
-        // TODO implement here
-        return null;
+        throw new UnsupportedOperationException("Método consultarTodos() no implementado aún.");
     }
 
     /**
-     * @return
+     * Consulta los recordatorios pendientes.
+     *
+     * @return Lista de recordatorios pendientes
      */
     public List<Recordatorio> consultarPendientes() {
-        // TODO implement here
-        return null;
+        throw new UnsupportedOperationException("Método consultarPendientes() no implementado aún.");
     }
 
     /**
-     * @param usuarioId 
-     * @return
+     * Consulta los recordatorios por usuario.
+     *
+     * @param usuarioId ID del usuario
+     * @return Lista de recordatorios asociados al usuario
      */
     public List<Recordatorio> consultarPorUsuario(Long usuarioId) {
-        // TODO implement here
-        return null;
+        throw new UnsupportedOperationException("Método consultarPorUsuario() no implementado aún.");
     }
 
     /**
-     * @param planta 
-     * @param estado 
-     * @param mensaje 
-     * @return
+     * Crea un nuevo recordatorio para una planta.
+     *
+     * @param planta Planta relacionada
+     * @param estado Estado del recordatorio
+     * @param mensaje Mensaje del recordatorio
      */
     public void crearRecordatorio(Planta planta, String estado, String mensaje) {
-        // TODO implement here
+        throw new UnsupportedOperationException("Método crearRecordatorio() no implementado aún.");
     }
 
     /**
-     * @param id 
-     * @return
+     * Marca un recordatorio como realizado.
+     *
+     * @param id ID del recordatorio
      */
     public void marcarComoRealizado(Long id) {
-        // TODO implement here
+        throw new UnsupportedOperationException("Método marcarComoRealizado() no implementado aún.");
     }
 
     /**
-     * @param id 
-     * @return
+     * Elimina un recordatorio.
+     *
+     * @param id ID del recordatorio
      */
     public void eliminarRecordatorio(Long id) {
-        // TODO implement here
+        throw new UnsupportedOperationException("Método eliminarRecordatorio() no implementado aún.");
     }
-
 }
