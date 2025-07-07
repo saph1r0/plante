@@ -11,33 +11,44 @@ import com.planta.plantapp.dominio.modelo.recordatorio.EstadoRecordatorio;
 
 
 /**
- * 
+ *
  */
 public class ServicioRecordatorioImpl {
 
     /**
      * Default constructor
      */
-    public ServicioRecordatorioImpl() {
-    }
+    public ServicioRecordatorioImpl()
+    // Constructor por defecto necesario para la inyeccion de dependencias.
+}
 
     /**
-     * 
+     *
      */
     private ServicioRecordatorioDominio servicioDominio;
 
     /**
-     * 
+     *
      */
     private IRecordatorioRepositorio repositorioRecordatorio;
 
     /**
      * @return
      */
+
+    @Override
     public List<Recordatorio> consultarTodos() {
-        // TODO implement here
-        return null;
+        List<RecordatorioEntidad> entidades = recordatorioJpaRepositorio.findAll();
+        List<Recordatorio> recordatorios = new ArrayList<>();
+
+        for (RecordatorioEntidad entidad : entidades) {
+            Recordatorio recordatorio = RecordatorioFabrica.convertirADominio(entidad);
+            recordatorios.add(recordatorio);
+        }
+
+        return recordatorios;
     }
+
 
     /**
      * @return
@@ -48,7 +59,7 @@ public class ServicioRecordatorioImpl {
     }*/
 
     /**
-     * @param plantaId 
+     * @param plantaId
      * @return
      */
     public List<Recordatorio> consultarPorPlanta(Long plantaId) {
@@ -57,7 +68,7 @@ public class ServicioRecordatorioImpl {
     }
 
     /**
-     * @param usuarioId 
+     * @param usuarioId
      * @return
      */
     public List<Recordatorio> consultarPorUsuario(Long usuarioId) {
@@ -66,18 +77,18 @@ public class ServicioRecordatorioImpl {
     }
 
     /**
-     * @param planta 
-     * @param estado 
-     * @param mensaje 
+     * @param planta
+     * @param estado
+     * @param mensaje
      * @return
      */
     public void crearRecordatorio(Planta planta, EstadoRecordatorio estado, String mensaje) {
-    // TODO implement here
+        // TODO implement here
     }
 
     /**
-     * @param id 
-     * @param nuevoMensaje 
+     * @param id
+     * @param nuevoMensaje
      * @return
      */
     public void editarRecordatorio(Long id, String nuevoMensaje) {
@@ -85,7 +96,7 @@ public class ServicioRecordatorioImpl {
     }
 
     /**
-     * @param id 
+     * @param id
      * @return
      */
     public void marcarComoRealizado(Long id) {
@@ -93,7 +104,7 @@ public class ServicioRecordatorioImpl {
     }
 
     /**
-     * @param id 
+     * @param id
      * @return
      */
     public void eliminarRecordatorio(Long id) {
@@ -101,7 +112,7 @@ public class ServicioRecordatorioImpl {
     }
 
     /**
-     * @param fecha 
+     * @param fecha
      * @return
      */
     public List<Recordatorio> consultarPorFecha(Date fecha) {
@@ -110,7 +121,7 @@ public class ServicioRecordatorioImpl {
     }
 
     /**
-     * @param estado 
+     * @param estado
      * @return
      */
     public List<Recordatorio> consultarPorEstado(EstadoRecordatorio estado) {
