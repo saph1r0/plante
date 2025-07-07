@@ -12,40 +12,82 @@ import java.util.Objects;
 public class Usuario {
 
     private Long id;
-    private String nombreUsuario;
-    private String email;
-    private String password;
-    private String nombreCompleto;
+    private String nombre;
+    private String correo;
+    private String contrasena;
     private boolean activo;
     private LocalDateTime fechaCreacion;
     private LocalDateTime fechaUltimoAcceso;
     private List<Planta> plantas;
 
-    public Usuario(String nombreUsuario, String email, String password) {
-        this.nombreUsuario = nombreUsuario;
-        this.email = email;
-        this.password = password;
+    public Usuario(Long id, String nombre, String correo, String contrasena) {
+        this.id = id;
+        this.nombre = nombre;
+        this.correo = correo;
+        this.contrasena = contrasena;
+    }
+    public Usuario(String nombre, String correo, String contrasena) {
+        this.nombre = nombre;
+        this.correo = correo;
+        this.contrasena = contrasena;
     }
 
     // Getters
-    public Long getId() { return id; }
-    public String getNombreUsuario() { return nombreUsuario; }
-    public String getEmail() { return email; }
-    public String getPassword() { return password; }
-    public String getNombreCompleto() { return nombreCompleto; }
-    public boolean isActivo() { return activo; }
-    public LocalDateTime getFechaCreacion() { return fechaCreacion; }
-    public LocalDateTime getFechaUltimoAcceso() { return fechaUltimoAcceso; }
-    public List<Planta> getPlantas() { return plantas; }
+    public Long getId() {
+        return id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public String getContrasena() {
+        return contrasena;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public LocalDateTime getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public LocalDateTime getFechaUltimoAcceso() {
+        return fechaUltimoAcceso;
+    }
+
+    public List<Planta> getPlantas() {
+        return plantas;
+    }
 
     // Setters
-    public void setNombreCompleto(String nombreCompleto) { this.nombreCompleto = nombreCompleto; }
-    public void setActivo(boolean activo) { this.activo = activo; }
-    public void setFechaCreacion(LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
-    public void setFechaUltimoAcceso(LocalDateTime fechaUltimoAcceso) { this.fechaUltimoAcceso = fechaUltimoAcceso; }
-    public void setPlantas(List<Planta> plantas) { this.plantas = plantas; }
+    public void setNombreCompleto(String nombreCompleto) {
+        this.nombre = nombreCompleto;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+
+    public void setFechaCreacion(LocalDateTime fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    public void setFechaUltimoAcceso(LocalDateTime fechaUltimoAcceso) {
+        this.fechaUltimoAcceso = fechaUltimoAcceso;
+    }
+
+    public void setPlantas(List<Planta> plantas) {
+        this.plantas = plantas;
+    }
+
     public void setPassword(String password) {
-        this.password = password;
+        this.contrasena = password;
     }
     
 

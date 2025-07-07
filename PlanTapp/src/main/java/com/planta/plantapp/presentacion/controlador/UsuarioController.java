@@ -15,9 +15,9 @@ public class UsuarioController {
 
     @PostMapping("/registrar")
     public String registrarUsuario(@RequestParam String nombre,
-                                   @RequestParam String email,
+                                   @RequestParam String correo,
                                    @RequestParam String contrasena) {
-        Usuario nuevoUsuario = new Usuario(nombre, email, contrasena);
+        Usuario nuevoUsuario = new Usuario(nombre, correo, contrasena);  // sin ID
         usuarioServicio.registrarUsuario(nuevoUsuario);
         return "Usuario registrado correctamente";
     }

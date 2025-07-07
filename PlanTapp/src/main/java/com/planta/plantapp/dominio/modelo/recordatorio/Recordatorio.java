@@ -75,8 +75,6 @@ public class Recordatorio {
     public void setEstado(EstadoRecordatorio estado) {
         this.estado = estado;
     }
-    
-
 
     public void actualizarMensaje(String nuevoMensaje) {
         this.mensaje = nuevoMensaje;

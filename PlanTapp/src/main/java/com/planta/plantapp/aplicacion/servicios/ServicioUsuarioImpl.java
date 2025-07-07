@@ -19,7 +19,7 @@ public class ServicioUsuarioImpl implements IServicioUsuario {
 
     @Override
     public void registrarUsuario(Usuario usuario) {
-        Optional<Usuario> existente = repositorioUsuario.buscarPorCorreo(usuario.getEmail());
+        Optional<Usuario> existente = repositorioUsuario.buscarPorCorreo(usuario.getCorreo());
         if (existente.isPresent()) {
             throw new IllegalArgumentException("El correo ya está registrado");
         }
@@ -30,7 +30,7 @@ public class ServicioUsuarioImpl implements IServicioUsuario {
     @Override
     public Usuario autenticarUsuario(String email, String contrasena) {
         Optional<Usuario> usuarioOpt = repositorioUsuario.buscarPorCorreo(email);
-        if (usuarioOpt.isPresent() && usuarioOpt.get().getPassword().equals(contrasena)) {
+        if (usuarioOpt.isPresent() && usuarioOpt.get().getContrasena().equals(contrasena)) {
             return usuarioOpt.get();
         }
         return null; // o lanzar excepción si quieres

@@ -20,46 +20,41 @@ public class RecordatorioRepositorioImpl implements IRecordatorioRepositorio {
 
     @Override
     public Recordatorio obtenerPorId(String id) {
-        // TODO: Implementar consulta SQL para obtener recordatorio por ID
-        return null;
+        throw new UnsupportedOperationException("Método no implementado");
     }
 
     @Override
     public List<Recordatorio> listarPorPlanta(String plantaId) {
-        // TODO: Implementar consulta para listar recordatorios por planta
-        return null;
+        throw new UnsupportedOperationException("Método no implementado");
     }
 
     @Override
     public void guardar(Recordatorio recordatorio) {
-        // TODO: Implementar inserción o actualización del recordatorio
+        throw new UnsupportedOperationException("Método no implementado");
     }
 
     @Override
     public void eliminar(String id) {
-        // TODO: Implementar eliminación por ID
+        throw new UnsupportedOperationException("Método no implementado");
     }
 
     @Override
     public List<Recordatorio> obtenerProximosPorUsuario(String usuarioId, Date fecha) {
-        // TODO: Consulta con condición de fecha >= fecha y estado = ACTIVO
-        return null;
+        throw new UnsupportedOperationException("Método no implementado");
     }
 
     @Override
     public void marcarComoCompletado(String id) {
-        // TODO: Actualizar estado del recordatorio a COMPLETADO
+        throw new UnsupportedOperationException("Método no implementado");
     }
 
     @Override
     public List<Recordatorio> listarPendientesPorUsuario(String usuarioId) {
-        // TODO: Listar recordatorios con estado pendiente para el usuario
-        return null;
+        throw new UnsupportedOperationException("Método no implementado");
     }
 
     @Override
     public List<Recordatorio> listarPorTipo(String tipo, String usuarioId) {
-        // TODO: Filtrar por tipo de cuidado y usuario
-        return null;
+        throw new UnsupportedOperationException("Método no implementado");
     }
 }

@@ -15,6 +15,10 @@ public class Cuidado {
     private LocalDateTime fechaProxima;
     private String notas;
 
+    public Cuidado() {
+        this.fechaAplicacion = LocalDateTime.now();
+    }
+
     public Cuidado(TipoCuidado tipo, String descripcion, Integer frecuenciaDias) {
         this.tipo = tipo;
         this.descripcion = descripcion;
@@ -32,8 +36,6 @@ public class Cuidado {
     public boolean esPendiente() {
         return fechaProxima != null && fechaProxima.isAfter(LocalDateTime.now());
     }
-
-    // Getters y setters
 
     public TipoCuidado getTipo() {
         return tipo;
@@ -83,8 +85,6 @@ public class Cuidado {
         this.notas = notas;
     }
 
-    // Métodos de utilidad
-
     @Override
     public String toString() {
         return "Cuidado{" +
@@ -93,15 +93,14 @@ public class Cuidado {
                 ", frecuenciaDias=" + frecuenciaDias +
                 ", fechaAplicacion=" + fechaAplicacion +
                 ", fechaProxima=" + fechaProxima +
-                ", notas='" + notas + '\'' +
+                ", notas='" + (notas != null ? notas : "") + '\'' +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Cuidado)) return false;
-        Cuidado cuidado = (Cuidado) o;
+        if (!(o instanceof Cuidado cuidado)) return false;
         return tipo == cuidado.tipo &&
                 Objects.equals(descripcion, cuidado.descripcion) &&
                 Objects.equals(fechaAplicacion, cuidado.fechaAplicacion);

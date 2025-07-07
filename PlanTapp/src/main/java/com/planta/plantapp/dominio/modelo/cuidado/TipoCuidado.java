@@ -5,6 +5,7 @@ import java.util.EnumSet;
 /**
  * Enumeración que representa los tipos de cuidado que se pueden aplicar a una planta.
  */
+
 public enum TipoCuidado {
 
     RIEGO("Riego", "Suministro de agua a la planta", 3, UnidadMedida.MILILITRO),

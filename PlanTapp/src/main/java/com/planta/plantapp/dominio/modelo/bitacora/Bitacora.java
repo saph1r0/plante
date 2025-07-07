@@ -11,24 +11,20 @@ import java.util.Objects;
 public class Bitacora {
 
     private String id;
-    private Date fecha;
+    private Date fecha = new Date();  // inicialización directa
     private String descripcion;
-    private String fotoOpcional;
+    private String foto;
     private Planta planta;
 
-    public Bitacora(String descripcion, String fotoOpcional, Planta planta) {
-        this.fecha = new Date();
+    public Bitacora(String descripcion, String foto, Planta planta) {
         this.descripcion = descripcion;
-        this.fotoOpcional = fotoOpcional;
+        this.foto = foto;
         this.planta = planta;
     }
 
-    // Constructor vacío útil para instanciación sin parámetros (por ejemplo, tests)
     public Bitacora() {
-        this.fecha = new Date();
+        // Constructor vacío
     }
-
-    // Getters y setters
 
     public String getId() {
         return id;
@@ -54,12 +50,12 @@ public class Bitacora {
         this.descripcion = descripcion;
     }
 
-    public String getFotoOpcional() {
-        return fotoOpcional;
+    public String getFoto() {
+        return foto;
     }
 
-    public void setFotoOpcional(String fotoOpcional) {
-        this.fotoOpcional = fotoOpcional;
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 
     public Planta getPlanta() {
@@ -82,9 +78,8 @@ public class Bitacora {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Bitacora)) return false;
-        Bitacora bitacora = (Bitacora) o;
-        return Objects.equals(id, bitacora.id);
+        if (!(o instanceof Bitacora other)) return false;
+        return Objects.equals(id, other.id);
     }
 
     @Override

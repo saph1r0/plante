@@ -15,16 +15,16 @@ import java.util.Date;
 public class RecordatorioFabrica {
 
     public RecordatorioFabrica() {
-        // Constructor vacío requerido por posibles frameworks o inyección de dependencias.
+        // Constructor vacío requerido por frameworks o instanciación reflexiva.
     }
 
     /**
-     * Crea una instancia de Recordatorio a partir de parámetros primitivos.
+     * Crea un Recordatorio a partir de datos primitivos.
      *
-     * @param fechaEnvio Fecha de envío como java.util.Date (se transforma a LocalDateTime)
-     * @param estado     Estado como String (debe coincidir con EstadoRecordatorio)
+     * @param fechaEnvio Fecha de envío (java.util.Date)
+     * @param estado     Estado en texto (debe coincidir con EstadoRecordatorio)
      * @param mensaje    Mensaje del recordatorio
-     * @return Instancia de Recordatorio o null si los datos son inválidos
+     * @return Recordatorio creado o null si los datos no son válidos
      */
     public Recordatorio crearRecordatorio(Date fechaEnvio, String estado, String mensaje) {
         if (fechaEnvio == null || estado == null || mensaje == null || mensaje.isBlank()) {
@@ -33,17 +33,19 @@ public class RecordatorioFabrica {
 
         EstadoRecordatorio estadoEnum;
         try {
-            estadoEnum = EstadoRecordatorio.valueOf(estado.toUpperCase());
+            estadoEnum = EstadoRecordatorio.valueOf(estado.trim().toUpperCase());
         } catch (IllegalArgumentException e) {
             return null;
         }
-        LocalDateTime fecha = fechaEnvio.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 
-        
-        TipoCuidado tipoCuidadoDummy = TipoCuidado.RIEGO; 
-        Planta plantaDummy = null; 
+        LocalDateTime fecha = fechaEnvio.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
 
-        Recordatorio recordatorio = new Recordatorio(mensaje, fecha, tipoCuidadoDummy, plantaDummy);
+        TipoCuidado tipoCuidado = TipoCuidado.RIEGO; // Mejora: pedirlo como parámetro
+        Planta planta = null; // Mejora: pasar la planta o usar un objeto nulo
+
+        Recordatorio recordatorio = new Recordatorio(mensaje, fecha, tipoCuidado, planta);
         recordatorio.setEstado(estadoEnum);
         return recordatorio;
     }
