@@ -2,25 +2,36 @@ package com.planta.plantapp.presentacion.controlador;
 
 import com.planta.plantapp.aplicacion.interfaces.IServicioUsuario;
 import com.planta.plantapp.dominio.usuario.modelo.Usuario;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
+@RestController
+@RequestMapping("/usuarios")
 public class UsuarioController {
 
-    private IServicioUsuario usuarioServicio;
-
-    public UsuarioController(IServicioUsuario servicioUsuario) {
-        this.usuarioServicio = servicioUsuario;
+    private final IServicioUsuario usuarioServicio;
+    public UsuarioController(IServicioUsuario usuarioServicio) {
+        this.usuarioServicio = usuarioServicio;
     }
 
-    public boolean registrarUsuario(String nombre, String email, String contraseña) {
-        throw new UnsupportedOperationException("Método registrarUsuario() no implementado aún.");
+    @PostMapping("/registrar")
+    public String registrarUsuario(@RequestParam String nombre,
+                                   @RequestParam String email,
+                                   @RequestParam String contrasena) {
+        Usuario nuevoUsuario = new Usuario(nombre, email, contrasena);
+        usuarioServicio.registrarUsuario(nuevoUsuario);
+        return "Usuario registrado correctamente";
     }
 
-    public Usuario autenticarUsuario(String email, String contraseña) {
-        throw new UnsupportedOperationException("Método autenticarUsuario() no implementado aún.");
+    @PostMapping("/login")
+    public String autenticarUsuario(@RequestParam String email,
+                                    @RequestParam String contrasena) {
+        Usuario usuario = usuarioServicio.autenticarUsuario(email, contrasena);
+        if (usuario != null) {
+            return "Inicio de sesión exitoso";
+        } else {
+            return "Credenciales incorrectas";
+        }
     }
-
     public Usuario obtenerUsuarioPorId(int id) {
         throw new UnsupportedOperationException("Método obtenerUsuarioPorId() no implementado aún.");
     }
@@ -29,8 +40,8 @@ public class UsuarioController {
         throw new UnsupportedOperationException("Método actualizarPerfil() no implementado aún.");
     }
 
-    public boolean cambiarContraseña(int id, String nuevaContraseña) {
-        throw new UnsupportedOperationException("Método cambiarContraseña() no implementado aún.");
+    public boolean cambiarContrasena(int id, String nuevaContrasena) {
+        throw new UnsupportedOperationException("Método cambiarContrasena() no implementado aún.");
     }
 
     public boolean eliminarUsuario(int id) {
@@ -41,7 +52,4 @@ public class UsuarioController {
         return usuarioServicio;
     }
 
-    public void setUsuarioServicio(IServicioUsuario servicioUsuario) {
-        this.usuarioServicio = servicioUsuario;
-    }
 }
