@@ -8,7 +8,10 @@ import java.util.Objects;
  */
 public class Cuidado {
 
+    @Field("tipo")
+    @Enumerated(EnumType.STRING)
     private TipoCuidado tipo;
+
     private String descripcion;
     private Integer frecuenciaDias;
     private LocalDateTime fechaAplicacion;

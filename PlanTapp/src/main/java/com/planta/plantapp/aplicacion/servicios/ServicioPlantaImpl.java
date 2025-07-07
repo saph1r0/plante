@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
  * Servicio de aplicación para gestionar plantas.
  * Orquesta la lógica entre el dominio y la infraestructura.
  */
-public class ServicioPlantaImpl {
+@Service
+public class ServicioPlantaImpl implements IServicioPlanta{
 
     private final IPlantaRepositorio repositorioPlanta;
     private final ServicioPlantaDominio servicioDominio;
@@ -21,6 +22,11 @@ public class ServicioPlantaImpl {
     public ServicioPlantaImpl(IPlantaRepositorio repositorioPlanta, ServicioPlantaDominio servicioDominio) {
         this.repositorioPlanta = repositorioPlanta;
         this.servicioDominio = servicioDominio;
+    }
+
+    @Override
+    public List<Planta> buscarPorNombre(String nombre) {
+        return plantaRepositorio.buscarPorNombre(nombre);
     }
 
     public List<Planta> obtenerTodas() {

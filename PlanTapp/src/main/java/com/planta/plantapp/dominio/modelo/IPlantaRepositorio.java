@@ -38,6 +38,8 @@ public interface IPlantaRepositorio {
      */
     void eliminar(String id);
 
+    List<Planta> buscarPorNombre(String nombre);
+
     /**
      * Busca plantas por nombre asociado a un usuario.
      * @param nombre Nombre (parcial o completo) de la planta

@@ -11,9 +11,13 @@ import java.util.List;
  */
 @Repository
 public class PlantaRepositorioImpl implements IPlantaRepositorio {
+    private final PlantaMongoRepositorio mongoRepositorio;
 
     public PlantaRepositorioImpl() {
         // Constructor por defecto (inyecciones si es necesario)
+    }
+    public PlantaRepositorioImpl(PlantaMongoRepositorio mongoRepositorio) {
+        this.mongoRepositorio = mongoRepositorio;
     }
 
     @Override
@@ -36,6 +40,11 @@ public class PlantaRepositorioImpl implements IPlantaRepositorio {
     @Override
     public void eliminar(String id) {
         // TODO: Eliminar por ID en MongoDB
+    }
+
+    @Override
+    public List<Planta> buscarPorNombre(String nombre) {
+        return mongoRepositorio.findByNombreComunContainingIgnoreCase(nombre);
     }
 
     @Override

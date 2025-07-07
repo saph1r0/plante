@@ -2,18 +2,32 @@ package com.planta.plantapp.presentacion.controlador;
 
 import com.planta.plantapp.aplicacion.interfaces.IServicioPlanta;
 import com.planta.plantapp.dominio.modelo.planta.Planta;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.Date;
 import java.util.List;
 
 /**
  * Controlador para gestionar las operaciones relacionadas con las plantas.
  */
+@RestController
+@RequestMapping("/plantas")
 public class PlantaController {
 
     private IServicioPlanta servicioPlanta;
 
     public PlantaController() {
         // Constructor por defecto (válido y permitido por SonarLint)
+    }
+
+    public PlantaController(IServicioPlanta servicioPlanta) {
+        this.servicioPlanta = servicioPlanta;
+    }
+
+    // Endpoint para buscar por nombre común
+    @GetMapping("/buscar")
+    public List<Planta> buscarPorNombre(@RequestParam("nombre") String nombre) {
+        return servicioPlanta.buscarPorNombre(nombre);
     }
 
     /**
