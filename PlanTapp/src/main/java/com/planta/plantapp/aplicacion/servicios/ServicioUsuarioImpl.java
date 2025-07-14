@@ -19,67 +19,128 @@ public class ServicioUsuarioImpl implements IServicioUsuario {
 
     @Override
     public void registrarUsuario(Usuario usuario) {
+        if (usuario == null || usuario.getCorreo() == null) {
+            throw new IllegalArgumentException("Datos del usuario inválidos");
+        }
+
         Optional<Usuario> existente = repositorioUsuario.buscarPorCorreo(usuario.getCorreo());
         if (existente.isPresent()) {
             throw new IllegalArgumentException("El correo ya está registrado");
         }
-        repositorioUsuario.guardar(usuario);
-    }
 
+        try {
+            repositorioUsuario.guardar(usuario);
+        } catch (Exception e) {
+            throw new IllegalStateException("Error al registrar el usuario", e);
+        }
+    }
 
     @Override
     public Usuario autenticarUsuario(String email, String contrasena) {
-        Optional<Usuario> usuarioOpt = repositorioUsuario.buscarPorCorreo(email);
-        if (usuarioOpt.isPresent() && usuarioOpt.get().getContrasena().equals(contrasena)) {
-            return usuarioOpt.get();
+        if (email == null || contrasena == null) {
+            throw new IllegalArgumentException("Correo y contraseña son requeridos");
         }
-        return null; // o lanzar excepción si quieres
-    }
 
+        try {
+            Optional<Usuario> usuarioOpt = repositorioUsuario.buscarPorCorreo(email);
+            if (usuarioOpt.isPresent() && usuarioOpt.get().getContrasena().equals(contrasena)) {
+                return usuarioOpt.get();
+            }
+            return null;
+        } catch (Exception e) {
+            throw new IllegalStateException("Error al autenticar usuario", e);
+        }
+    }
 
     @Override
     public Usuario obtenerUsuarioPorId(String id) {
-        return repositorioUsuario.obtenerPorId(id);
+        if (id == null) {
+            throw new IllegalArgumentException("ID no puede ser nulo");
+        }
+
+        try {
+            Usuario usuario = repositorioUsuario.obtenerPorId(id);
+            if (usuario == null) {
+                throw new IllegalArgumentException("No se encontró el usuario con ID: " + id);
+            }
+            return usuario;
+        } catch (Exception e) {
+            throw new IllegalStateException("Error al obtener usuario por ID: " + id, e);
+        }
     }
 
     @Override
     public boolean actualizarPerfil(Usuario usuario) {
         if (usuario == null || usuario.getId() == null) return false;
-        repositorioUsuario.guardar(usuario);
-        return true;
+        try {
+            repositorioUsuario.guardar(usuario);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
     public boolean eliminarUsuario(String id) {
-        if (!repositorioUsuario.existeUsuario(id)) return false;
-        repositorioUsuario.eliminar(id);
-        return true;
+        if (id == null) return false;
+
+        try {
+            if (!repositorioUsuario.existeUsuario(id)) return false;
+            repositorioUsuario.eliminar(id);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
     public List<Usuario> listarUsuarios() {
-        return repositorioUsuario.listarTodos();
+        try {
+            return repositorioUsuario.listarTodos();
+        } catch (Exception e) {
+            throw new IllegalStateException("Error al listar usuarios", e);
+        }
     }
 
     @Override
     public boolean existeCorreo(String email) {
-        return repositorioUsuario.buscarPorCorreo(email).isPresent();
+        if (email == null) return false;
+        try {
+            return repositorioUsuario.buscarPorCorreo(email).isPresent();
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
     public void recuperarContrasena(String email) {
-        if (!existeCorreo(email)) {
-            throw new IllegalArgumentException("Correo no registrado");
+        if (email == null) {
+            throw new IllegalArgumentException("Correo requerido");
         }
-        // Aquí puedes poner la lógica real de recuperación
+
+        try {
+            if (!existeCorreo(email)) {
+                throw new IllegalArgumentException("Correo no registrado");
+            }
+            // Lógica de recuperación
+        } catch (Exception e) {
+            throw new IllegalStateException("Error al procesar recuperación de contraseña", e);
+        }
     }
 
     @Override
     public boolean cambiarContrasena(String id, String nuevaContrasena) {
-        Usuario usuario = repositorioUsuario.obtenerPorId(id);
-        if (usuario == null) return false;
-        usuario.setPassword(nuevaContrasena);
-        repositorioUsuario.guardar(usuario);
-        return true;
+        if (id == null || nuevaContrasena == null) return false;
+
+        try {
+            Usuario usuario = repositorioUsuario.obtenerPorId(id);
+            if (usuario == null) return false;
+
+            usuario.setPassword(nuevaContrasena);
+            repositorioUsuario.guardar(usuario);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
