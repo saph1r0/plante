@@ -15,6 +15,7 @@ public class ServicioBitacoraImpl {
      * Default constructor
      */
     public ServicioBitacoraImpl() {
+        throw new UnsupportedOperationException("ServicioBitacoraImpl aún no implementado.");
     }
 
     /**
@@ -25,7 +26,10 @@ public class ServicioBitacoraImpl {
     /**
      * 
      */
-    private IBitacoraRepositorio repositorioBitacora;
+    public ServicioBitacoraImpl(IBitacoraRepositorio repositorioBitacora) {
+        this.repositorioBitacora = repositorioBitacora;
+    }
+
 
     /**
      * @param plantaId 
@@ -33,8 +37,8 @@ public class ServicioBitacoraImpl {
      * @return
      */
     public void registrarObservacion(Long plantaId, String descripcion) {
-        // TODO implement here
-        return null;
+        Bitacora bitacora = new Bitacora(plantaId, descripcion);
+        repositorioBitacora.guardar(bitacora);
     }
 
     /**
@@ -42,8 +46,13 @@ public class ServicioBitacoraImpl {
      * @return
      */
     public List<Bitacora> obtenerPorPlanta(Long plantaId) {
-        // TODO implement here
-        return null;
+        List<Bitacora> resultado = new ArrayList<>();
+        for (Bitacora b : repositorioBitacora.obtenerTodas()) {
+            if (b.getPlantaId().equals(plantaId)) {
+                resultado.add(b);
+            }
+        }
+        return resultado;
     }
 
     /**
@@ -52,8 +61,13 @@ public class ServicioBitacoraImpl {
      * @return
      */
     public List<Bitacora> obtenerPorFechaRango(Date desde, Date hasta) {
-        // TODO implement here
-        return null;
+        List<Bitacora> resultado = new ArrayList<>();
+        for (Bitacora b : repositorioBitacora.obtenerTodas()) {
+            if (!b.getFecha().before(desde) && !b.getFecha().after(hasta)) {
+                resultado.add(b);
+            }
+        }
+        return resultado;
     }
 
     /**
@@ -62,29 +76,61 @@ public class ServicioBitacoraImpl {
      * @return
      */
     public void editarObservacion(Long bitacoraId, String nuevaDescripcion) {
-        // TODO implement here
-        return null;
+        if (bitacoraId == null || nuevaDescripcion == null) {
+            throw new IllegalArgumentException("Parámetros inválidos");
+        }
+        // TODO implementar actualización en repositorio
     }
 
     /**
      * @param bitacoraId 
      * @return
      */
-    public void eliminar(Long bitacoraId) {
-        // TODO implement here
-        return null;
-    }
 
+    public void eliminar(Long bitacoraId) {
+        Iterator<Bitacora> iterator = bitacoras.iterator();
+        while (iterator.hasNext()) {
+            Bitacora b = iterator.next();
+            if (b.getId().equals(bitacoraId)) {
+                iterator.remove();
+                logger.info("Bitacora con ID " + bitacoraId + " eliminada.");
+                return;
+            }
+        }
+        logger.warning("No se encontró una bitacora con ID " + bitacoraId);
+    }
     /**
      * @param plantaId 
      * @return
      */
-    public byte exportarHistorial(Long plantaId) {
-        // TODO implement here
-        return 0;
+    public byte exportarHistorial() {
+        try (FileWriter writer = new FileWriter("historial.txt")) {
+            // Aquí iría tu lógica real para exportar los datos
+            writer.write("=== Historial de bitácoras ===\n");
+            writer.write("Registro 1: inicio del sistema\n");
+            writer.write("Registro 2: parada del sistema\n");
+            writer.write("Registro 3: error crítico\n");
+            logger.info("Historial exportado exitosamente a historial.txt");
+            return 0; // éxito
+        } catch (IOException e) {
+            logger.severe("Error al exportar historial: " + e.getMessage());
+            return 1; // error
+        }
     }
 
-    /**
+    public static void main(String[] args) {
+        BitacoraService servicio = new BitacoraService();
+        byte resultado = servicio.exportarHistorial();
+        if (resultado == 0) {
+            logger.info("Exportación completada sin errores.");
+        } else {
+            logger.warning("Exportación fallida.");
+        }
+    }
+}
+
+
+/**
      * @param tipo 
      * @return
      */
