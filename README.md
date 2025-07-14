@@ -1,8 +1,4 @@
-¡Perfecto! A continuación te presento el `README.md` corregido, más claro, profesional y con mejor estructura para entregar o subir a GitHub. También mejoré la sección de estilos de programación para que sea más coherente y legible.
 
----
-
-````markdown
 # 🌿 PlantApp - Sistema de Gestión de Plantas (Java + DDD)
 
 ## 📌 Descripción del Proyecto
