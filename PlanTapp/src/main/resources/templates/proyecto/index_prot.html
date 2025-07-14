@@ -42,44 +42,28 @@
         </div>
 
         <div class="container" id="eventos">
-            <h2>Eventos</h2>
+            <h2>Próximos Eventos</h2>
             <div class="view-toggle">
-                <button onclick="mostrarVista('lista')">Lista</button>
-                <button onclick="mostrarVista('calendario')">Calendario</button>
-                <input type="date"> a <input type="date">
+                <button id="btn-vista-lista" onclick="mostrarVista('lista', this)">Lista</button>
+                <button id="btn-vista-calendario" onclick="mostrarVista('calendario', this)">Calendario</button>
+                <label for="date-range-start">Filtrar por fecha:</label>
+                <input type="date" id="date-range-start">
+                <label for="date-range-end">a</label>
+                <input type="date" id="date-range-end">
+                <button onclick="filterEventsByDate()">Aplicar Filtro</button>
             </div>
             <div id="vista-lista">
-                <div class="event-item">
-                    <h3>Charla: Cuidado Básico de Suculentas</h3>
-                    <p class="event-meta">Fecha: 10 de Julio de 2025 | Hora: 18:00 | Lugar: Centro Comunitario GreenLife</p>
-                    <p>Aprende todo lo necesario para mantener tus suculentas sanas y hermosas. Desde el tipo de suelo hasta la frecuencia de riego, ¡resuelve todas tus dudas con expertos locales!</p>
                 </div>
-                <div class="event-item">
-                    <h3>Taller: Creación de Kokedamas</h3>
-                    <p class="event-meta">Fecha: 15 de Julio de 2025 | Hora: 10:30 | Lugar: Jardín Botánico Urbano</p>
-                    <p>Un taller práctico donde aprenderás la técnica japonesa de las Kokedamas. Crea tu propia esfera de musgo y lleva a casa una pieza única de arte natural. Materiales incluidos.</p>
-                </div>
-                <div class="event-item">
-                    <h3>Feria de Intercambio de Plantas</h3>
-                    <p class="event-meta">Fecha: 22 de Julio de 2025 | Hora: 09:00 - 14:00 | Lugar: Parque Central</p>
-                    <p>¡Trae tus esquejes, semillas o plantas en maceta para intercambiar con otros entusiastas! Una excelente oportunidad para ampliar tu colección y hacer nuevas amistades.</p>
-                </div>
-            </div>
             <div id="vista-calendario" class="hidden">
-                <h3>Julio 2025</h3>
+                <h3 id="current-month-year"></h3>
                 <table class="calendar">
                     <thead>
                         <tr>
-                            <th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th><th>Dom</th>
+                            <th>Dom</th><th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr><td></td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr>
-                        <tr><td>7</td><td>8</td><td>9</td><td>10<br><strong>Charla Suculentas</strong></td><td>11</td><td>12</td><td>13</td></tr>
-                        <tr><td>14</td><td>15<br><strong>Taller Kokedamas</strong></td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td></tr>
-                        <tr><td>21</td><td>22<br><strong>Feria Intercambio</strong></td><td>23</td><td>24</td><td>25</td><td>26</td><td>27</td></tr>
-                        <tr><td>28</td><td>29</td><td>30</td><td>31</td><td></td><td></td><td></td></tr>
-                    </tbody>
+                    <tbody id="calendar-body">
+                        </tbody>
                 </table>
             </div>
         </div>

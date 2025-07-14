@@ -25,6 +25,17 @@
             'Iniciarse en Plantas', 'Cuidado de Plantas', 'Intercambio de Plantas', 'Plantas de Interior'
         ];
 
+        let allEvents = [
+            { title: 'Charla: Cuidado Básico de Suculentas', date: '2025-07-10', time: '18:00', location: 'Centro Comunitario GreenLife', description: 'Aprende todo lo necesario para mantener tus suculentas sanas y hermosas. Desde el tipo de suelo hasta la frecuencia de riego, ¡resuelve todas tus dudas con expertos locales!' },
+            { title: 'Taller: Creación de Kokedamas', date: '2025-07-15', time: '10:30', location: 'Jardín Botánico Urbano', description: 'Un taller práctico donde aprenderás la técnica japonesa de las Kokedamas. Crea tu propia esfera de musgo y lleva a casa una pieza única de arte natural. Materiales incluidos.' },
+            { title: 'Feria de Intercambio de Plantas', date: '2025-07-22', time: '09:00 - 14:00', location: 'Parque Central', description: '¡Trae tus esquejes, semillas o plantas en maceta para intercambiar con otros entusiastas! Una excelente oportunidad para ampliar tu colección y hacer nuevas amistades.' },
+            { title: 'Webinar: Jardinería en Apartamentos', date: '2025-08-05', time: '19:00', location: 'Online (Zoom)', description: 'Descubre cómo crear un oasis verde en tu pequeño espacio. Consejos sobre plantas adecuadas, iluminación y riego para entornos urbanos.' },
+            { title: 'Visita Guiada: Orquideario Nacional', date: '2025-08-18', time: '11:00', location: 'Orquideario Nacional', description: 'Recorrido por las impresionantes colecciones de orquídeas, con explicaciones de expertos sobre su historia y cuidado.' },
+            { title: 'Clase de Compostaje Casero', date: '2025-09-10', time: '16:00', location: 'Huerto Urbano "La Huerta Feliz"', description: 'Aprende a transformar tus residuos orgánicos en abono rico para tus plantas, de forma sencilla y ecológica.' },
+        ];
+
+        let filteredEvents = [...allEvents]; 
+
 
         const menuToggle = document.getElementById('menu-toggle');
         const sidebar = document.getElementById('sidebar');
@@ -99,18 +110,125 @@
         });
 
 
-        // --- Eventos (Vista) ---
-        function mostrarVista(vista) {
-            document.getElementById('vista-lista').classList.add('hidden');
-            document.getElementById('vista-calendario').classList.add('hidden');
-            document.getElementById('vista-' + vista).classList.remove('hidden');
+        const vistaLista = document.getElementById('vista-lista');
+        const vistaCalendario = document.getElementById('vista-calendario');
+        const currentMonthYear = document.getElementById('current-month-year');
+        const calendarBody = document.getElementById('calendar-body');
+        const btnVistaLista = document.getElementById('btn-vista-lista');
+        const btnVistaCalendario = document.getElementById('btn-vista-calendario');
+        const dateRangeStart = document.getElementById('date-range-start');
+        const dateRangeEnd = document.getElementById('date-range-end');
+
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+
+        function renderEventsList(eventsToRender) {
+            vistaLista.innerHTML = '';
+            if (eventsToRender.length === 0) {
+                vistaLista.innerHTML = '<p style="text-align: center; margin-top: 20px;">No hay eventos disponibles para las fechas seleccionadas.</p>';
+                return;
+            }
+            eventsToRender.sort((a, b) => new Date(a.date) - new Date(b.date)); // Ordenar por fecha
+            eventsToRender.forEach(event => {
+                const eventItem = document.createElement('div');
+                eventItem.classList.add('event-item');
+                eventItem.innerHTML = `
+                    <h3>${event.title}</h3>
+                    <p class="event-meta">Fecha: ${new Date(event.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })} | Hora: ${event.time} | Lugar: ${event.location}</p>
+                    <p>${event.description}</p>
+                `;
+                vistaLista.appendChild(eventItem);
+            });
         }
 
-        // Mostrar vista de lista por defecto al cargar
-        document.addEventListener('DOMContentLoaded', () => {
-            mostrarVista('lista');
-        });
+        function renderCalendar(month, year, eventsToRender) {
+            calendarBody.innerHTML = '';
+            currentMonthYear.textContent = new Date(year, month).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
 
+            const firstDay = new Date(year, month, 1).getDay(); // 0 (Dom) - 6 (Sáb)
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            const todayDate = today.getDate();
+            const todayMonth = today.getMonth();
+            const todayYear = today.getFullYear();
+
+            let date = 1;
+            for (let i = 0; i < 6; i++) { 
+                const row = document.createElement('tr');
+                for (let j = 0; j < 7; j++) {
+                    const cell = document.createElement('td');
+                    if (i === 0 && j < firstDay) {
+                        cell.textContent = ''; 
+                    } else if (date > daysInMonth) {
+                        cell.textContent = ''; 
+                    } else {
+                        cell.innerHTML = `<strong>${date}</strong>`;
+                        const currentCellDate = new Date(year, month, date);
+                        
+                        if (date === todayDate && month === todayMonth && year === todayYear) {
+                            cell.classList.add('today');
+                        }
+
+                        // Add events to calendar cells
+                        const eventsOnThisDay = eventsToRender.filter(event => 
+                            new Date(event.date).toDateString() === currentCellDate.toDateString()
+                        );
+                        if (eventsOnThisDay.length > 0) {
+                            cell.classList.add('has-event');
+                            eventsOnThisDay.forEach(event => {
+                                const eventBadge = document.createElement('span');
+                                eventBadge.classList.add('event-badge');
+                                eventBadge.textContent = event.title;
+                                cell.appendChild(eventBadge);
+                            });
+                        }
+                        date++;
+                    }
+                    row.appendChild(cell);
+                }
+                calendarBody.appendChild(row);
+                if (date > daysInMonth) break; 
+            }
+        }
+
+        function mostrarVista(vista, button) {
+            vistaLista.classList.add('hidden');
+            vistaCalendario.classList.add('hidden');
+            btnVistaLista.classList.remove('active');
+            btnVistaCalendario.classList.remove('active');
+
+            document.getElementById('vista-' + vista).classList.remove('hidden');
+            button.classList.add('active');
+
+            if (vista === 'calendario') {
+                renderCalendar(currentMonth, currentYear, filteredEvents);
+            }
+            filterEventsByDate(); 
+        }
+
+        function filterEventsByDate() {
+            const startDate = dateRangeStart.value ? new Date(dateRangeStart.value) : null;
+            const endDate = dateRangeEnd.value ? new Date(dateRangeEnd.value) : null;
+
+            filteredEvents = allEvents.filter(event => {
+                const eventDate = new Date(event.date);
+                let isWithinRange = true;
+                if (startDate && eventDate < startDate) {
+                    isWithinRange = false;
+                }
+                if (endDate && eventDate > new Date(endDate.setDate(endDate.getDate() + 1))) {
+                    isWithinRange = false;
+                }
+                return isWithinRange;
+            });
+
+            if (!vistaLista.classList.contains('hidden')) {
+                renderEventsList(filteredEvents);
+            }
+            if (!vistaCalendario.classList.contains('hidden')) {
+                renderCalendar(currentMonth, currentYear, filteredEvents);
+            }
+        }
         // --- Foro ---
         const forumInput = document.getElementById('forum-input');
         const chatHistory = document.getElementById('chat-history');
