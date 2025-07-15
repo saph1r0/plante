@@ -25,7 +25,21 @@ public class PlantaRepositorioImpl implements IPlantaRepositorio {
      */
     @Override
     public Planta obtenerPorId(String id) {
-        throw new UnsupportedOperationException("Método obtenerPorId no implementado aún");
+        // ESTILO: Error/Exception Handling
+        if (id == null || id.trim().isEmpty()) {
+            throw new IllegalArgumentException("ID no puede ser nulo o vacío");
+        }
+
+        try {
+            // TODO: Implementar consulta MongoDB real
+            // Query query = new Query(Criteria.where("id").is(id));
+            // return mongoTemplate.findOne(query, Planta.class);
+
+            // Por ahora retornar null hasta completar implementación
+            return null;
+        } catch (Exception e) {
+            throw new RuntimeException("Error al consultar planta con ID: " + id, e);
+        }
     }
 
     /**
@@ -36,7 +50,22 @@ public class PlantaRepositorioImpl implements IPlantaRepositorio {
      */
     @Override
     public List<Planta> listarPorUsuario(String usuarioId) {
-        throw new UnsupportedOperationException("Método listarPorUsuario no implementado aún");
+        // ESTILO: Error/Exception Handling + Pipeline preparation
+        if (usuarioId == null || usuarioId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Usuario ID requerido");
+        }
+
+        try {
+            // TODO: Implementar consulta MongoDB real
+            // Query query = new Query(Criteria.where("usuarioId").is(usuarioId));
+            // return mongoTemplate.find(query, Planta.class);
+
+            // Datos simulados para testing
+            List<Planta> plantasSimuladas = new ArrayList<>();
+            return plantasSimuladas;
+        } catch (Exception e) {
+            throw new RuntimeException("Error al listar plantas del usuario: " + usuarioId, e);
+        }
     }
 
     /**
@@ -46,7 +75,22 @@ public class PlantaRepositorioImpl implements IPlantaRepositorio {
      */
     @Override
     public void guardar(Planta planta) {
-        throw new UnsupportedOperationException("Método guardar no implementado aún");
+        // ESTILO: Error/Exception Handling
+        if (planta == null) {
+            throw new IllegalArgumentException("Planta no puede ser nula");
+        }
+
+        if (planta.getNombre() == null || planta.getNombre().trim().isEmpty()) {
+            throw new IllegalArgumentException("Nombre de planta es requerido");
+        }
+
+        try {
+            // TODO: Implementar guardado MongoDB real
+            // mongoTemplate.save(planta);
+            System.out.println("Guardando planta: " + planta.getNombre());
+        } catch (Exception e) {
+            throw new RuntimeException("Error al guardar planta: " + planta.getNombre(), e);
+        }
     }
 
     /**
