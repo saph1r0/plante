@@ -1,4 +1,4 @@
-        let catalogImages = [
+let catalogImages = [
             { src: 'https://via.placeholder.com/400x300/C8E6C9/2F6C35?text=Orquidea', name: 'Orquídea Phalaenopsis', date: '2024-03-15', description: 'Una hermosa orquídea con flores vibrantes, ideal para interiores luminosos. Requiere riego moderado y alta humedad ambiental.' },
             { src: 'https://via.placeholder.com/400x300/D4EDDA/2F6C35?text=Echeveria', name: 'Echeveria Elegans', date: '2023-11-20', description: 'Suculenta de fácil cuidado, perfecta para principiantes. Necesita mucha luz solar directa y muy poco riego.' },
             { src: 'https://via.placeholder.com/400x300/E6F0E6/2F6C35?text=Helecho', name: 'Helecho Espada', date: '2024-01-10', description: 'Popular por su frondoso follaje, ideal para crear un ambiente tropical. Prefiere sombra parcial y alta humedad.' },
@@ -34,80 +34,79 @@
             { title: 'Clase de Compostaje Casero', date: '2025-09-10', time: '16:00', location: 'Huerto Urbano "La Huerta Feliz"', description: 'Aprende a transformar tus residuos orgánicos en abono rico para tus plantas, de forma sencilla y ecológica.' },
         ];
 
-        let filteredEvents = [...allEvents]; 
+        let filteredEvents = [...allEvents];
 
 
-        const menuToggle = document.getElementById('menu-toggle');
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.querySelector('main');
+        // --- Cookbook: Encapsulación de funcionalidades UI ---
+        function initializeSidebar() {
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebar = document.getElementById('sidebar');
 
-        menuToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-            menuToggle.style.display = 'none'; // Ocultar el botón cuando el sidebar se abre
-            document.body.classList.toggle('sidebar-active');
-        });
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                menuToggle.style.display = 'none';
+                document.body.classList.toggle('sidebar-active');
+            });
 
-        // Cerrar sidebar al hacer clic fuera de los botones de menú
-        sidebar.addEventListener('click', (event) => {
-            // Verificar si el clic NO fue en un enlace de menú
-            if (!event.target.closest('.menu-btn')) {
-                sidebar.classList.remove('active');
-                menuToggle.style.display = 'flex'; // Mostrar el botón cuando el sidebar se cierra
-                document.body.classList.remove('sidebar-active');
-            }
-        });
+            sidebar.addEventListener('click', (event) => {
+                if (!event.target.closest('.menu-btn')) {
+                    sidebar.classList.remove('active');
+                    menuToggle.style.display = 'flex';
+                    document.body.classList.remove('sidebar-active');
+                }
+            });
+        }
 
-        // --- Header Search Bar ---
-        const searchIcon = document.getElementById('search-icon');
-        const searchBar = document.getElementById('search-bar');
-        const searchInput = document.getElementById('search-input');
-        const searchSuggestions = document.getElementById('search-suggestions');
+        function initializeSearchBar() {
+            const searchIcon = document.getElementById('search-icon');
+            const searchBar = document.getElementById('search-bar');
+            const searchInput = document.getElementById('search-input');
+            const searchSuggestions = document.getElementById('search-suggestions');
 
-        searchIcon.addEventListener('click', () => {
-            searchBar.style.display = searchBar.style.display === 'block' ? 'none' : 'block';
-            if (searchBar.style.display === 'block') {
-                searchInput.focus();
-            } else {
-                searchSuggestions.style.display = 'none'; // Ocultar sugerencias al cerrar la barra
-                searchInput.value = ''; // Limpiar el input al cerrar
-            }
-        });
+            searchIcon.addEventListener('click', () => {
+                searchBar.style.display = searchBar.style.display === 'block' ? 'none' : 'block';
+                if (searchBar.style.display === 'block') {
+                    searchInput.focus();
+                } else {
+                    searchSuggestions.style.display = 'none';
+                    searchInput.value = '';
+                }
+            });
 
-        searchInput.addEventListener('input', () => {
-            const query = searchInput.value.toLowerCase();
-            searchSuggestions.innerHTML = ''; // Limpiar sugerencias anteriores
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.toLowerCase();
+                searchSuggestions.innerHTML = '';
 
-            if (query.length > 0) {
-                const filteredSuggestions = searchableOptions.filter(option =>
-                    option.toLowerCase().includes(query)
-                ).slice(0, 5); // Limitar a 5 sugerencias
+                if (query.length > 0) {
+                    const filteredSuggestions = searchableOptions.filter(option =>
+                        option.toLowerCase().includes(query)
+                    ).slice(0, 5);
 
-                if (filteredSuggestions.length > 0) {
-                    filteredSuggestions.forEach(suggestion => {
-                        const div = document.createElement('div');
-                        div.textContent = suggestion;
-                        div.addEventListener('click', () => {
-                            searchInput.value = suggestion;
-                            searchSuggestions.style.display = 'none';
-                            // Aquí podrías añadir lógica para ir a la sección o buscar
+                    if (filteredSuggestions.length > 0) {
+                        filteredSuggestions.forEach(suggestion => {
+                            const div = document.createElement('div');
+                            div.textContent = suggestion;
+                            div.addEventListener('click', () => {
+                                searchInput.value = suggestion;
+                                searchSuggestions.style.display = 'none';
+                            });
+                            searchSuggestions.appendChild(div);
                         });
-                        searchSuggestions.appendChild(div);
-                    });
-                    searchSuggestions.style.display = 'block';
+                        searchSuggestions.style.display = 'block';
+                    } else {
+                        searchSuggestions.style.display = 'none';
+                    }
                 } else {
                     searchSuggestions.style.display = 'none';
                 }
-            } else {
-                searchSuggestions.style.display = 'none';
-            }
-        });
+            });
 
-        // Ocultar sugerencias si se hace clic fuera del input de búsqueda o las sugerencias
-        document.addEventListener('click', (event) => {
-            if (!searchBar.contains(event.target) && event.target !== searchIcon) {
-                searchSuggestions.style.display = 'none';
-            }
-        });
+            document.addEventListener('click', (event) => {
+                if (!searchBar.contains(event.target) && event.target !== searchIcon) {
+                    searchSuggestions.style.display = 'none';
+                }
+            });
+        }
 
         const vistaLista = document.getElementById('vista-lista');
         const vistaCalendario = document.getElementById('vista-calendario');
@@ -127,7 +126,8 @@
                 vistaLista.innerHTML = '<p style="text-align: center; margin-top: 20px;">No hay eventos disponibles para las fechas seleccionadas.</p>';
                 return;
             }
-            eventsToRender.sort((a, b) => new Date(a.date) - new Date(b.date)); // Ordenar por fecha
+            // Pipeline: Etapa de Ordenamiento
+            eventsToRender.sort((a, b) => new Date(a.date) - new Date(b.date));
             eventsToRender.forEach(event => {
                 const eventItem = document.createElement('div');
                 eventItem.classList.add('event-item');
@@ -144,7 +144,7 @@
             calendarBody.innerHTML = '';
             currentMonthYear.textContent = new Date(year, month).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
 
-            const firstDay = new Date(year, month, 1).getDay(); // 0 (Dom) - 6 (Sáb)
+            const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const today = new Date();
             const todayDate = today.getDate();
@@ -152,23 +152,23 @@
             const todayYear = today.getFullYear();
 
             let date = 1;
-            for (let i = 0; i < 6; i++) { 
+            for (let i = 0; i < 6; i++) {
                 const row = document.createElement('tr');
                 for (let j = 0; j < 7; j++) {
                     const cell = document.createElement('td');
                     if (i === 0 && j < firstDay) {
-                        cell.textContent = ''; 
+                        cell.textContent = '';
                     } else if (date > daysInMonth) {
-                        cell.textContent = ''; 
+                        cell.textContent = '';
                     } else {
                         cell.innerHTML = `<strong>${date}</strong>`;
                         const currentCellDate = new Date(year, month, date);
-                        
+
                         if (date === todayDate && month === todayMonth && year === todayYear) {
                             cell.classList.add('today');
                         }
 
-                        const eventsOnThisDay = eventsToRender.filter(event => 
+                        const eventsOnThisDay = eventsToRender.filter(event =>
                             new Date(event.date).toDateString() === currentCellDate.toDateString()
                         );
                         if (eventsOnThisDay.length > 0) {
@@ -185,7 +185,7 @@
                     row.appendChild(cell);
                 }
                 calendarBody.appendChild(row);
-                if (date > daysInMonth) break; 
+                if (date > daysInMonth) break;
             }
         }
 
@@ -201,14 +201,12 @@
             if (vista === 'calendario') {
                 renderCalendar(currentMonth, currentYear, filteredEvents);
             }
-            filterEventsByDate(); 
+            filterEventsByDate();
         }
 
-        function filterEventsByDate() {
-            const startDate = dateRangeStart.value ? new Date(dateRangeStart.value) : null;
-            const endDate = dateRangeEnd.value ? new Date(dateRangeEnd.value) : null;
-
-            filteredEvents = allEvents.filter(event => {
+        // Pipeline: Etapa de Filtrado de Eventos
+        function getFilteredEvents(startDate, endDate) {
+            return allEvents.filter(event => {
                 const eventDate = new Date(event.date);
                 let isWithinRange = true;
                 if (startDate && eventDate < startDate) {
@@ -219,6 +217,13 @@
                 }
                 return isWithinRange;
             });
+        }
+
+        function filterEventsByDate() {
+            const startDate = dateRangeStart.value ? new Date(dateRangeStart.value) : null;
+            const endDate = dateRangeEnd.value ? new Date(dateRangeEnd.value) : null;
+
+            filteredEvents = getFilteredEvents(startDate, endDate); // Uso de la función de pipeline
 
             if (!vistaLista.classList.contains('hidden')) {
                 renderEventsList(filteredEvents);
@@ -227,6 +232,7 @@
                 renderCalendar(currentMonth, currentYear, filteredEvents);
             }
         }
+
         // --- Foro ---
         const forumInput = document.getElementById('forum-input');
         const chatHistory = document.getElementById('chat-history');
@@ -235,19 +241,19 @@
 
         forumInput.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
-                event.preventDefault(); // Prevenir salto de línea
+                event.preventDefault();
                 const message = forumInput.value.trim();
                 if (message === '') return;
 
                 if (isLoggedIn) {
-                    // Si estuviera logueado, añadir mensaje al chat
                     const newMessageDiv = document.createElement('div');
                     newMessageDiv.classList.add('chat-message', 'user-message');
                     newMessageDiv.innerHTML = `<strong>Tú:</strong> ${message}`;
                     chatHistory.appendChild(newMessageDiv);
-                    chatHistory.scrollTop = chatHistory.scrollHeight; // Scroll al final
+                    chatHistory.scrollTop = chatHistory.scrollHeight;
                     forumInput.value = '';
                 } else {
+                    // Error/Exception Handling: Mensaje de usuario si no está logueado
                     loginMessage.classList.add('show');
                     setTimeout(() => {
                         loginMessage.classList.remove('show');
@@ -273,7 +279,6 @@
                 const serviceId = petal.dataset.serviceId;
                 const detail = serviceDetails[serviceId];
 
-                // Calcular el movimiento opuesto
                 const petalRect = petal.getBoundingClientRect();
                 const florRect = flor.getBoundingClientRect();
 
@@ -283,7 +288,7 @@
                 const centerX = florRect.width / 2;
                 const centerY = florRect.height / 2;
 
-                const offsetX = (centerX - petalX) * 0.8; // Multiplicador para ajustar el movimiento
+                const offsetX = (centerX - petalX) * 0.8;
                 const offsetY = (centerY - petalY) * 0.8;
 
                 flor.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
@@ -315,6 +320,7 @@
 
         function loadCarouselImages() {
             carouselTrack.innerHTML = '';
+            // Persistent-Tables: Iteración sobre la "tabla" catalogImages
             catalogImages.forEach((image, index) => {
                 const item = document.createElement('div');
                 item.classList.add('carousel-item');
@@ -327,18 +333,19 @@
                 `;
                 carouselTrack.appendChild(item);
             });
-            addCarouselImageClickListeners(); // Re-add listeners after loading
+            addCarouselImageClickListeners();
         }
 
         function addCarouselImageClickListeners() {
             document.querySelectorAll('.carousel-item img').forEach(img => {
-                img.removeEventListener('click', openPhotoModal); // Evitar duplicados
+                img.removeEventListener('click', openPhotoModal);
                 img.addEventListener('click', openPhotoModal);
             });
         }
 
         function openPhotoModal(e) {
             const clickedIndex = parseInt(e.target.dataset.index);
+            // Persistent-Tables: Acceso a un "registro" específico por índice
             const photo = catalogImages[clickedIndex];
             modalImg.src = photo.src;
             modalImg.alt = photo.name;
@@ -347,7 +354,6 @@
             photoModalOverlay.classList.add('visible');
         }
 
-        // Cierre del modal de fotos
         photoModalOverlay.addEventListener('click', (event) => {
             if (event.target === photoModalOverlay || event.target === photoModalClose) {
                 photoModalOverlay.classList.remove('visible');
@@ -358,7 +364,6 @@
         });
 
 
-        // Funcionalidad de arrastre del carrusel
         carouselTrack.addEventListener('mousedown', (e) => {
             isDragging = true;
             carouselTrack.classList.add('dragging');
@@ -380,14 +385,13 @@
             if (!isDragging) return;
             e.preventDefault();
             const x = e.pageX - carouselTrack.offsetLeft;
-            const walk = (x - startX) * 1.5; // Ajustar la velocidad
+            const walk = (x - startX) * 1.5;
             carouselTrack.scrollLeft = scrollLeft - walk;
         });
 
-        // Navegación con botones
         carouselPrevBtn.addEventListener('click', () => {
             carouselTrack.scrollBy({
-                left: -carouselTrack.offsetWidth / 2, // Desplaza la mitad del ancho del carrusel
+                left: -carouselTrack.offsetWidth / 2,
                 behavior: 'smooth'
             });
         });
@@ -402,7 +406,17 @@
         // Add Plant Form
         const addPlantForm = document.getElementById('add-plant-form');
         const plantFormMessage = document.getElementById('plant-form-message');
-        const myPlantsGrid = document.getElementById('my-plants-grid'); // Para la sección Mis Registros
+        const myPlantsGrid = document.getElementById('my-plants-grid');
+
+        // Cookbook: Función utilitaria para mensajes de formulario
+        function showFormMessage(element, message, type) {
+            element.textContent = message;
+            element.className = 'form-message ' + type;
+            element.style.display = 'block';
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 3000);
+        }
 
         addPlantForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -411,8 +425,28 @@
             const description = document.getElementById('plant-description').value;
             const imageFile = document.getElementById('plant-image').files[0];
 
-            if (name && date && description && imageFile) {
-                // Simular URL de imagen. En un entorno real, la imagen se subiría a un servidor
+            // Error/Exception Handling: Validación de campos del formulario
+            if (!name || !date || !description || !imageFile) {
+                showFormMessage(plantFormMessage, 'Por favor, completa todos los campos y sube una imagen.', 'error');
+                return;
+            }
+
+            // Error/Exception Handling: Validación de archivo de imagen
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            const maxSizeMB = 2;
+
+            if (!allowedTypes.includes(imageFile.type)) {
+                showFormMessage(plantFormMessage, 'Tipo de archivo no permitido. Solo se aceptan JPG, PNG, GIF.', 'error');
+                return;
+            }
+
+            if (imageFile.size > maxSizeMB * 1024 * 1024) {
+                showFormMessage(plantFormMessage, `La imagen es demasiado grande. Máximo ${maxSizeMB}MB.`, 'error');
+                return;
+            }
+
+            try {
+                // Persistent-Tables: Simular la adición de un nuevo "registro" a la tabla catalogImages
                 const imageUrl = URL.createObjectURL(imageFile);
 
                 const newPlant = { src: imageUrl, name, date, description };
@@ -421,16 +455,18 @@
                 addPlantForm.reset();
                 showFormMessage(plantFormMessage, 'Planta añadida al catálogo (demostración)!', 'success');
                 addPlantToMyRecords(newPlant); // Añadir a "Mis Registros"
-            } else {
-                showFormMessage(plantFormMessage, 'Por favor, completa todos los campos y sube una imagen.', 'error');
+            } catch (error) {
+                // Error/Exception Handling: Captura de errores inesperados durante el procesamiento de la imagen
+                console.error("Error al añadir planta:", error);
+                showFormMessage(plantFormMessage, 'Ocurrió un error al añadir la planta. Intenta de nuevo.', 'error');
             }
         });
 
         function addPlantToMyRecords(plant) {
             const plantCard = document.createElement('div');
-            plantCard.classList.add('carousel-item'); // Reutilizar el estilo
-            plantCard.style.marginRight = '0'; // Eliminar margen extra para la grid
-            plantCard.style.marginBottom = '15px'; // Espacio entre elementos en la grid
+            plantCard.classList.add('carousel-item');
+            plantCard.style.marginRight = '0';
+            plantCard.style.marginBottom = '15px';
             plantCard.innerHTML = `
                 <img src="${plant.src}" alt="${plant.name}">
                 <div class="image-info">
@@ -442,5 +478,7 @@
         }
 
 
-        // Cargar imágenes del carrusel al inicio
+        // Inicializaciones de componentes al cargar la página
         loadCarouselImages();
+        initializeSidebar(); // Cookbook: Inicialización de la barra lateral
+        initializeSearchBar(); // Cookbook: Inicialización de la barra de búsqueda
