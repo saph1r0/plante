@@ -1,26 +1,26 @@
- //servicios;
- package com.planta.demo.aplicacion.servicios;
+package com.planta.demo.aplicacion.servicios;
 
+import dominio.modelo.Bitacora;
 import dominio.modelo.IBitacoraRepositorio;
 
-import java.io.*;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
-/**
- * 
- */
 public class ServicioBitacoraImpl {
 
-    /**
-     * Default constructor
-     */
-    public ServicioBitacoraImpl() {
-        throw new UnsupportedOperationException("ServicioBitacoraImpl aún no implementado.");
-    }
+    private static final Logger logger = Logger.getLogger(ServicioBitacoraImpl.class.getName());
+    private final IBitacoraRepositorio repositorioBitacora;
 
-    /**
-     * 
-     */
+   //cookbook style
+    public ServicioBitacoraImpl(IBitacoraRepositorio repositorioBitacora) {
+        if (repositorioBitacora == null) {
+            throw new IllegalArgumentException("Repositorio no puede ser nulo");
+        }
+        this.repositorioBitacora = repositorioBitacora;
+    }
     private void servicioDominio;
 
     /**
