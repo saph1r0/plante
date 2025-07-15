@@ -23,34 +23,26 @@ public class ServicioBitacoraImpl {
     }
     private void servicioDominio;
 
-    /**
-     * 
-     */
+
     public ServicioBitacoraImpl(IBitacoraRepositorio repositorioBitacora) {
         this.repositorioBitacora = repositorioBitacora;
     }
 
-
-    /**
-     * @param plantaId 
-     * @param descripcion 
-     * @return
-     */
-    public void registrarObservacion(Long plantaId, String descripcion) {
-        Bitacora bitacora = new Bitacora(plantaId, descripcion);
-        repositorioBitacora.guardar(bitacora);
+    //Error/Exception Handling
+    public void editarObservacion(Long bitacoraId, String nuevaDescripcion) {
+        if (bitacoraId == null || nuevaDescripcion == null) {
+            throw new IllegalArgumentException("Parámetros inválidos");
+        }
+        Bitacora bitacora = repositorioBitacora.buscarPorId(bitacoraId);
+        if (bitacora == null) {
+            throw new NoSuchElementException("Bitácora no encontrada con ID " + bitacoraId);
+        }
+        bitacora.setDescripcion(nuevaDescripcion);
+        repositorioBitacora.actualizar(bitacora);
+        logger.info("Descripción actualizada para bitácora ID " + bitacoraId);
     }
 
-    /**
-     * @param plantaId 
-     * @return
-     */
 
-    /**
-     * @param bitacoraId 
-     * @param nuevaDescripcion 
-     * @return
-     */
     public void editarObservacion(Long bitacoraId, String nuevaDescripcion) {
         if (bitacoraId == null || nuevaDescripcion == null) {
             throw new Illeg/
@@ -72,11 +64,6 @@ public class ServicioBitacoraImpl {
         }
 
     }
-
-    /**
-     * @param bitacoraId 
-     * @return
-     */
 
     public void eliminar(Long bitacoraId) {
         Iterator<Bitacora> iterator = bitacoras.iterator();
