@@ -107,8 +107,30 @@
         <div class="container" id="catalogo">
             <h2>Catálogo Botánico</h2>
             <div class="carousel-wrapper">
+                <button class="carousel-nav-btn left" id="carousel-prev-btn"><i class="fas fa-chevron-left"></i></button>
                 <div class="carousel-track" id="carousel-track">
                     </div>
+                <button class="carousel-nav-btn right" id="carousel-next-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+
+            <div class="add-form-section" id="add-plant-section">
+                <h3>Añadir Nueva Planta al Catálogo</h3>
+                <form id="add-plant-form">
+                    <label for="plant-name">Nombre de la Planta:</label>
+                    <input type="text" id="plant-name" placeholder="Ej: Orquídea Phalaenopsis" required>
+
+                    <label for="plant-date">Fecha de Adquisición/Fotografía:</label>
+                    <input type="date" id="plant-date" required>
+
+                    <label for="plant-description">Descripción:</label>
+                    <textarea id="plant-description" placeholder="Breve descripción y cuidados..." required></textarea>
+
+                    <label for="plant-image">Imagen de la Planta:</label>
+                    <input type="file" id="plant-image" accept="image/*" required>
+                    <small>Solo con fines de demostración; la imagen no se guardará permanentemente.</small>
+
+                
+                </form>
             </div>
         </div>
 

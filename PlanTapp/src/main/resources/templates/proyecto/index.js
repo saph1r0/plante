@@ -1,12 +1,12 @@
-        const catalogImages = [
-            { src: 'AA1H7uuE.jpeg', name: 'Orquídea Phalaenopsis', date: '2024-03-15', description: 'Una hermosa orquídea con flores vibrantes, ideal para interiores luminosos. Requiere riego moderado y alta humedad ambiental.' },
-            { src: 'AA1HFmux.jpeg', name: 'Echeveria Elegans', date: '2023-11-20', description: 'Suculenta de fácil cuidado, perfecta para principiantes. Necesita mucha luz solar directa y muy poco riego.' },
-            { src: 'AA1HpE4h.jpeg', name: 'Helecho Espada', date: '2024-01-10', description: 'Popular por su frondoso follaje, ideal para crear un ambiente tropical. Prefiere sombra parcial y alta humedad.' },
-            { src: 'bulbosas.jpg', name: 'Rosa Roja Clásica', date: '2023-07-01', description: 'La reina del jardín, con sus pétalos suaves y fragancia inconfundible. Requiere sol pleno y poda regular para florecer.' },
-            { src: 'flower-g6e77477b1_1280.jpg', name: 'Bonsái Ficus', date: '2024-02-28', description: 'Un arte milenario que convierte árboles en miniatura. Este Ficus es ideal para empezar en el mundo del bonsái, resistente y adaptable.' },
-            { src: 'R (1).jpeg', name: 'Girasol Gigante', date: '2023-09-05', description: 'Flores grandes y alegres que siguen el sol. Perfectos para dar un toque vibrante a tu jardín y atraer polinizadores.' },
-            { src: 'R.jpeg', name: 'Lavanda Angustifolia', date: '2024-04-22', description: 'Planta aromática con hermosas flores moradas, conocida por sus propiedades relajantes y su uso en aceites esenciales.' },
-            { src: 'sorta-gortenzii_643b7eb5eb1f6.jpg', name: 'Cactus San Pedro', date: '2023-10-10', description: 'Cactus columnar de crecimiento rápido, muy resistente y de bajo mantenimiento. Ideal para jardines desérticos o macetas grandes.' },
+        let catalogImages = [
+            { src: 'https://via.placeholder.com/400x300/C8E6C9/2F6C35?text=Orquidea', name: 'Orquídea Phalaenopsis', date: '2024-03-15', description: 'Una hermosa orquídea con flores vibrantes, ideal para interiores luminosos. Requiere riego moderado y alta humedad ambiental.' },
+            { src: 'https://via.placeholder.com/400x300/D4EDDA/2F6C35?text=Echeveria', name: 'Echeveria Elegans', date: '2023-11-20', description: 'Suculenta de fácil cuidado, perfecta para principiantes. Necesita mucha luz solar directa y muy poco riego.' },
+            { src: 'https://via.placeholder.com/400x300/E6F0E6/2F6C35?text=Helecho', name: 'Helecho Espada', date: '2024-01-10', description: 'Popular por su frondoso follaje, ideal para crear un ambiente tropical. Prefiere sombra parcial y alta humedad.' },
+            { src: 'https://via.placeholder.com/400x300/F5EFE6/2F6C35?text=Rosa', name: 'Rosa Roja Clásica', date: '2023-07-01', description: 'La reina del jardín, con sus pétalos suaves y fragancia inconfundible. Requiere sol pleno y poda regular para florecer.' },
+            { src: 'https://via.placeholder.com/400x300/FDF9F3/2F6C35?text=Bonsai', name: 'Bonsái Ficus', date: '2024-02-28', description: 'Un arte milenario que convierte árboles en miniatura. Este Ficus es ideal para empezar en el mundo del bonsái, resistente y adaptable.' },
+            { src: 'https://via.placeholder.com/400x300/C8E6C9/6FA878?text=Girasol', name: 'Girasol Gigante', date: '2023-09-05', description: 'Flores grandes y alegres que siguen el sol. Perfectos para dar un toque vibrante a tu jardín y atraer polinizadores.' },
+            { src: 'https://via.placeholder.com/400x300/D4EDDA/6FA878?text=Lavanda', name: 'Lavanda Angustifolia', date: '2024-04-22', description: 'Planta aromática con hermosas flores moradas, conocida por sus propiedades relajantes y su uso en aceites esenciales.' },
+            { src: 'https://via.placeholder.com/400x300/E6F0E6/6FA878?text=Cactus', name: 'Cactus San Pedro', date: '2023-10-10', description: 'Cactus columnar de crecimiento rápido, muy resistente y de bajo mantenimiento. Ideal para jardines desérticos o macetas grandes.' },
         ];
 
         const serviceDetails = {
@@ -109,7 +109,6 @@
             }
         });
 
-
         const vistaLista = document.getElementById('vista-lista');
         const vistaCalendario = document.getElementById('vista-calendario');
         const currentMonthYear = document.getElementById('current-month-year');
@@ -169,7 +168,6 @@
                             cell.classList.add('today');
                         }
 
-                        // Add events to calendar cells
                         const eventsOnThisDay = eventsToRender.filter(event => 
                             new Date(event.date).toDateString() === currentCellDate.toDateString()
                         );
@@ -300,19 +298,21 @@
             });
         });
 
-        // --- Catálogo (Carrusel) ---
+        // --- Catálogo (Carrusel e Incorporación de Añadir Planta) ---
         const carouselTrack = document.getElementById('carousel-track');
+        const carouselPrevBtn = document.getElementById('carousel-prev-btn');
+        const carouselNextBtn = document.getElementById('carousel-next-btn');
         const photoModalOverlay = document.getElementById('photo-modal-overlay');
         const photoModalContent = document.getElementById('photo-modal-content');
         const modalImg = photoModalContent.querySelector('img');
         const modalTitle = photoModalContent.querySelector('h3');
         const modalDescription = photoModalContent.querySelector('p');
+        const photoModalClose = document.getElementById('photo-modal-close');
 
         let isDragging = false;
         let startX;
         let scrollLeft;
 
-        // Cargar imágenes en el carrusel
         function loadCarouselImages() {
             carouselTrack.innerHTML = '';
             catalogImages.forEach((image, index) => {
@@ -326,24 +326,39 @@
                     </div>
                 `;
                 carouselTrack.appendChild(item);
+            });
+            addCarouselImageClickListeners(); // Re-add listeners after loading
+        }
 
-                // Añadir evento click para el modal
-                item.querySelector('img').addEventListener('click', (e) => {
-                    const clickedIndex = parseInt(e.target.dataset.index);
-                    const photo = catalogImages[clickedIndex];
-                    modalImg.src = photo.src;
-                    modalImg.alt = photo.name;
-                    modalTitle.textContent = photo.name;
-                    modalDescription.textContent = photo.description;
-                    photoModalOverlay.classList.add('visible');
-                });
+        function addCarouselImageClickListeners() {
+            document.querySelectorAll('.carousel-item img').forEach(img => {
+                img.removeEventListener('click', openPhotoModal); // Evitar duplicados
+                img.addEventListener('click', openPhotoModal);
             });
         }
 
-        // Cargar imágenes al inicio
-        loadCarouselImages();
+        function openPhotoModal(e) {
+            const clickedIndex = parseInt(e.target.dataset.index);
+            const photo = catalogImages[clickedIndex];
+            modalImg.src = photo.src;
+            modalImg.alt = photo.name;
+            modalTitle.textContent = photo.name;
+            modalDescription.textContent = photo.description;
+            photoModalOverlay.classList.add('visible');
+        }
 
-        // Funcionalidad de arrastre
+        // Cierre del modal de fotos
+        photoModalOverlay.addEventListener('click', (event) => {
+            if (event.target === photoModalOverlay || event.target === photoModalClose) {
+                photoModalOverlay.classList.remove('visible');
+            }
+        });
+        photoModalClose.addEventListener('click', () => {
+            photoModalOverlay.classList.remove('visible');
+        });
+
+
+        // Funcionalidad de arrastre del carrusel
         carouselTrack.addEventListener('mousedown', (e) => {
             isDragging = true;
             carouselTrack.classList.add('dragging');
@@ -365,15 +380,67 @@
             if (!isDragging) return;
             e.preventDefault();
             const x = e.pageX - carouselTrack.offsetLeft;
-            const walk = (x - startX) * 2; // Factor de velocidad
+            const walk = (x - startX) * 1.5; // Ajustar la velocidad
             carouselTrack.scrollLeft = scrollLeft - walk;
         });
 
-        // Cierre del modal de fotos
-        photoModalOverlay.addEventListener('click', (event) => {
-            // Si el click no fue dentro del contenido del modal
-            if (!photoModalContent.contains(event.target)) {
-                photoModalOverlay.classList.remove('visible');
+        // Navegación con botones
+        carouselPrevBtn.addEventListener('click', () => {
+            carouselTrack.scrollBy({
+                left: -carouselTrack.offsetWidth / 2, // Desplaza la mitad del ancho del carrusel
+                behavior: 'smooth'
+            });
+        });
+
+        carouselNextBtn.addEventListener('click', () => {
+            carouselTrack.scrollBy({
+                left: carouselTrack.offsetWidth / 2,
+                behavior: 'smooth'
+            });
+        });
+
+        // Add Plant Form
+        const addPlantForm = document.getElementById('add-plant-form');
+        const plantFormMessage = document.getElementById('plant-form-message');
+        const myPlantsGrid = document.getElementById('my-plants-grid'); // Para la sección Mis Registros
+
+        addPlantForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('plant-name').value;
+            const date = document.getElementById('plant-date').value;
+            const description = document.getElementById('plant-description').value;
+            const imageFile = document.getElementById('plant-image').files[0];
+
+            if (name && date && description && imageFile) {
+                // Simular URL de imagen. En un entorno real, la imagen se subiría a un servidor
+                const imageUrl = URL.createObjectURL(imageFile);
+
+                const newPlant = { src: imageUrl, name, date, description };
+                catalogImages.push(newPlant); // Añadir al array del catálogo
+                loadCarouselImages(); // Recargar el carrusel para mostrar la nueva planta
+                addPlantForm.reset();
+                showFormMessage(plantFormMessage, 'Planta añadida al catálogo (demostración)!', 'success');
+                addPlantToMyRecords(newPlant); // Añadir a "Mis Registros"
+            } else {
+                showFormMessage(plantFormMessage, 'Por favor, completa todos los campos y sube una imagen.', 'error');
             }
         });
-    
+
+        function addPlantToMyRecords(plant) {
+            const plantCard = document.createElement('div');
+            plantCard.classList.add('carousel-item'); // Reutilizar el estilo
+            plantCard.style.marginRight = '0'; // Eliminar margen extra para la grid
+            plantCard.style.marginBottom = '15px'; // Espacio entre elementos en la grid
+            plantCard.innerHTML = `
+                <img src="${plant.src}" alt="${plant.name}">
+                <div class="image-info">
+                    <strong>${plant.name}</strong>
+                    <span>${plant.date}</span>
+                </div>
+            `;
+            myPlantsGrid.appendChild(plantCard);
+        }
+
+
+        // Cargar imágenes del carrusel al inicio
+        loadCarouselImages();
