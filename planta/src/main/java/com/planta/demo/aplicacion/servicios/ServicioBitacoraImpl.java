@@ -45,30 +45,6 @@ public class ServicioBitacoraImpl {
      * @param plantaId 
      * @return
      */
-    public List<Bitacora> obtenerPorPlanta(Long plantaId) {
-        List<Bitacora> resultado = new ArrayList<>();
-        for (Bitacora b : repositorioBitacora.obtenerTodas()) {
-            if (b.getPlantaId().equals(plantaId)) {
-                resultado.add(b);
-            }
-        }
-        return resultado;
-    }
-
-    /**
-     * @param desde 
-     * @param hasta 
-     * @return
-     */
-    public List<Bitacora> obtenerPorFechaRango(Date desde, Date hasta) {
-        List<Bitacora> resultado = new ArrayList<>();
-        for (Bitacora b : repositorioBitacora.obtenerTodas()) {
-            if (!b.getFecha().before(desde) && !b.getFecha().after(hasta)) {
-                resultado.add(b);
-            }
-        }
-        return resultado;
-    }
 
     /**
      * @param bitacoraId 
@@ -77,9 +53,24 @@ public class ServicioBitacoraImpl {
      */
     public void editarObservacion(Long bitacoraId, String nuevaDescripcion) {
         if (bitacoraId == null || nuevaDescripcion == null) {
-            throw new IllegalArgumentException("Parámetros inválidos");
+            throw new Illeg/
+                    //Pipeline + Lazy-Rivers: filtrado funcional
+            public List<Bitacora> obtenerPorPlanta(Long plantaId) {
+                return repositorioBitacora.obtenerTodas()
+                        .stream()
+                        .filter(b -> plantaId.equals(b.getPlantaId()))
+                        .collect(Collectors.toList());
+            }
+
+            // Pipeline
+            public List<Bitacora> obtenerPorFechaRango(Date desde, Date hasta) {
+                return repositorioBitacora.obtenerTodas()
+                        .stream()
+                        .filter(b -> !b.getFecha().before(desde) && !b.getFecha().after(hasta))
+                        .collect(Collectors.toList());
+            }alArgumentException("Parámetros inválidos");
         }
-        // TODO implementar actualización en repositorio
+
     }
 
     /**
