@@ -1,6 +1,4 @@
-## **README_ESTILOS.md - Solo cambiar después de "INTERFAZ DE USUARIO"**
 
-```markdown
 # 🌿 PlantApp - Sistema de Gestión de Plantas (Java + DDD)
 
 ## 📌 Descripción del Proyecto
