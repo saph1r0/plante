@@ -1,3 +1,61 @@
+
+# 🌿 PlantApp - Sistema de Gestión de Plantas (Java + DDD)
+
+## 📌 Descripción del Proyecto
+
+PlantApp es un sistema de gestión de usuarios, plantas y recordatorios implementado en Java siguiendo los principios de **Domain-Driven Design (DDD)** y una arquitectura por capas.
+
+Este proyecto incluye:
+
+- Modelado de entidades centrales: `Usuario`, `Planta`, `Cuidado`, `Recordatorio`.
+- Fábricas especializadas para instanciar objetos del dominio.
+- Repositorios con contratos definidos para persistencia.
+- Validaciones de reglas de negocio en la capa de aplicación.
+
+El desarrollo se realizó en **IntelliJ IDEA**, siguiendo principios de arquitectura limpia.
+
+---
+
+## 🛠️ Estructura del Proyecto
+
+```bash
+src/
+└── main/
+    ├── java/
+    │   └── com/planta/plantapp/
+    │       ├── aplicacion/
+    │       │   ├── interfaces/
+    │       │   │   └── IServicioUsuario.java
+    │       │   └── servicios/
+    │       │       └── ServicioUsuarioImpl.java
+    │       ├── dominio/
+    │       │   └── usuario/
+    │       │       ├── IUsuarioRepositorio.java
+    │       │       └── modelo/
+    │       │           └── Usuario.java
+    │       ├── infraestructura/
+    │       │   ├── entidad/
+    │       │   │   └── UsuarioEntidad.java
+    │       │   └── repositorio/
+    │       │       └── mysql/
+    │       │           └── UsuarioRepositorioImpl.java
+    │       └── presentacion/
+    │           └── controlador/
+    │               └── UsuarioController.java
+    └── resources/
+        ├── static/
+        │   └── login/
+        │       ├── css/
+        │       │   └── styles.css
+        │       └── js/
+        │           └── script.js
+        └── templates/
+            └── login/
+                └── login.html
+````
+
+---
+### INTERFAZ DE USUARIO
 ### 🚀 Módulo de Servicios - Bitácora (Java)
 
 Este módulo forma parte del sistema de gestión de plantas y se encarga de toda la lógica de **servicios** relacionada con la bitácora de eventos, garantizando un manejo seguro, eficiente y mantenible.
