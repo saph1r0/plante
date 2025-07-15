@@ -25,7 +25,7 @@ public class PlantaRepositorioImpl implements IPlantaRepositorio {
      */
     @Override
     public Planta obtenerPorId(String id) {
-        throw hrow new UnsupportedOperationException("Método obtenerPorId no implementado aún");
+        throw new UnsupportedOperationException("Método obtenerPorId no implementado aún");
     }
 
     /**
