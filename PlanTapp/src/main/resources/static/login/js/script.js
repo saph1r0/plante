@@ -155,7 +155,10 @@ function handleFormSubmit(event, formType) {
             params.append(pair[0], pair[1]);
         }
 
-        const url = formType === 'login' ? '/usuarios/login' : '/usuarios/registrar';
+        const url = formType === 'login'
+            ? 'http://localhost:8080/usuarios/login'
+            : 'http://localhost:8080/usuarios/registrar';
+
 
         fetch(url, {
             method: 'POST',
@@ -166,16 +169,19 @@ function handleFormSubmit(event, formType) {
         .then(data => {
             showSuccessMessage(data);
 
-            if (formType === 'login' && data.includes('exitoso')) {
-                // Redirigir o mostrar vista de usuario
-                setTimeout(() => window.location.href = '/home.html', 1500);
+            if (formType === 'login') {
+                const correo = formData.get('email');
+                const contrasena = formData.get('contrasena');
+                params.set('email', correo); // lo renombramos como 'email'
+                params.set('contrasena', contrasena);
             } else {
-                setTimeout(() => {
-                    form.reset();
-                    const inputContainers = form.querySelectorAll('.input-container');
-                    inputContainers.forEach(c => c.classList.remove('focused', 'has-value', 'error'));
-                }, 1000);
+                for (const pair of formData.entries()) {
+                    if (pair[0] !== 'confirmar' && pair[0] !== 'terminos') {
+                        params.append(pair[0], pair[1]);
+                    }
+                }
             }
+
         })
         .catch(() => {
             showSuccessMessage('Error en la conexión con el servidor');

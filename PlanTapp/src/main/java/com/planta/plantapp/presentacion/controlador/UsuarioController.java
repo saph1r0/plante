@@ -3,7 +3,7 @@ package com.planta.plantapp.presentacion.controlador;
 import com.planta.plantapp.aplicacion.interfaces.IServicioUsuario;
 import com.planta.plantapp.dominio.usuario.modelo.Usuario;
 import org.springframework.web.bind.annotation.*;
-
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {

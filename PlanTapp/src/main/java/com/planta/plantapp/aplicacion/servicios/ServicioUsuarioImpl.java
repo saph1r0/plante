@@ -20,62 +20,66 @@ public class ServicioUsuarioImpl implements IServicioUsuario {
     @Override
     public void registrarUsuario(Usuario usuario) {
         if (usuario == null || usuario.getCorreo() == null) {
-            throw new IllegalArgumentException("Datos del usuario inválidos");
+            return; // Validación de flujo: datos inválidos, no se lanza excepción
         }
 
         Optional<Usuario> existente = repositorioUsuario.buscarPorCorreo(usuario.getCorreo());
         if (existente.isPresent()) {
-            throw new IllegalArgumentException("El correo ya está registrado");
+            return; // Usuario ya existe, no se lanza excepción
         }
 
         try {
             repositorioUsuario.guardar(usuario);
         } catch (Exception e) {
-            throw new IllegalStateException("Error al registrar el usuario", e);
+            // Error técnico real
+            e.printStackTrace();
         }
     }
-
     @Override
-    public Usuario autenticarUsuario(String email, String contrasena) {
-        if (email == null || contrasena == null) {
-            throw new IllegalArgumentException("Correo y contraseña son requeridos");
+    public Usuario autenticarUsuario(String correo, String contrasena) {
+        Optional<Usuario> usuarioOpt = obtenerUsuarioPorCorreo(correo);
+
+        // Evitamos usar .get() directamente
+        if (usuarioOpt.isPresent() && contrasenaCorrecta(usuarioOpt.get(), contrasena)) {
+            return usuarioOpt.get();
         }
 
-        try {
-            Optional<Usuario> usuarioOpt = repositorioUsuario.buscarPorCorreo(email);
-            if (usuarioOpt.isPresent() && usuarioOpt.get().getContrasena().equals(contrasena)) {
-                return usuarioOpt.get();
-            }
-            return null;
-        } catch (Exception e) {
-            throw new IllegalStateException("Error al autenticar usuario", e);
-        }
+        return null;
     }
+
+    private Optional<Usuario> obtenerUsuarioPorCorreo(String correo) {
+        return repositorioUsuario.buscarPorCorreo(correo);
+    }
+
+    private boolean contrasenaCorrecta(Usuario usuario, String contrasena) {
+        return usuario.getContrasena().equals(contrasena);
+    }
+
+
 
     @Override
     public Usuario obtenerUsuarioPorId(String id) {
         if (id == null) {
-            throw new IllegalArgumentException("ID no puede ser nulo");
+            return null;
         }
 
         try {
-            Usuario usuario = repositorioUsuario.obtenerPorId(id);
-            if (usuario == null) {
-                throw new IllegalArgumentException("No se encontró el usuario con ID: " + id);
-            }
-            return usuario;
+            return repositorioUsuario.obtenerPorId(id);
         } catch (Exception e) {
-            throw new IllegalStateException("Error al obtener usuario por ID: " + id, e);
+            e.printStackTrace();
+            return null;
         }
     }
 
     @Override
     public boolean actualizarPerfil(Usuario usuario) {
         if (usuario == null || usuario.getId() == null) return false;
+
         try {
             repositorioUsuario.guardar(usuario);
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -89,6 +93,7 @@ public class ServicioUsuarioImpl implements IServicioUsuario {
             repositorioUsuario.eliminar(id);
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -98,34 +103,29 @@ public class ServicioUsuarioImpl implements IServicioUsuario {
         try {
             return repositorioUsuario.listarTodos();
         } catch (Exception e) {
-            throw new IllegalStateException("Error al listar usuarios", e);
+            e.printStackTrace();
+            return List.of();
         }
     }
 
     @Override
     public boolean existeCorreo(String email) {
         if (email == null) return false;
+
         try {
             return repositorioUsuario.buscarPorCorreo(email).isPresent();
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
 
     @Override
     public void recuperarContrasena(String email) {
-        if (email == null) {
-            throw new IllegalArgumentException("Correo requerido");
+        if (email == null || !existeCorreo(email)) {
+            return; // Validación esperada, no se lanza excepción
         }
-
-        try {
-            if (!existeCorreo(email)) {
-                throw new IllegalArgumentException("Correo no registrado");
-            }
-            // Lógica de recuperación
-        } catch (Exception e) {
-            throw new IllegalStateException("Error al procesar recuperación de contraseña", e);
-        }
+        // Lógica de recuperación (ej: enviar correo)
     }
 
     @Override
@@ -140,6 +140,7 @@ public class ServicioUsuarioImpl implements IServicioUsuario {
             repositorioUsuario.guardar(usuario);
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
