@@ -3,14 +3,7 @@
 
 ## 📌 Descripción del Proyecto
 
-PlantApp es un sistema de gestión de usuarios, plantas y recordatorios implementado en Java siguiendo los principios de **Domain-Driven Design (DDD)** y una arquitectura por capas.
-
-Este proyecto incluye:
-
-- Modelado de entidades centrales: `Usuario`, `Planta`, `Cuidado`, `Recordatorio`.
-- Fábricas especializadas para instanciar objetos del dominio.
-- Repositorios con contratos definidos para persistencia.
-- Validaciones de reglas de negocio en la capa de aplicación.
+PlantApp es un sistema de gestión de plantas implementado en Java siguiendo los principios de Domain-Driven Design (DDD), arquitectura por capas y prácticas de Clean Code. Este módulo se enfoca específicamente en el registro y gestión de plantas, implementando las funcionalidades core del dominio de plantas.
 
 El desarrollo se realizó en **IntelliJ IDEA**, siguiendo principios de arquitectura limpia.
 
@@ -19,39 +12,36 @@ El desarrollo se realizó en **IntelliJ IDEA**, siguiendo principios de arquitec
 ## 🛠️ Estructura del Proyecto
 
 ```bash
-src/
-└── main/
-    ├── java/
-    │   └── com/planta/plantapp/
-    │       ├── aplicacion/
-    │       │   ├── interfaces/
-    │       │   │   └── IServicioUsuario.java
-    │       │   └── servicios/
-    │       │       └── ServicioUsuarioImpl.java
-    │       ├── dominio/
-    │       │   └── usuario/
-    │       │       ├── IUsuarioRepositorio.java
-    │       │       └── modelo/
-    │       │           └── Usuario.java
-    │       ├── infraestructura/
-    │       │   ├── entidad/
-    │       │   │   └── UsuarioEntidad.java
-    │       │   └── repositorio/
-    │       │       └── mysql/
-    │       │           └── UsuarioRepositorioImpl.java
-    │       └── presentacion/
-    │           └── controlador/
-    │               └── UsuarioController.java
-    └── resources/
-        ├── static/
-        │   └── login/
-        │       ├── css/
-        │       │   └── styles.css
-        │       └── js/
-        │           └── script.js
-        └── templates/
-            └── login/
-                └── login.html
+src/main/java/com/planta/demo/
+├── aplicacion/                    # Capa de Aplicación
+│   ├── interfaces/
+│   │   └── IServicioPlanta.java          # Contrato del servicio de plantas
+│   └── servicios/
+│       └── ServicioPlantaImpl.java       # Implementación con estilos Cookbook + Pipeline
+├── dominio/                       # Capa de Dominio - Módulo Plantas
+│   ├── modelo/
+│   │   ├── planta/
+│   │   │   ├── Planta.java               # Entidad principal del agregado
+│   │   │   ├── EstadoPlanta.java         # Value Object - Estados de planta
+│   │   │   ├── Etiqueta.java             # Value Object - Etiquetas/categorías
+│   │   │   └── RegistroPlanta.java       # Entidad - Registro por usuario
+│   │   ├── cuidado/
+│   │   │   ├── TipoCuidado.java          # Enum - Tipos de cuidado (riego, poda, etc.)
+│   │   │   ├── Cuidado.java              # Entidad - Cuidados aplicados
+│   │   │   └── TareaCuidado.java         # Entidad - Tareas programadas
+│   │   ├── fabrica/
+│   │   │   ├── PlantaFabrica.java        # Factory - Creación de plantas
+│   │   │   └── CuidadoFabrica.java       # Factory - Creación de cuidados
+│   │   ├── servicios/
+│   │   │   └── ServicioPlantaDominio.java #  Servicio de dominio
+│   │   └── IPlantaRepositorio.java       # Interfaz del repositorio
+├── infraestructura/               # Capa de Infraestructura
+│   └── repositorio/
+│       └── mongodb/
+│           └── PlantaRepositorioImpl.java # Implementación con Error Handling
+└── presentacion/                  # Capa de Presentación
+    └── controlador/
+        └── PlantaController.java         # Controlador con estilos Pipeline + Things
 ````
 
 ---
