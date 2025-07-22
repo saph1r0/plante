@@ -3,14 +3,14 @@
 // --- 1. Datos Iniciales (Completo para el dashboard) ---
 const appDataDashboard = {
     catalogImages: [
-        { src: 'AA1H7uuE.jpeg', name: 'Orquídea Phalaenopsis', date: '2024-03-15', description: 'Una hermosa orquídea con flores vibrantes, ideal para interiores luminosos. Requiere riego moderado y alta humedad ambiental.' },
-        { src: 'AA1HFmux.jpeg', name: 'Echeveria Elegans', date: '2023-11-20', description: 'Suculenta de fácil cuidado, perfecta para principiantes. Necesita mucha luz solar directa y muy poco riego.' },
-        { src: 'AA1HpE4h.jpeg', name: 'Helecho Espada', date: '2024-01-10', description: 'Popular por su frondoso follaje, ideal para crear un ambiente tropical. Prefiere sombra parcial y alta humedad.' },
-        { src: 'bulbosas.jpg', name: 'Rosa Roja Clásica', date: '2023-07-01', description: 'La reina del jardín, con sus pétalos suaves y fragancia inconfundible. Requiere sol pleno y poda regular para florecer.' },
-        { src: 'flower-g6e77477b1_1280.jpg', name: 'Bonsái Ficus', date: '2024-02-28', description: 'Un arte milenario que convierte árboles en miniatura. Este Ficus es ideal para empezar en el mundo del bonsái, resistente y adaptable.' },
-        { src: 'R (1).jpeg', name: 'Girasol Gigante', date: '2023-09-05', description: 'Flores grandes y alegres que siguen el sol. Perfectos para dar un toque vibrante a tu jardín y atraer polinizadores.' },
-        { src: 'R.jpeg', name: 'Lavanda Angustifolia', date: '2024-04-22', description: 'Planta aromática con hermosas flores moradas, conocida por sus propiedades relajantes y su uso en aceites esenciales.' },
-        { src: 'sorta-gortenzii_643b7eb5eb1f6.jpg', name: 'Cactus San Pedro', date: '2023-10-10', description: 'Cactus columnar de crecimiento rápido, muy resistente y de bajo mantenimiento. Ideal para jardines desérticos o macetas grandes.' },
+        { src: 'AA1H7uuE.jpeg', name: 'Orquídea Phalaenopsis', date: '2024-03-15', description: 'Una hermosa orquídea con flores vibrantes, ideal para interiores luminosos. Requiere riego moderado y alta humedad ambiental.', wateringFrequency: 'Cada 3 días', idealClimate: 'Cálido y húmedo', otherCapabilities: 'Ideal para principiantes, florece en primavera.' },
+        { src: 'AA1HFmux.jpeg', name: 'Echeveria Elegans', date: '2023-11-20', description: 'Suculenta de fácil cuidado, perfecta para principiantes. Necesita mucha luz solar directa y muy poco riego.', wateringFrequency: 'Cada 15-20 días', idealClimate: 'Seco y soleado', otherCapabilities: 'Resistente a la sequía, ideal para rocallas.' },
+        { src: 'AA1HpE4h.jpeg', name: 'Helecho Espada', date: '2024-01-10', description: 'Popular por su frondoso foliage, ideal para crear un ambiente tropical. Prefiere sombra parcial y alta humedad.', wateringFrequency: 'Cada 2 días', idealClimate: 'Húmedo y sombrío', otherCapabilities: 'Purifica el aire, no requiere luz directa.' },
+        { src: 'bulbosas.jpg', name: 'Rosa Roja Clásica', date: '2023-07-01', description: 'La reina del jardín, con sus pétalos suaves y fragancia inconfundible. Requiere sol pleno y poda regular para florecer.', wateringFrequency: 'Diario en verano', idealClimate: 'Templado', otherCapabilities: 'Requiere poda regular, sensible a pulgones.' },
+        { src: 'flower-g6e77477b1_1280.jpg', name: 'Bonsái Ficus', date: '2024-02-28', description: 'Un arte milenario que convierte árboles en miniatura. Este Ficus es ideal para empezar en el mundo del bonsái, resistente y adaptable.', wateringFrequency: 'Cuando la superficie esté seca', idealClimate: 'Cálido, interior', otherCapabilities: 'Requiere poda constante, ideal para interiores.' },
+        { src: 'R (1).jpeg', name: 'Girasol Gigante', date: '2023-09-05', description: 'Flores grandes y alegres que siguen el sol. Perfectos para dar un toque vibrante a tu jardín y atraer polinizadores.', wateringFrequency: 'Cada 2-3 días', idealClimate: 'Soleado y cálido', otherCapabilities: 'Atrae abejas, crece muy rápido.' },
+        { src: 'R.jpeg', name: 'Lavanda Angustifolia', date: '2024-04-22', description: 'Planta aromática con hermosas flores moradas, conocida por sus propiedades relajantes y su uso en aceites esenciales.', wateringFrequency: 'Poco frecuente, suelo seco', idealClimate: 'Mediterráneo, soleado', otherCapabilities: 'Atrae polinizadores, resistente a la sequía.' },
+        { src: 'sorta-gortenzii_643b7eb5eb1f6.jpg', name: 'Cactus San Pedro', date: '2023-10-10', description: 'Cactus columnar de crecimiento rápido, muy resistente y de bajo mantenimiento. Ideal para jardines desérticos o macetas grandes.', wateringFrequency: 'Cada 3-4 semanas', idealClimate: 'Desértico, muy seco', otherCapabilities: 'Crecimiento rápido, bajo mantenimiento.' },
     ],
     serviceDetails: {
         1: { title: 'Consultoría de Jardinería', description: 'Asesoramiento personalizado para el cuidado de tus plantas, selección de especies y solución de problemas.' },
@@ -75,6 +75,9 @@ const domElementsDashboard = {
     forumInput: document.getElementById('forum-input'),
     chatHistory: document.getElementById('chat-history'),
     loginMessage: document.getElementById('login-message'),
+    sendPhotoBtn: document.getElementById('send-photo-btn'),
+    inviteEventBtn: document.getElementById('invite-event-btn'),
+    sendMessageBtn: document.getElementById('send-message-btn'),
 
     // Servicios (Flor interactiva)
     flowerContainer: document.querySelector('.flor'),
@@ -92,6 +95,9 @@ const domElementsDashboard = {
     modalTitle: null,
     modalDescription: null,
     photoModalClose: null,
+    modalWateringFrequency: null,
+    modalIdealClimate: null,
+    modalOtherCapabilities: null,
 
     // Añadir Planta y Mis Registros
     addPlantForm: document.getElementById('add-plant-form'),
@@ -100,13 +106,22 @@ const domElementsDashboard = {
 
     // Botón de cerrar sesión
     logoutBtn: document.getElementById('logout-btn'),
+
+    // Modal de Invitar a Evento
+    eventInviteModalOverlay: document.getElementById('event-invite-modal-overlay'),
+    eventSelectForInvite: document.getElementById('event-select-for-invite'),
+    confirmInviteBtn: document.getElementById('confirm-invite-btn'),
+    cancelInviteBtn: document.getElementById('cancel-invite-btn'),
 };
 
 // Asignar referencias a elementos dentro del modal de fotos una vez que photoModalContent esté disponible.
 domElementsDashboard.modalImage = domElementsDashboard.photoModalContent.querySelector('img');
 domElementsDashboard.modalTitle = domElementsDashboard.photoModalContent.querySelector('h3');
-domElementsDashboard.modalDescription = domElementsDashboard.photoModalContent.querySelector('p');
+domElementsDashboard.modalDescription = domElementsDashboard.photoModalContent.querySelector('p.modal-description');
 domElementsDashboard.photoModalClose = domElementsDashboard.photoModalContent.querySelector('.photo-modal-close');
+domElementsDashboard.modalWateringFrequency = domElementsDashboard.photoModalContent.querySelector('#modal-watering-frequency');
+domElementsDashboard.modalIdealClimate = domElementsDashboard.photoModalContent.querySelector('#modal-ideal-climate');
+domElementsDashboard.modalOtherCapabilities = domElementsDashboard.photoModalContent.querySelector('#modal-other-capabilities');
 
 
 // --- 3. Funciones de Utilidad ---
@@ -187,6 +202,26 @@ function scrollToSectionDashboard(query) {
     }
 }
 
+/**
+ * Verifica si el usuario está logueado y muestra un mensaje si no lo está.
+ * @param {Function} callback - La función a ejecutar si el usuario está logueado.
+ * @returns {boolean} - True si el usuario está logueado, false en caso contrario.
+ */
+function checkLoginAndNotify(callback) {
+    if (appDataDashboard.isLoggedIn) {
+        if (callback && typeof callback === 'function') {
+            callback();
+        }
+        return true;
+    } else {
+        domElementsDashboard.loginMessage.classList.add('show');
+        setTimeout(() => {
+            domElementsDashboard.loginMessage.classList.remove('show');
+        }, 3000);
+        return false;
+    }
+}
+
 
 // --- 4. Inicialización de Componentes ---
 
@@ -263,9 +298,9 @@ function initializeSearchBarDashboard() {
 
     document.addEventListener('click', (event) => {
         if (!domElementsDashboard.searchBar.contains(event.target) && event.target !== domElementsDashboard.searchIcon) {
-            toggleVisibility(domElementsDashboard.searchSuggestions, false);
             domElementsDashboard.searchBar.classList.remove('active');
-            domElementsDashboard.searchInput.value = '';
+            toggleVisibility(domElementsDashboard.searchSuggestions, false); // Asegurarse de ocultar las sugerencias
+            domElementsDashboard.searchInput.value = ''; // Limpiar el input
         }
     });
 }
@@ -383,8 +418,13 @@ function filterAndRenderEventsDashboard() {
         if (startDate && eventDate < startDate) {
             isWithinRange = false;
         }
-        if (endDate && eventDate > new Date(endDate.setDate(endDate.getDate() + 1))) {
-            isWithinRange = false;
+        // Ajustar endDate para incluir el día completo
+        if (endDate) {
+            const adjustedEndDate = new Date(endDate);
+            adjustedEndDate.setDate(adjustedEndDate.getDate() + 1); // Sumar un día para incluir el final del día
+            if (eventDate >= adjustedEndDate) { // Usar >= para fechas exactas o posteriores
+                isWithinRange = false;
+            }
         }
         return isWithinRange;
     });
@@ -392,7 +432,7 @@ function filterAndRenderEventsDashboard() {
     if (!domElementsDashboard.eventListView.classList.contains('hidden')) {
         renderEventListDashboard(appDataDashboard.filteredEvents);
     }
-    if (!domElementsDashboard.eventCalendarView.classList.contains('hidden')) {
+    if (!domElementsSashboard.eventCalendarView.classList.contains('hidden')) {
         renderCalendarDashboard(appDataDashboard.currentCalendarMonth, appDataDashboard.currentCalendarYear, appDataDashboard.filteredEvents);
     }
 }
@@ -410,35 +450,164 @@ function addEventToMyRecords(event) {
     domElementsDashboard.myEventsList.appendChild(listItem);
 }
 
+// --- OCP Implementation for Chat Message Rendering ---
 /**
- * Inicializa la funcionalidad del foro.
+ * Objeto que mapea tipos de mensaje a funciones de renderizado.
+ * Esto adhiere al Principio Abierto/Cerrado (OCP):
+ * Abierto para extensión (añadir nuevos renderers aquí), cerrado para modificación (renderChatMessage no cambia).
  */
-function initializeForumDashboard() {
+const messageRenderers = {
+    /**
+     * Renders a plain text message.
+     * @param {Object} message - The message object.
+     * @returns {string} - HTML string for the text content.
+     */
+    text: (message) => message.content,
+
+    /**
+     * Renders an image message.
+     * @param {Object} message - The message object.
+     * @returns {string} - HTML string for the image content.
+     */
+    image: (message) => `<img src="${message.content}" alt="Imagen compartida" class="chat-image">`,
+
+    /**
+     * Renders an event invitation message.
+     * @param {Object} message - The message object.
+     * @returns {string} - HTML string for the event invitation card.
+     */
+    event_invite: (message) => {
+        const event = appDataDashboard.allEvents.find(e => e.title === message.content.title);
+        if (event) {
+            return `
+                <div class="event-invite-card">
+                    <h4>Invitación a Evento: ${event.title}</h4>
+                    <p><strong>Fecha:</strong> ${new Date(event.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                    <p><strong>Hora:</strong> ${event.time}</p>
+                    <p><strong>Lugar:</strong> ${event.location}</p>
+                    <p>${event.description}</p>
+                    <button class="btn btn-primary btn-small">Ver Detalles</button>
+                </div>
+            `;
+        } else {
+            return `Invitación a evento: ${message.content.title} (Evento no encontrado)`;
+        }
+    },
+    // Puedes añadir más renderers aquí sin modificar renderChatMessage
+    // example_type: (message) => `<div>Custom content for ${message.type}</div>`
+};
+
+/**
+ * Renderiza un nuevo mensaje en el historial del chat.
+ * Esta función ahora es "cerrada para modificación" para nuevos tipos de mensaje,
+ * pero "abierta para extensión" a través del objeto `messageRenderers`.
+ * @param {Object} message - Objeto de mensaje con propiedades como type, sender, content, etc.
+ */
+function renderChatMessage(message) {
+    const newMessageDiv = document.createElement('div');
+    newMessageDiv.classList.add('chat-message');
+
+    if (message.sender === 'Tú') {
+        newMessageDiv.classList.add('user-message');
+    }
+
+    let contentHTML = `<strong class="message-author">${message.sender}:</strong> `;
+
+    // Utiliza el objeto messageRenderers para obtener el HTML específico
+    const renderer = messageRenderers[message.type];
+    if (renderer) {
+        contentHTML += renderer(message);
+    } else {
+        console.warn(`Tipo de mensaje desconocido: ${message.type}`);
+        contentHTML += `[Mensaje de tipo desconocido: ${message.type}]`;
+    }
+
+    newMessageDiv.innerHTML = contentHTML;
+    domElementsDashboard.chatHistory.appendChild(newMessageDiv);
+    domElementsDashboard.chatHistory.scrollTop = domElementsDashboard.chatHistory.scrollHeight;
+}
+
+/**
+ * Inicializa la funcionalidad de envío de mensajes de texto en el foro.
+ * Aplica DIP al depender de la abstracción `renderMessage` y `checkLogin`.
+ * @param {Function} renderMessage - Función para renderizar el mensaje.
+ * @param {Function} checkLogin - Función para verificar el login.
+ */
+function initializeForumMessageSending(renderMessage, checkLogin) {
+    const sendMessage = () => {
+        const messageText = domElementsDashboard.forumInput.value.trim();
+        if (messageText === '') return;
+
+        checkLogin(() => {
+            renderMessage({ type: 'text', sender: 'Tú', content: messageText });
+            domElementsDashboard.forumInput.value = '';
+        });
+    };
+
     domElementsDashboard.forumInput.addEventListener('keydown', (event) => {
         if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault();
-            const message = domElementsDashboard.forumInput.value.trim();
-
-            if (message === '') {
-                return;
-            }
-
-            if (appDataDashboard.isLoggedIn) {
-                const newMessageDiv = document.createElement('div');
-                newMessageDiv.classList.add('chat-message', 'user-message');
-                newMessageDiv.innerHTML = `<strong>Tú:</strong> ${message}`;
-                domElementsDashboard.chatHistory.appendChild(newMessageDiv);
-                domElementsDashboard.chatHistory.scrollTop = domElementsDashboard.chatHistory.scrollHeight;
-                domElementsDashboard.forumInput.value = '';
-            } else {
-                domElementsDashboard.loginMessage.classList.add('show');
-                setTimeout(() => {
-                    domElementsDashboard.loginMessage.classList.remove('show');
-                }, 3000);
-            }
+            sendMessage();
         }
     });
+
+    domElementsDashboard.sendMessageBtn.addEventListener('click', sendMessage);
 }
+
+/**
+ * Inicializa la funcionalidad de compartir fotos en el foro.
+ * Aplica DIP al depender de la abstracción `renderMessage` y `checkLogin`.
+ * @param {Function} renderMessage - Función para renderizar el mensaje.
+ * @param {Function} checkLogin - Función para verificar el login.
+ */
+function initializeForumPhotoSharing(renderMessage, checkLogin) {
+    domElementsDashboard.sendPhotoBtn.addEventListener('click', () => {
+        checkLogin(() => {
+            const imageUrl = prompt('Introduce la URL de la imagen:');
+            if (imageUrl) {
+                renderMessage({ type: 'image', sender: 'Tú', content: imageUrl });
+            }
+        });
+    });
+}
+
+/**
+ * Inicializa la funcionalidad de invitación a eventos en el foro.
+ * Aplica DIP al depender de la abstracción `renderMessage` y `checkLogin`.
+ * @param {Function} renderMessage - Función para renderizar el mensaje.
+ * @param {Function} checkLogin - Función para verificar el login.
+ */
+function initializeForumEventInvites(renderMessage, checkLogin) {
+    domElementsDashboard.inviteEventBtn.addEventListener('click', () => {
+        checkLogin(() => {
+            // Llenar el select del modal con los eventos disponibles
+            domElementsDashboard.eventSelectForInvite.innerHTML = '<option value="">Selecciona un evento</option>';
+            appDataDashboard.allEvents.forEach(event => {
+                const option = document.createElement('option');
+                option.value = event.title;
+                option.textContent = `${event.title} (${new Date(event.date).toLocaleDateString('es-ES')})`;
+                domElementsDashboard.eventSelectForInvite.appendChild(option);
+            });
+            domElementsDashboard.eventInviteModalOverlay.classList.remove('hidden');
+        });
+    });
+
+    domElementsDashboard.confirmInviteBtn.addEventListener('click', () => {
+        const selectedEventTitle = domElementsDashboard.eventSelectForInvite.value;
+        if (selectedEventTitle) {
+            const eventToInvite = appDataDashboard.allEvents.find(e => e.title === selectedEventTitle);
+            if (eventToInvite) {
+                renderMessage({ type: 'event_invite', sender: 'Tú', content: eventToInvite });
+            }
+        }
+        domElementsDashboard.eventInviteModalOverlay.classList.add('hidden');
+    });
+
+    domElementsDashboard.cancelInviteBtn.addEventListener('click', () => {
+        domElementsDashboard.eventInviteModalOverlay.classList.add('hidden');
+    });
+}
+
 
 /**
  * Inicializa la funcionalidad de la flor de servicios.
@@ -503,7 +672,7 @@ function loadCarouselImagesDashboard() {
  */
 function addCarouselImageClickListenersDashboard() {
     document.querySelectorAll('.carousel-item img').forEach(img => {
-        img.removeEventListener('click', openPhotoModalDashboard);
+        img.removeEventListener('click', openPhotoModalDashboard); // Prevenir duplicados
         img.addEventListener('click', openPhotoModalDashboard);
     });
 }
@@ -519,6 +688,9 @@ function openPhotoModalDashboard(e) {
     domElementsDashboard.modalImage.alt = photo.name;
     domElementsDashboard.modalTitle.textContent = photo.name;
     domElementsDashboard.modalDescription.textContent = photo.description;
+    domElementsDashboard.modalWateringFrequency.textContent = photo.wateringFrequency || 'No especificado';
+    domElementsDashboard.modalIdealClimate.textContent = photo.idealClimate || 'No especificado';
+    domElementsDashboard.modalOtherCapabilities.textContent = photo.otherCapabilities || 'No especificado';
     domElementsDashboard.photoModalOverlay.classList.add('visible');
 }
 
@@ -580,14 +752,17 @@ function initializeCarouselNavButtonsDashboard() {
  */
 function initializePhotoModalCloseDashboard() {
     domElementsDashboard.photoModalOverlay.addEventListener('click', (event) => {
+        // Cierra el modal si se hace clic fuera del contenido o en el botón de cerrar
         if (event.target === domElementsDashboard.photoModalOverlay || event.target === domElementsDashboard.photoModalClose) {
             domElementsDashboard.photoModalOverlay.classList.remove('visible');
         }
     });
+    // Asegurarse de que el botón de cerrar también funcione directamente
     domElementsDashboard.photoModalClose.addEventListener('click', () => {
         domElementsDashboard.photoModalOverlay.classList.remove('visible');
     });
 }
+
 
 /**
  * Añade una planta a la sección "Mis Registros".
@@ -603,6 +778,9 @@ function addPlantToMyRecords(plant) {
         <div class="image-info">
             <strong>${plant.name}</strong>
             <span>${plant.date}</span>
+            <p>Riego: ${plant.wateringFrequency || 'N/A'}</p>
+            <p>Clima: ${plant.idealClimate || 'N/A'}</p>
+            <p>Cuidados: ${plant.otherCapabilities || 'N/A'}</p>
         </div>
     `;
     domElementsDashboard.myPlantsGrid.appendChild(plantCard);
@@ -623,7 +801,12 @@ function initializeAuthButtonsDashboard() {
 document.addEventListener('DOMContentLoaded', () => {
     initializeSidebarDashboard();
     initializeSearchBarDashboard();
-    initializeForumDashboard();
+
+    // Foro: Ahora se inicializan las responsabilidades separadas con inyección de dependencias
+    initializeForumMessageSending(renderChatMessage, checkLoginAndNotify);
+    initializeForumPhotoSharing(renderChatMessage, checkLoginAndNotify);
+    initializeForumEventInvites(renderChatMessage, checkLoginAndNotify);
+
     initializeServicesFlowerDashboard();
     loadCarouselImagesDashboard();
     initializeCarouselDragDashboard();
@@ -668,12 +851,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const name = document.getElementById('plant-name').value;
         const date = document.getElementById('plant-date').value;
         const description = document.getElementById('plant-description').value;
+        const wateringFrequency = document.getElementById('plant-watering').value; // Nuevo campo
+        const idealClimate = document.getElementById('plant-climate').value;     // Nuevo campo
+        const otherCapabilities = document.getElementById('plant-capabilities').value; // Nuevo campo
         const imageFile = document.getElementById('plant-image').files[0];
 
         if (name && date && description && imageFile) {
             const imageUrl = URL.createObjectURL(imageFile); // Simular URL de imagen
 
-            const newPlant = { src: imageUrl, name, date, description };
+            const newPlant = { src: imageUrl, name, date, description, wateringFrequency, idealClimate, otherCapabilities };
             appDataDashboard.catalogImages.push(newPlant); // Añadir al array del catálogo
             appDataDashboard.myAddedPlants.push(newPlant); // Añadir a las plantas del usuario
             loadCarouselImagesDashboard(); // Recargar el carrusel para mostrar la nueva planta
