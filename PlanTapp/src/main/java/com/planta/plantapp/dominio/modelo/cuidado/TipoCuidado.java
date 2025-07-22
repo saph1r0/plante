@@ -11,8 +11,8 @@ public enum TipoCuidado {
     FUMIGACION("Fumigación", "Aplicación de pesticidas o fungicidas", 21, "ml"),
     LIMPIEZA("Limpieza", "Limpieza de hojas y eliminación de partes muertas", 7, "unidad"),
     ROTACION("Rotación", "Cambio de orientación para exposición solar", 3, "unidad"),
-    AIREACION("Aireación", "Aflojamiento del sustrato", 14, "unidad");
-
+    AIREACION("Aireación", "Aflojamiento del sustrato", 14, "unidad"),
+    FUERZA("VVCVVV", "BBBBBBB", 12, "unidad");
     private final String nombre;
     private final String descripcion;
     private final int frecuenciaRecomendada; // días

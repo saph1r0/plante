@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Repository
 public class RecordatorioRepositorioImpl implements IRecordatorioRepositorio {
-
+    private final JdbcTemplate jdbcTemplate;
     public RecordatorioRepositorioImpl() {
         // Constructor por defecto (puede inyectarse JdbcTemplate o EntityManager aquí)
     }
@@ -47,9 +47,16 @@ public class RecordatorioRepositorioImpl implements IRecordatorioRepositorio {
     }
 
     @Override
+    @Override
     public void marcarComoCompletado(String id) {
-        // TODO: Actualizar estado del recordatorio a COMPLETADO
+        ejecutarActualizacionEstado(id, "COMPLETADO");
     }
+
+    @Override
+    public void restaurarRecordatorio(String id) {
+        ejecutarActualizacionEstado(id, "PENDIENTE");
+    }
+
 
     @Override
     public List<Recordatorio> listarPendientesPorUsuario(String usuarioId) {
@@ -62,4 +69,59 @@ public class RecordatorioRepositorioImpl implements IRecordatorioRepositorio {
         // TODO: Filtrar por tipo de cuidado y usuario
         return null;
     }
+
+    @Override
+    public List<Recordatorio> obtenerActivosEntreFechas(String usuarioId, Date fechaInicio, Date fechaFin) {
+        // Muestra solo los recordatorios relevantes al usuario en ese intervalo.
+        String sql = "SELECT * FROM recordatorios WHERE usuario_id = ? AND estado = 'ACTIVO' AND fecha >= ? AND fecha <= ?";
+
+        return ejecutarConsultaPorRangoDeFechas(usuarioId, fechaInicio, fechaFin, sql);
+    }
+
+    @Override
+    public List<Recordatorio> obtenerProximosPorUsuario(String usuarioId, Date fechaDesde) {
+        return buscarRecordatoriosActivosDesdeFecha(usuarioId, fechaDesde);
+    }
+
+    private List<Recordatorio> buscarRecordatoriosActivosDesdeFecha(String usuarioId, Date fechaDesde) {
+        String sql = """
+        SELECT * FROM recordatorios 
+        WHERE usuario_id = ? AND estado = 'ACTIVO' AND fecha >= ?        
+    """;
+        return ejecutarConsulta(usuarioId, fechaDesde, sql);
+    }
+    }
+
+    @Override
+    public Recordatorio obtenerPorId(String id) {
+        Recordatorio recordatorio = buscarPorId(id);
+        if (recordatorio == null) {
+            throw new RecordatorioNoEncontradoException("No se encontró el recordatorio con ID: " + id);
+        }
+        return recordatorio;
+    }
+
+    private Recordatorio buscarPorId(String id) {
+        return null;
+    }
+
+    @Override
+    public List<Recordatorio> listarPorPlanta(String plantaId) {
+        String sql = "SELECT * FROM recordatorios WHERE planta_id = ?";
+
+        return jdbcTemplate.query(sql, new Object[]{plantaId}, (rs, rowNum) -> {
+            return new Recordatorio(
+                    rs.getString("id"),
+                    rs.getString("usuario_id"),
+                    rs.getString("planta_id"),
+                    rs.getString("mensaje"),
+                    rs.getDate("fecha"),
+                    rs.getString("estado"),
+                    rs.getString("tipo")
+            );
+        });
+    }
+
+
+
 }

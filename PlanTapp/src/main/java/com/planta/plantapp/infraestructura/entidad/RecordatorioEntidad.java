@@ -7,8 +7,7 @@ import jakarta.persistence.Id;
 public class RecordatorioEntidad {
     @Id
     private Long id;
-    private String mensaje;
-
+    private String mensajeDeRecordatorio;
     public RecordatorioEntidad() {}
 
     public RecordatorioEntidad(Long id, String mensaje) {
@@ -20,7 +19,10 @@ public class RecordatorioEntidad {
         return id;
     }
 
-    public String getMensaje() {
-        return mensaje;
+    public String getMensajeDeRecordatorio() {
+        return mensajeDeRecordatorio;
     }
+
+
+
 }

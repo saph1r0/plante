@@ -2,7 +2,7 @@ package com.planta.plantapp.dominio.modelo.cuidado;
 
 import java.util.Date;
 
-public class TareaCuidado {
+public class cj34 {
 
     private int id;
     private TipoCuidado tipo;
