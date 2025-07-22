@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plantee - Mi Cuenta</title>
+    <!-- Enlace a Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Enlace a la hoja de estilos principal (común para ambas páginas) -->
+    <link rel="stylesheet" href="index.css">
+    <!-- Enlace a Google Fonts para Poppins y Lora (si no está ya en index.css) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Lora:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Encabezado global de la aplicación -->
+    <header class="app-header">
+        <div class="header-brand">
+            <strong class="brand-name">Plantee</strong>
+        </div>
+        <div class="header-actions">
+            <i class="fas fa-search header-icon" id="search-icon" aria-label="Abrir barra de búsqueda"></i>
+            <!-- En el dashboard, el botón de registro podría no ser necesario, o cambiar a "Mi Perfil" -->
+            <button class="btn btn-secondary" id="logout-btn">Cerrar sesión</button>
+        </div>
+    </header>
+
+    <!-- Barra de búsqueda desplegable -->
+    <div id="search-bar" class="search-bar hidden">
+        <input type="text" placeholder="Buscar..." id="search-input" class="search-input" aria-label="Campo de búsqueda">
+        <div id="search-suggestions" class="search-suggestions"></div>
+    </div>
+
+    <!-- Botón de alternar menú lateral -->
+    <button id="menu-toggle" class="menu-toggle" aria-label="Abrir menú de navegación">☰</button>
+
+    <!-- Menú de navegación lateral (Sidebar) -->
+    <nav id="sidebar" class="sidebar">
+        <a class="nav-link" href="#mi-perfil"><i class="fas fa-user-circle nav-icon"></i><span class="nav-text">Mi Perfil</span></a>
+        <a class="nav-link" href="#eventos"><i class="fas fa-calendar nav-icon"></i><span class="nav-text">Eventos</span></a>
+        <a class="nav-link" href="#foro"><i class="fas fa-comments nav-icon"></i><span class="nav-text">Foro</span></a>
+        <a class="nav-link" href="#servicios"><i class="fas fa-tools nav-icon"></i><span class="nav-text">Servicios</span></a>
+        <a class="nav-link" href="#catalogo"><i class="fas fa-images nav-icon"></i><span class="nav-text">Catálogo</span></a>
+        <a class="nav-link" href="#mis-registros"><i class="fas fa-clipboard-list nav-icon"></i><span class="nav-text">Mis Registros</span></a>
+        <!-- Enlace de vuelta a la página de inicio -->
+        <a class="nav-link" href="index.html" style="margin-top: auto; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px;"><i class="fas fa-home nav-icon"></i><span class="nav-text">Ir a Inicio</span></a>
+    </nav>
+
+    <!-- Contenido principal de la página de usuario -->
+    <main class="main-content">
+        <!-- Sección Mi Perfil (Nueva sección para el dashboard) -->
+        <section id="mi-perfil" class="content-section">
+            <h2 class="section-title">Mi Perfil</h2>
+            <p class="section-description">Bienvenido a tu panel de control, aquí puedes gestionar tus actividades, plantas y eventos.</p>
+            <div class="profile-info">
+                <p><strong>Nombre de Usuario:</strong> UsuarioEjemplo</p>
+                <p><strong>Correo Electrónico:</strong> usuario@plantee.com</p>
+                <p><strong>Miembro desde:</strong> 15 de Enero, 2023</p>
+                <button class="btn btn-primary">Editar Perfil</button>
+            </div>
+        </section>
+
+        <!-- Sección de Eventos (Completa con añadir evento) -->
+        <section id="eventos" class="content-section">
+            <h2 class="section-title">Próximos Eventos</h2>
+            <div class="event-controls">
+                <div class="view-toggle">
+                    <button id="btn-vista-lista" class="btn btn-toggle active">Lista</button>
+                    <button id="btn-vista-calendario" class="btn btn-toggle">Calendario</button>
+                </div>
+                <div class="date-filter-group">
+                    <label for="date-range-start" class="filter-label">Filtrar por fecha:</label>
+                    <input type="date" id="date-range-start" class="filter-input" aria-label="Fecha de inicio del rango">
+                    <span class="filter-separator">a</span>
+                    <input type="date" id="date-range-end" class="filter-input" aria-label="Fecha de fin del rango">
+                    <button id="btn-apply-filter" class="btn btn-filter">Aplicar Filtro</button>
+                </div>
+            </div>
+            <div id="vista-lista" class="event-view event-list-view">
+                <!-- Contenido de la lista de eventos se carga con JS -->
+            </div>
+            <div id="vista-calendario" class="event-view event-calendar-view hidden">
+                <!-- SonarLint S6850: Añadido span sr-only para encabezado dinámico -->
+                <h3 id="current-month-year" class="calendar-title"><span class="sr-only">Mes y año del calendario</span></h3>
+                <table class="calendar">
+                    <thead>
+                        <tr>
+                            <th>Dom</th><th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th>
+                        </tr>
+                    </thead>
+                    <tbody id="calendar-body">
+                        <!-- Contenido del calendario se carga con JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="add-form-section" id="add-event-section">
+                <h3>Añadir Nuevo Evento</h3>
+                <form id="add-event-form">
+                    <label for="event-title">Título del Evento:</label>
+                    <input type="text" id="event-title" placeholder="Ej: Taller de Bonsái" required>
+
+                    <label for="event-date">Fecha:</label>
+                    <input type="date" id="event-date" required>
+
+                    <label for="event-time">Hora:</label>
+                    <input type="text" id="event-time" placeholder="Ej: 15:00 - 17:00" required>
+
+                    <label for="event-location">Lugar:</label>
+                    <input type="text" id="event-location" placeholder="Ej: Jardín Botánico" required>
+
+                    <label for="event-description">Descripción:</label>
+                    <textarea id="event-description" placeholder="Detalles del evento..." required></textarea>
+
+                    <button type="submit" class="btn btn-primary">Añadir Evento</button>
+                    <div id="event-form-message" class="form-message"></div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Sección de Foro Comunitario -->
+        <section id="foro" class="content-section">
+            <h2 class="section-title">Foro Comunitario</h2>
+            <div id="chat-history" class="chat-history">
+                <!-- Mensajes de chat de ejemplo -->
+                <div class="chat-message">
+                    <strong class="message-author">Usuario1:</strong> ¡Hola a todos! ¿Alguien tiene consejos para cultivar orquídeas en climas cálidos?
+                </div>
+                <div class="chat-message user-message">
+                    <strong class="message-author">Usuario2:</strong> Hola @Usuario1! Yo las tengo en exterior con malla de sombra y riego diario en verano. ¡Funcionan genial!
+                </div>
+                <div class="chat-message">
+                    <strong class="message-author">Usuario3:</strong> ¡Qué buena idea lo de la feria de intercambio! Espero poder asistir.
+                </div>
+            </div>
+            <div id="forum-input-container" class="forum-input-container">
+                <textarea id="forum-input" rows="3" placeholder="Escribe tu mensaje y presiona Enter..." class="forum-textarea" aria-label="Campo para escribir mensajes en el foro"></textarea>
+                <div id="login-message" class="login-message">Inicia sesión para poder comentar</div>
+            </div>
+        </section>
+
+        <!-- Sección de Servicios (Completa con flor interactiva y panel de detalles) -->
+        <section id="servicios" class="content-section service-section">
+            <h2 class="section-title">Nuestros Servicios</h2>
+            <div class="flor-container">
+                <div class="flor" id="flor">
+                    <button class="flor-center-btn" id="flor-center-btn" aria-label="Ver todos los servicios">Ver todos</button>
+                    <div class="petalo" data-service-id="1">1<span class="info-general">Consultoría de Jardinería</span></div>
+                    <div class="petalo" data-service-id="2">2<span class="info-general">Diseño de Paisajes</span></div>
+                    <div class="petalo" data-service-id="3">3<span class="info-general">Mantenimiento de Jardines</span></div>
+                    <div class="petalo" data-service-id="4">4<span class="info-general">Control de Plagas Orgánico</span></div>
+                    <div class="petalo" data-service-id="5">5<span class="info-general">Venta de Semillas y Plantas</span></div>
+                    <div class="petalo" data-service-id="6">6<span class="info-general">Talleres y Cursos</span></div>
+                </div>
+                <div class="full-service-info hidden" id="full-service-info">
+                    <!-- SonarLint S6850: Añadido span sr-only para encabezado dinámico -->
+                    <h3 class="service-detail-title"><span class="sr-only">Detalles del servicio</span></h3>
+                    <p class="service-detail-description"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Catálogo Botánico (Completa con modal y añadir planta) -->
+        <section id="catalogo" class="content-section">
+            <h2 class="section-title">Catálogo Botánico</h2>
+            <div class="carousel-wrapper">
+                <button class="carousel-nav-btn left" id="carousel-prev-btn"><i class="fas fa-chevron-left"></i></button>
+                <div class="carousel-track" id="carousel-track">
+                    <!-- Las imágenes del carrusel se cargarán con dashboard.js -->
+                </div>
+                <button class="carousel-nav-btn right" id="carousel-next-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+
+            <div class="add-form-section" id="add-plant-section">
+                <h3>Añadir Nueva Planta al Catálogo</h3>
+                <form id="add-plant-form">
+                    <label for="plant-name">Nombre de la Planta:</label>
+                    <input type="text" id="plant-name" placeholder="Ej: Orquídea Phalaenopsis" required>
+
+                    <label for="plant-date">Fecha de Adquisición/Fotografía:</label>
+                    <input type="date" id="plant-date" required>
+
+                    <label for="plant-description">Descripción:</label>
+                    <textarea id="plant-description" placeholder="Breve descripción y cuidados..." required></textarea>
+
+                    <label for="plant-image">Imagen de la Planta:</label>
+                    <input type="file" id="plant-image" accept="image/*" required>
+                    <small>Solo con fines de demostración; la imagen no se guardará permanentemente.</small>
+
+                    <button type="submit" class="btn btn-primary">Añadir Planta</button>
+                    <div id="plant-form-message" class="form-message"></div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Sección Mis Registros (Nueva sección para el dashboard) -->
+        <section id="mis-registros" class="content-section">
+            <h2 class="section-title">Mis Registros</h2>
+            <p class="section-description">Esta sección simula un espacio donde un usuario podría ver los eventos que ha añadido y las plantas que ha registrado. En una aplicación real, esta información se cargaría de una base de datos y sería específica para cada usuario logueado.</p>
+
+            <div class="add-form-section">
+                <h3>Mis Eventos Añadidos:</h3>
+                <ul id="my-events-list" class="user-record-list">
+                    <!-- Los eventos añadidos por el usuario se cargarán aquí -->
+                </ul>
+            </div>
+
+            <div class="add-form-section">
+                <h3>Mis Plantas Registradas:</h3>
+                <div id="my-plants-grid" class="user-record-grid">
+                    <!-- Las plantas añadidas por el usuario se cargarán aquí -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal de información de fotos (completo, con detalles) -->
+    <div class="photo-modal-overlay" id="photo-modal-overlay">
+        <div class="photo-modal-content" id="photo-modal-content">
+            <!-- SonarLint S6851: Eliminada palabra redundante "imagen" del alt -->
+            <img src="" alt="Planta en detalle" class="modal-image">
+            <!-- SonarLint S6850: Añadido span sr-only para encabezado dinámico -->
+            <h3 class="modal-title"><span class="sr-only">Título de la foto</span></h3>
+            <p class="modal-description"></p>
+            <button class="photo-modal-close" aria-label="Cerrar modal de foto">&times;</button>
+        </div>
+    </div>
+
+    <!-- Enlace al archivo JavaScript específico para la página de usuario -->
+    <script src="dashboard.js"></script>
+</body>
+</html>
