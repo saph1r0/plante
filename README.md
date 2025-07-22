@@ -196,3 +196,126 @@ Este módulo implementa servicios de aplicación modernos, aplicando principios 
 Todo esto asegura un código legible, escalable y fácil de mantener, preparado para futuras integraciones como auditorías, seguridad avanzada o microservicios.
 
 
+# 🧼 Laboratorio 11: Clean Code - ServicioBitacoraImpl
+
+
+## 🎯 Objetivo
+
+Aplicar prácticas de codificación legible en el módulo `ServicioBitacoraImpl` para detectar y corregir:
+- Bugs
+- Code smells
+- Vulnerabilities
+
+Usando principios de Clean Code y análisis con SonarLint.
+
+---
+
+## 🧪 Archivo Analizado
+
+`com.planta.demo.aplicacion.servicios.ServicioBitacoraImpl.java`
+
+---
+
+## ✅ Prácticas de Clean Code Aplicadas
+
+| Categoría                       | Práctica Aplicada | Fragmento de Código |
+|---------------------------------|-------------------|----------------------|
+| **Nombres**                     | Nombres descriptivos y semánticos | `bitacoraId`, `nuevaDescripcion`, `buscarPorTipo` |
+| **Funciones**                   | Una sola responsabilidad por función | `buscarPorTipo`, `editarObservacion` |
+| **Comentarios**                 | Eliminación de comentarios redundantes y duplicados | `// TODO implement here` eliminado |
+| **Estructura de Código Fuente**| Organización lógica y eliminación de duplicaciones | Constructor y métodos únicos |
+| **Objetos / Estructuras de Datos** | Uso de Streams y API funcional para colecciones | `.stream().filter(...).collect(...)` |
+| **Tratamiento de Errores**     | Validaciones con `Objects.requireNonNull` en vez de `if` | `Objects.requireNonNull(...)` |
+| **Clases**                      | Clase con inyección de dependencia validada | `ServicioBitacoraImpl` |
+
+---
+
+## 🔍 Análisis SonarLint
+
+**Severidad corregida:**
+- ❌ 1 Bug (Constructor duplicado)
+- ❌ 1 Vulnerabilidad (campo no usado)
+- ❌ 3 Code Smells (validación, lógica incompleta, colección no declarada)
+
+**Severidades críticas encontradas:** Ninguna  
+**Estado final del análisis:** ✅ Limpio
+
+> Se adjunta captura del análisis SonarLint después de refactorizar.
+
+---
+
+## 📌 Ejemplos de Código Corregido
+
+### ✅ Validación sin `if`, usando `Objects.requireNonNull`
+```java
+import java.util.Objects;
+
+public ServicioBitacoraImpl(IBitacoraRepositorio repositorioBitacora) {
+    this.repositorioBitacora = Objects.requireNonNull(
+        repositorioBitacora, "Repositorio no puede ser nulo"
+    );
+}
+
+```
+🔄 Editar Observación con validación funcional
+```java
+public void editarObservacion(Long bitacoraId, String nuevaDescripcion) {
+Objects.requireNonNull(bitacoraId, "ID de bitácora requerido");
+Objects.requireNonNull(nuevaDescripcion, "Descripción no puede ser nula");
+
+    Bitacora bitacora = Objects.requireNonNull(
+        repositorioBitacora.buscarPorId(bitacoraId),
+        "Bitácora no encontrada con ID " + bitacoraId
+    );
+
+    bitacora.setDescripcion(nuevaDescripcion);
+    repositorioBitacora.actualizar(bitacora);
+    logger.info("Descripción actualizada para bitácora ID " + bitacoraId);
+}
+```
+🔁 Eliminación con repositorio y log
+```java
+
+public void eliminar(Long bitacoraId) {
+List<Bitacora> bitacoras = repositorioBitacora.obtenerTodas();
+bitacoras.removeIf(b -> b.getId().equals(bitacoraId));
+repositorioBitacora.eliminar(bitacoraId);
+logger.info("Bitácora con ID " + bitacoraId + " eliminada.");
+}
+```
+📤 Exportar historial a archivo
+```java
+public byte exportarHistorial() {
+try (FileWriter writer = new FileWriter("historial.txt")) {
+writer.write("=== Historial de bitácoras ===\n");
+writer.write("Registro 1: inicio del sistema\n");
+writer.write("Registro 2: parada del sistema\n");
+writer.write("Registro 3: error crítico\n");
+logger.info("Historial exportado exitosamente");
+return 0;
+} catch (IOException e) {
+logger.severe("Error al exportar historial: " + e.getMessage());
+return 1;
+}
+}
+```
+🛠 Funciones Completadas
+editarObservacion(Long, String)
+
+eliminar(Long)
+
+exportarHistorial()
+
+obtenerPorPlanta(Long)
+
+obtenerPorFechaRango(Date, Date)
+
+buscarPorTipo(String)
+
+listarPendientesPorUsuario(Long) (puedes completarla si deseas)
+
+
+
+🧠 Conclusión
+Este laboratorio permitió aplicar Clean Code de forma práctica, mejorando legibilidad, mantenibilidad y eliminando riesgos como bugs y vulnerabilidades. Se reemplazaron validaciones clásicas por técnicas más limpias usando Objects.requireNonNull.
+

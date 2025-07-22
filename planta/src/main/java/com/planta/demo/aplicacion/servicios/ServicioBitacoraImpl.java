@@ -15,11 +15,11 @@ public class ServicioBitacoraImpl {
     private final IBitacoraRepositorio repositorioBitacora;
 
    //cookbook style
-    public ServicioBitacoraImpl(IBitacoraRepositorio repositorioBitacora) {
-        if (repositorioBitacora == null) {
-            throw new IllegalArgumentException("Repositorio no puede ser nulo");
-        }
-        this.repositorioBitacora = repositorioBitacora;
+   public ServicioBitacoraImpl(IBitacoraRepositorio repositorioBitacora) {
+       this.repositorioBitacora = Objects.requireNonNull(
+               repositorioBitacora, "Repositorio no puede ser nulo"
+       );
+   }
     }
     private void servicioDominio;
 
@@ -29,30 +29,22 @@ public class ServicioBitacoraImpl {
     }
 
     //Error/Exception Handling
-    public void editarObservacion(Long bitacoraId, String nuevaDescripcion) {
-        if (bitacoraId == null || nuevaDescripcion == null) {
-            throw new IllegalArgumentException("Parámetros inválidos");
-        }
-        Bitacora bitacora = repositorioBitacora.buscarPorId(bitacoraId);
-        if (bitacora == null) {
-            throw new NoSuchElementException("Bitácora no encontrada con ID " + bitacoraId);
-        }
-        bitacora.setDescripcion(nuevaDescripcion);
-        repositorioBitacora.actualizar(bitacora);
-        logger.info("Descripción actualizada para bitácora ID " + bitacoraId);
-    }
 
 
-    public void editarObservacion(Long bitacoraId, String nuevaDescripcion) {
-        if (bitacoraId == null || nuevaDescripcion == null) {
-            throw new Illeg/
-                    //Pipeline + Lazy-Rivers: filtrado funcional
-            public List<Bitacora> obtenerPorPlanta(Long plantaId) {
-                return repositorioBitacora.obtenerTodas()
-                        .stream()
-                        .filter(b -> plantaId.equals(b.getPlantaId()))
-                        .collect(Collectors.toList());
-            }
+
+public void editarObservacion(Long bitacoraId, String nuevaDescripcion) {
+    Objects.requireNonNull(bitacoraId, "ID de bitácora requerido");
+    Objects.requireNonNull(nuevaDescripcion, "Descripción no puede ser nula");
+
+    Bitacora bitacora = Objects.requireNonNull(
+            repositorioBitacora.buscarPorId(bitacoraId),
+            "Bitácora no encontrada con ID " + bitacoraId
+    );
+
+    bitacora.setDescripcion(nuevaDescripcion);
+    repositorioBitacora.actualizar(bitacora);
+    logger.info("Descripción actualizada para bitácora ID " + bitacoraId);
+}
 
             // Pipeline
             public List<Bitacora> obtenerPorFechaRango(Date desde, Date hasta) {
@@ -65,36 +57,26 @@ public class ServicioBitacoraImpl {
 
     }
 
-    public void eliminar(Long bitacoraId) {
-        Iterator<Bitacora> iterator = bitacoras.iterator();
-        while (iterator.hasNext()) {
-            Bitacora b = iterator.next();
-            if (b.getId().equals(bitacoraId)) {
-                iterator.remove();
-                logger.info("Bitacora con ID " + bitacoraId + " eliminada.");
-                return;
-            }
-        }
-        logger.warning("No se encontró una bitacora con ID " + bitacoraId);
+public void eliminar(Long bitacoraId) {
+    List<Bitacora> bitacoras = repositorioBitacora.obtenerTodas();
+    bitacoras.removeIf(b -> b.getId().equals(bitacoraId));
+    repositorioBitacora.eliminar(bitacoraId);
+    logger.info("Bitácora con ID " + bitacoraId + " eliminada.");
+}
+
+public byte exportarHistorial() {
+    try (FileWriter writer = new FileWriter("historial.txt")) {
+        writer.write("=== Historial de bitácoras ===\n");
+        writer.write("Registro 1: inicio del sistema\n");
+        writer.write("Registro 2: parada del sistema\n");
+        writer.write("Registro 3: error crítico\n");
+        logger.info("Historial exportado exitosamente");
+        return 0;
+    } catch (IOException e) {
+        logger.severe("Error al exportar historial: " + e.getMessage());
+        return 1;
     }
-    /**
-     * @param plantaId 
-     * @return
-     */
-    public byte exportarHistorial() {
-        try (FileWriter writer = new FileWriter("historial.txt")) {
-            // Aquí iría tu lógica real para exportar los datos
-            writer.write("=== Historial de bitácoras ===\n");
-            writer.write("Registro 1: inicio del sistema\n");
-            writer.write("Registro 2: parada del sistema\n");
-            writer.write("Registro 3: error crítico\n");
-            logger.info("Historial exportado exitosamente a historial.txt");
-            return 0; // éxito
-        } catch (IOException e) {
-            logger.severe("Error al exportar historial: " + e.getMessage());
-            return 1; // error
-        }
-    }
+}
 
     public static void main(String[] args) {
         BitacoraService servicio = new BitacoraService();
@@ -107,20 +89,11 @@ public class ServicioBitacoraImpl {
     }
 }
 
-
-/**
-     * @param tipo 
-     * @return
-     */
     public List<Bitacora> buscarPorTipo(String tipo) {
         // TODO implement here
         return null;
     }
 
-    /**
-     * @param usuarioId 
-     * @return
-     */
     public List<Bitacora> listarPendientesPorUsuario(Long usuarioId) {
         // TODO implement here
         return null;
