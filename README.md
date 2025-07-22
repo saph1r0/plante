@@ -319,3 +319,50 @@ listarPendientesPorUsuario(Long) (puedes completarla si deseas)
 🧠 Conclusión
 Este laboratorio permitió aplicar Clean Code de forma práctica, mejorando legibilidad, mantenibilidad y eliminando riesgos como bugs y vulnerabilidades. Se reemplazaron validaciones clásicas por técnicas más limpias usando Objects.requireNonNull.
 
+# 🧼 LAB 12 ServicioBitacoraImpl – Aplicación de Principios SOLID en Java
+Este proyecto demuestra cómo aplicar los principios SOLID en el desarrollo de un componente de servicios para manejar registros de bitácoras. La arquitectura está diseñada para ser limpia, mantenible y extensible siguiendo buenas prácticas de programación orientada a objetos.
+
+# 📌 Objetivo
++ Implementar un servicio ServicioBitacoraImpl que permita:
+
++ Editar observaciones de bitácoras.
+
++ Filtrar bitácoras por rango de fechas.
+
++ Eliminar bitácoras por ID.
+
++ Exportar historial de eventos.
+
++ Facilitar la extensibilidad futura (ej. exportar a PDF, CSV, etc.)
+
+# ✅ Principios SOLID Aplicados
+#  1. SRP - Principio de Responsabilidad Única
+Separación de responsabilidades: la clase `HistorialExporter` se encarga únicamente de exportar historial.
+
+```java
+class HistorialExporter implements ExportadorHistorial {
+  public byte exportar() {
+        ...
+  }
+}
+```
+# 2. OCP – Open/Closed Principlede negocio sobre bitácoras.
+
+   El sistema puede ser extendido sin modificar el código existente.
+
+Para exportar a otro formato, se puede crear otra clase que implemente ExportadorHistorial sin cambiar ServicioBitacoraImpl.
+
+```java
+
+class ExportadorPDF implements ExportadorHistorial {
+public byte exportar() {
+// lógica para exportar PDF
+  }
+}
+```
+
+# 3.DIP – Dependency Inversion Principle
+   ServicioBitacoraImpl depende de las abstracciones IBitacoraRepositorio y ExportadorHistorial, no de clases concretas.
+```java
+public ServicioBitacoraImpl(IBitacoraRepositorio repo, ExportadorHistorial exp)
+```
