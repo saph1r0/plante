@@ -3,6 +3,7 @@ package com.planta.demo.dominio.modelo.planta;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Date;
 
 /**
  * Entidad del dominio que representa una planta.
@@ -16,6 +17,8 @@ public class Planta {
     private String descripcion;
     private String imagenURL;
     private final List<Etiqueta> etiquetas;
+    private String nombre;
+    private String tipo;
 
     public Planta(String nombreComun, String nombreCientifico, String descripcion, String imagenURL) {
         if (nombreComun == null || nombreComun.isBlank())
@@ -29,6 +32,7 @@ public class Planta {
         this.imagenURL = imagenURL;
         this.etiquetas = new ArrayList<>();
     }
+
     public Planta(String id) {
         this.id = id;
         this.etiquetas = new ArrayList<>();
@@ -87,6 +91,11 @@ public class Planta {
     }
     // equals/hashCode por identidad
     @Override
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Planta)) return false;

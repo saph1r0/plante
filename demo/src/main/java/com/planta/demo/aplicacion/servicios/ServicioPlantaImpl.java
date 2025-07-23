@@ -5,7 +5,16 @@ import com.planta.demo.dominio.modelo.IPlantaRepositorio;
 import com.planta.demo.aplicacion.interfaces.IServicioPlanta;
 import org.springframework.stereotype.Service;
 import java.util.*;
+import com.planta.demo.dominio.modelo.cuidado.TipoCuidado;
+import com.planta.demo.dominio.modelo.servicios.ServicioPlantaDominio;
 
+private static final int LIMITE_MAXIMO_PLANTAS = 50;
+private static final int LONGITUD_MAXIMA_NOMBRE = 100;
+private static final String ESTADO_PLANTA_ACTIVA = "ACTIVA";
+private static final String USUARIO_GLOBAL = "global";
+
+private final IPlantaRepositorio plantaRepositorio;
+private final ServicioPlantaDominio servicioDominio;
 /**
  * ESTILO COOKBOOK: Implementación con procedimientos secuenciales
  * que modifican estado compartido para el registro de plantas.
@@ -14,6 +23,7 @@ import java.util.*;
  *  * Servicio de aplicación para gestionar plantas.
  *  * Orquesta la lógica entre el dominio y la infraestructura.
  *  */
+
 @Service
 public class ServicioPlantaImpl implements IServicioPlanta {
 
@@ -28,8 +38,9 @@ public class ServicioPlantaImpl implements IServicioPlanta {
     private boolean procesoCompletado = false;
     private Map<String, Object> datosTemporales = new HashMap<>();
 
-    public ServicioPlantaImpl(IPlantaRepositorio plantaRepositorio) {
+    public ServicioPlantaImpl(IPlantaRepositorio plantaRepositorio, ServicioPlantaDominio servicioDominio) {
         this.plantaRepositorio = plantaRepositorio;
+        this.servicioDominio = servicioDominio;
     }
 
     /**
@@ -38,7 +49,7 @@ public class ServicioPlantaImpl implements IServicioPlanta {
      * @return Lista de todas las plantas
      */
     public List<Planta> obtenerTodas() {
-        return plantaRepositorio.listarPorUsuario("global");
+        return plantaRepositorio.listarPorUsuario(USUARIO_GLOBAL);
     }
 
     /**
@@ -48,27 +59,38 @@ public class ServicioPlantaImpl implements IServicioPlanta {
      * @return Planta encontrada o null si no existe
      */
     public Planta obtenerPorId(Long id) {
+        if (id == null) {
+            return null;
+        }
         return plantaRepositorio.obtenerPorId(id.toString());
     }
-
     /**
      * Guarda una planta en el repositorio.
      *
      * @param planta Planta a guardar
      */
-    public void guardar(Planta planta) {
-        plantaRepositorio.guardar(planta);
-    }
+    public boolean guardar(Planta planta) {
+        if (planta == null) {
+            return false;
+        }
 
+        try {
+            plantaRepositorio.guardar(planta);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
     /**
      * Elimina una planta del repositorio.
      *
      * @param id Identificador de la planta a eliminar
      */
     public void eliminar(Long id) {
-        plantaRepositorio.eliminar(id.toString());
+        if (id != null) {
+            plantaRepositorio.eliminar(id.toString());
+        }
     }
-
     /**
      * Agrega un cuidado a una planta específica.
      *
@@ -78,12 +100,10 @@ public class ServicioPlantaImpl implements IServicioPlanta {
      * @param notas Notas adicionales del cuidado
      */
     public void agregarCuidado(Long plantaId, TipoCuidado tipo, Integer frecuenciaDias, String notas) {
-        Planta planta = plantaRepositorio.obtenerPorId(plantaId.toString());
-        if (planta != null) {
+        Planta planta = obtenerPorId(plantaId);
+        if (planta != null && servicioDominio != null) {
             servicioDominio.agregarCuidado(planta, tipo, frecuenciaDias, notas);
             plantaRepositorio.guardar(planta);
-        } else {
-            throw new IllegalArgumentException("Planta no encontrada con ID: " + plantaId);
         }
     }
 
@@ -94,9 +114,11 @@ public class ServicioPlantaImpl implements IServicioPlanta {
      * @return Lista de plantas del tipo especificado
      */
     public List<Planta> buscarPorTipo(String tipo) {
+        if (esTextoVacio(tipo)) {
+            return new ArrayList<>();
+        }
         return plantaRepositorio.buscarPorTipo(tipo);
     }
-
     /**
      * Lista las plantas asociadas a un usuario específico.
      *
@@ -104,6 +126,9 @@ public class ServicioPlantaImpl implements IServicioPlanta {
      * @return Lista de plantas del usuario
      */
     public List<Planta> listarPorUsuario(Long usuarioId) {
+        if (usuarioId == null) {
+            return new ArrayList<>();
+        }
         return plantaRepositorio.listarPorUsuario(usuarioId.toString());
     }
 
@@ -112,15 +137,18 @@ public class ServicioPlantaImpl implements IServicioPlanta {
      */
     public boolean registrarNuevaPlanta(String nombre, String tipo, String usuarioId) {
         limpiarEstadoProceso();
-        validarDatosEntrada(nombre, tipo, usuarioId);
-        prepararDatosPlanta(nombre, tipo);
-        verificarReglas(usuarioId);
 
-        if (erroresValidacion.isEmpty()) {
-            ejecutarGuardado(usuarioId);
+        if (!validarDatosEntrada(nombre, tipo, usuarioId)) {
+            return false;
         }
 
-        return procesoCompletado;
+        prepararDatosPlanta(nombre, tipo);
+
+        if (!verificarReglasNegocio(usuarioId)) {
+            return false;
+        }
+
+        return ejecutarGuardado(usuarioId);
     }
 
     public List<String> obtenerUltimosErrores() {
@@ -153,24 +181,29 @@ public class ServicioPlantaImpl implements IServicioPlanta {
     /**
      * COOKBOOK: Procedimiento para validar datos de entrada.
      */
-    private void validarDatosEntrada(String nombre, String tipo, String usuarioId) {
-        if (nombre == null || nombre.trim().isEmpty()) {
+    private boolean validarDatosEntrada(String nombre, String tipo, String usuarioId) {
+        boolean esValido = true;
+
+        if (esTextoVacio(nombre)) {
             erroresValidacion.add("Nombre de planta es obligatorio");
+            esValido = false;
+        } else if (nombre.length() > LONGITUD_MAXIMA_NOMBRE) {
+            erroresValidacion.add("Nombre de planta muy largo (máximo " + LONGITUD_MAXIMA_NOMBRE + " caracteres)");
+            esValido = false;
         }
 
-        if (tipo == null || tipo.trim().isEmpty()) {
+        if (esTextoVacio(tipo)) {
             erroresValidacion.add("Tipo de planta es obligatorio");
+            esValido = false;
         }
 
-        if (usuarioId == null || usuarioId.trim().isEmpty()) {
+        if (esTextoVacio(usuarioId)) {
             erroresValidacion.add("Usuario ID es obligatorio");
+            esValido = false;
         }
 
-        // Validar longitud del nombre
-        if (nombre != null && nombre.length() > 100) {
-            erroresValidacion.add("Nombre de planta muy largo (máximo 100 caracteres)");
-        }
-    }
+        return esValido;
+    }li
 
     /**
      * COOKBOOK: Procedimiento para preparar y normalizar datos.
@@ -248,6 +281,14 @@ public class ServicioPlantaImpl implements IServicioPlanta {
             erroresValidacion.add("Error al guardar planta: " + e.getMessage());
             procesoCompletado = false;
         }
+    }
+
+    private boolean esTextoVacio(String texto) {
+        return texto == null || texto.trim().isEmpty();
+    }
+
+    private String normalizarTexto(String texto) {
+        return texto == null ? "" : texto.trim().toLowerCase();
     }
 }
 }

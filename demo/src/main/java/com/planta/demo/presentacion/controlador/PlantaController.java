@@ -11,11 +11,18 @@ import java.util.*;
  * 
  */
 public class PlantaController {
+    private static final int LIMITE_RESULTADOS = 100;
+    private static final String ESTADO_ELIMINADA = "ELIMINADA";
+    private static final long MILISEGUNDOS_POR_DIA = 86400000L;
 
+    private final IServicioPlanta servicioPlanta;
+    private final IPlantaRepositorio plantaRepositorio;
     /**
      * Default constructor
      */
-    public PlantaController() {
+    public PlantaController(IServicioPlanta servicioPlanta, IPlantaRepositorio plantaRepositorio) {
+        this.servicioPlanta = servicioPlanta;
+        this.plantaRepositorio = plantaRepositorio;
     }
 
     /**

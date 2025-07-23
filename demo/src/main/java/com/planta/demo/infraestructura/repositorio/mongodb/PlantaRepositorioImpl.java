@@ -6,13 +6,17 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+
 /**
  * Implementación de IPlantaRepositorio usando MongoDB.
  * Proporciona operaciones CRUD para el manejo de plantas en la base de datos.
  */
 @Repository
 public class PlantaRepositorioImpl implements IPlantaRepositorio {
-
+    private static final String ERROR_ID_REQUERIDO = "ID no puede ser nulo o vacío";
+    private static final String ERROR_USUARIO_REQUERIDO = "Usuario ID requerido";
+    private static final String ERROR_PLANTA_NULA = "Planta no puede ser nula";
+    private static final String ERROR_NOMBRE_REQUERIDO = "Nombre de planta es requerido";
     public PlantaRepositorioImpl() {
         // Constructor por defecto (inyecciones si es necesario)
     }
@@ -26,9 +30,7 @@ public class PlantaRepositorioImpl implements IPlantaRepositorio {
     @Override
     public Planta obtenerPorId(String id) {
         // ESTILO: Error/Exception Handling
-        if (id == null || id.trim().isEmpty()) {
-            throw new IllegalArgumentException("ID no puede ser nulo o vacío");
-        }
+        validarId(id);
 
         try {
             // TODO: Implementar consulta MongoDB real
@@ -51,9 +53,7 @@ public class PlantaRepositorioImpl implements IPlantaRepositorio {
     @Override
     public List<Planta> listarPorUsuario(String usuarioId) {
         // ESTILO: Error/Exception Handling + Pipeline preparation
-        if (usuarioId == null || usuarioId.trim().isEmpty()) {
-            throw new IllegalArgumentException("Usuario ID requerido");
-        }
+        validarUsuarioId(usuarioId);
 
         try {
             // TODO: Implementar consulta MongoDB real
@@ -76,13 +76,8 @@ public class PlantaRepositorioImpl implements IPlantaRepositorio {
     @Override
     public void guardar(Planta planta) {
         // ESTILO: Error/Exception Handling
-        if (planta == null) {
-            throw new IllegalArgumentException("Planta no puede ser nula");
-        }
-
-        if (planta.getNombre() == null || planta.getNombre().trim().isEmpty()) {
-            throw new IllegalArgumentException("Nombre de planta es requerido");
-        }
+        validarPlanta(planta);
+        validarNombrePlanta(planta);
 
         try {
             // TODO: Implementar guardado MongoDB real
