@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proyecto Interactivo - Plantee</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="../static/css/index.css">
+</head>
+<body>
+<header>
+  <div>
+    <strong style="color: var(--color-green-dark);">Plantee</strong>
+  </div>
+  <div>
+    <i class="fas fa-search" id="search-icon"></i>
+    <button>Registrarse</button>
+    <button>Iniciar sesión</button>
+  </div>
+</header>
+
+<div id="search-bar">
+  <input type="text" placeholder="Buscar..." id="search-input">
+  <div id="search-suggestions"></div>
+</div>
+
+<div id="menu-toggle">☰</div>
+
+<div id="sidebar">
+  <a class="menu-btn" href="#inicio"><i class="fas fa-home"></i><span>Inicio</span></a>
+  <a class="menu-btn" href="#eventos"><i class="fas fa-calendar"></i><span>Eventos</span></a>
+  <a class="menu-btn" href="#foro"><i class="fas fa-comments"></i><span>Foro</span></a>
+  <a class="menu-btn" href="#servicios"><i class="fas fa-tools"></i><span>Servicios</span></a>
+  <a class="menu-btn" href="#catalogo"><i class="fas fa-images"></i><span>Catálogo</span></a>
+  <a class="menu-btn" href="#contactanos"><i class="fas fa-envelope"></i><span>Contáctanos</span></a>
+</div>
+
+<main>
+  <div class="container" id="inicio">
+    <h2>Inicio</h2>
+    <p>Bienvenido a Plantee, tu comunidad ideal para aprender y compartir sobre el fascinante mundo de las plantas. Explora nuestros eventos, participa en el foro, descubre nuestros servicios y sumérgete en nuestro catálogo botánico. ¡Conéctate con otros amantes de la naturaleza!</p>
+  </div>
+
+  <div class="container" id="eventos">
+    <h2>Próximos Eventos</h2>
+    <div class="view-toggle">
+      <button id="btn-vista-lista" onclick="mostrarVista('lista', this)">Lista</button>
+      <button id="btn-vista-calendario" onclick="mostrarVista('calendario', this)">Calendario</button>
+      <label for="date-range-start">Filtrar por fecha:</label>
+      <input type="date" id="date-range-start">
+      <label for="date-range-end">a</label>
+      <input type="date" id="date-range-end">
+      <button onclick="filterEventsByDate()">Aplicar Filtro</button>
+    </div>
+    <div id="vista-lista">
+    </div>
+    <div id="vista-calendario" class="hidden">
+      <h3 id="current-month-year"></h3>
+      <table class="calendar">
+        <thead>
+        <tr>
+          <th>Dom</th><th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th>
+        </tr>
+        </thead>
+        <tbody id="calendar-body">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="container" id="foro">
+    <h2>Foro Comunitario</h2>
+    <div id="chat-history">
+      <div class="chat-message">
+        <strong>Usuario1:</strong> ¡Hola a todos! ¿Alguien tiene consejos para cultivar orquídeas en climas cálidos?
+      </div>
+      <div class="chat-message user-message">
+        <strong>Usuario2:</strong> Hola @Usuario1! Yo las tengo en exterior con malla de sombra y riego diario en verano. ¡Funcionan genial!
+      </div>
+      <div class="chat-message">
+        <strong>Usuario3:</strong> ¡Qué buena idea lo de la feria de intercambio! Espero poder asistir.
+      </div>
+    </div>
+    <div id="forum-input-container">
+      <textarea id="forum-input" rows="3" placeholder="Escribe tu mensaje y presiona Enter..."></textarea>
+      <div id="login-message">Inicia sesión para poder comentar</div>
+    </div>
+  </div>
+
+  <div class="container" id="servicios" style="height: 90vh;">
+    <h2>Nuestros Servicios</h2>
+    <div class="flor">
+      <div class="flor-center" id="flor-center-btn">Ver todos</div>
+      <div class="petalo" data-service-id="1">1<span class="info-general">Consultoría</span></div>
+      <div class="petalo" data-service-id="2">2<span class="info-general">Organización de eventos</span></div>
+      <div class="petalo" data-service-id="3">3<span class="info-general">Mantenimiento y cuidado de plantas</span></div>
+      <div class="petalo" data-service-id="4">4<span class="info-general">Control de Plagas Orgánico</span></div>
+      <div class="petalo" data-service-id="5">5<span class="info-general">Busqueda por caracteristicas</span></div>
+      <div class="petalo" data-service-id="6">6<span class="info-general">Talleres y Cursos</span></div>
+    </div>
+    <div class="full-service-info" id="full-service-info">
+      <h3></h3>
+      <p></p>
+    </div>
+  </div>
+
+  <div class="container" id="catalogo">
+    <h2>Catálogo Botánico</h2>
+    <div class="carousel-wrapper">
+      <button class="carousel-nav-btn left" id="carousel-prev-btn"><i class="fas fa-chevron-left"></i></button>
+      <div class="carousel-track" id="carousel-track">
+      </div>
+      <button class="carousel-nav-btn right" id="carousel-next-btn"><i class="fas fa-chevron-right"></i></button>
+    </div>
+
+    <div class="add-form-section" id="add-plant-section">
+      <h3>Añadir Nueva Planta al Catálogo</h3>
+      <form id="add-plant-form">
+        <label for="plant-name">Nombre de la Planta:</label>
+        <input type="text" id="plant-name" placeholder="Ej: Orquídea Phalaenopsis" required>
+
+        <label for="plant-date">Fecha de Adquisición/Fotografía:</label>
+        <input type="date" id="plant-date" required>
+
+        <label for="plant-description">Descripción:</label>
+        <textarea id="plant-description" placeholder="Breve descripción y cuidados..." required></textarea>
+
+        <label for="plant-image">Imagen de la Planta:</label>
+        <input type="file" id="plant-image" accept="image/*" required>
+        <small>Solo con fines de demostración; la imagen no se guardará permanentemente.</small>
+
+
+      </form>
+    </div>
+  </div>
+
+  <div class="container" id="contactanos">
+    <h2>Contáctanos</h2>
+    <p><strong>Correo:</strong> contacto@plantee.com</p>
+    <p><strong>Teléfono:</strong> +51 987 654 321</p>
+    <p><strong>Síguenos en redes:</strong> <i class="fab fa-facebook-square" style="color: #3b5998;"></i> <i class="fab fa-instagram-square" style="color: #E1306C;"></i></p>
+  </div>
+</main>
+
+<div class="photo-modal-overlay" id="photo-modal-overlay">
+  <div class="photo-modal-content" id="photo-modal-content">
+    <img>
+    <h3></h3>
+    <p></p>
+  </div>
+</div>
+<script src="../static/js/index.js"></script>
+
+</body>
+</html>

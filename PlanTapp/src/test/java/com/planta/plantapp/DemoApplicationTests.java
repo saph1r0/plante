@@ -1,4 +1,4 @@
-package com.planta.demo;
+package com.planta.plantapp;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

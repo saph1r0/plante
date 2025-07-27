@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Repositorio del dominio para gestionar plantas.
  *
- * Esta interfaz define las operaciones del modelo del problema, 
+ * Esta interfaz define las operaciones del modelo del problema,
  * sin depender de detalles de infraestructura o persistencia.
  */
 public interface IPlantaRepositorio {
@@ -37,8 +37,6 @@ public interface IPlantaRepositorio {
      * @param id Identificador de la planta a eliminar
      */
     void eliminar(String id);
-
-    List<Planta> buscarPorNombre(String nombre);
 
     /**
      * Busca plantas por nombre asociado a un usuario.

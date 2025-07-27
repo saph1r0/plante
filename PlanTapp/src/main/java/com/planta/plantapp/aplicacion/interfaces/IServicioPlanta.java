@@ -1,20 +1,20 @@
-/*package servicios;*/
 package com.planta.plantapp.aplicacion.interfaces;
 
 import com.planta.plantapp.dominio.modelo.planta.Planta;
 import java.util.List;
 import java.util.Optional;
 
-import java.io.*;
-import java.util.*;
-
 /**
- * 
+ * Interfaz del servicio de aplicación para plantas.
+ * Define las operaciones principales que pueden realizarse con las plantas.
  */
 public interface IServicioPlanta {
-    List<Planta> buscarPorNombre(String nombre);
 
+    // Métodos principales de la interfaz
+    List<Planta> obtenerTodas();
+    Optional<Planta> obtenerPorId(String id);
     Planta guardar(Planta planta);
-    Optional<Planta> buscarPorId(String id);
     void eliminar(String id);
+    List<Planta> buscarPorTipo(String tipo);
+    List<Planta> buscarPorUsuario(Long usuarioId);
 }
