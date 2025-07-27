@@ -172,9 +172,20 @@ body::-webkit-scrollbar-thumb {
     transform: translateY(-100%); /* Start off-screen */
     transition: transform 0.4s ease-out; /* Smooth slide down */
 }
+/*.search-bar.active {
+    transform: translateY(0);  Slide into view
+    display: block;  Asegura que se muestre
+}*/
+
 .search-bar.active {
-    transform: translateY(0); /* Slide into view */
-    display: block; /* Asegura que se muestre */
+    display: block !important;
+    opacity: 1;
+    visibility: visible;
+    z-index: 1000;
+}
+
+.search-bar.hidden {
+    display: none;
 }
 
 .search-input {
@@ -1108,10 +1119,16 @@ table.calendar td.has-event {
         margin-right: 10px;
     }
 
-    .search-bar {
-        top: auto; /* Allow header to collapse */
+    /*.search-bar {
+        top: auto;  Allow header to collapse
         padding: 15px;
+    }*/
+
+    .search-bar {
+        position: relative;
+        z-index: 1000; /* Número alto para que esté encima */
     }
+
     .search-input {
         width: 90%;
     }
@@ -1252,3 +1269,4 @@ table.calendar td.has-event {
         min-width: unset; /* Permitir que la grid controle el tamaño */
     }
 }
+

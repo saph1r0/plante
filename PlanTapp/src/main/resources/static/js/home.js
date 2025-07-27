@@ -16,12 +16,12 @@ const appDataHome = {
         'Orquídeas', 'Suculentas', 'Helechos', 'Rosas', 'Bonsái', 'Girasoles', 'Lavanda', 'Cactus',
         'Consultoría de Jardinería', 'Diseño de Paisajes', 'Mantenimiento de Jardines', 'Control de Plagas Orgánico', 'Venta de Semillas y Plantas', 'Talleres y Cursos',
     ],
-    // ¡NUEVO! Datos de plantas desde API
+    //Datos de plantas desde API
     plantasReales: [],
     plantasFiltradas: []
 };
 
-// --- 2. Referencias a Elementos del DOM (igual que antes) ---
+// --- 2. Referencias a Elementos del DOM---
 const domElementsHome = {
     menuToggle: document.getElementById('menu-toggle'),
     sidebar: document.getElementById('sidebar'),
@@ -43,7 +43,7 @@ const domElementsHome = {
     loginBtn: document.getElementById('login-btn'),
 };
 
-// --- 3. ¡NUEVAS! Funciones para API de Plantas ---
+// --- 3.Funciones para API de Plantas ---
 
 /**
  * Carga las plantas desde la API del backend
@@ -130,7 +130,7 @@ function generarDescripcionCompleta(planta) {
     return descripcion;
 }
 
-// --- 4. Funciones de Utilidad (mantenemos las originales) ---
+// --- 4. Funciones de Utilidad ---
 
 function toggleVisibility(element, show) {
     element.style.display = show ? 'block' : 'none';
@@ -184,7 +184,7 @@ function scrollToSection(query) {
     }
 }
 
-// --- 5. Inicialización de Componentes (actualizados) ---
+// --- 5. Inicialización de Componentes ---
 
 function initializeSidebarHome() {
     if (!domElementsHome.menuToggle || !domElementsHome.sidebar) {
@@ -214,7 +214,7 @@ function initializeSidebarHome() {
 }
 
 /**
- * ¡ACTUALIZADA! Inicializa la funcionalidad de la barra de búsqueda con plantas reales
+ *Inicializa la funcionalidad de la barra de búsqueda con plantas reales
  */
 function initializeSearchBarHome() {
     if (!domElementsHome.searchIcon || !domElementsHome.searchBar) {
@@ -304,7 +304,7 @@ function initializeSearchBarHome() {
 }
 
 /**
- * ¡ACTUALIZADA! Carga y renderiza las plantas (reales o estáticas) en el carrusel
+ * Carga y renderiza las plantas (reales o estáticas) en el carrusel
  */
 function loadCarouselImagesHome() {
     if (!domElementsHome.carouselTrack) {
@@ -377,7 +377,7 @@ function loadCarouselImagesHome() {
     console.log(`🎠 Carrusel actualizado con ${datosAMostrar.length} elementos`);
 }
 
-// Resto de funciones igual que antes...
+// Resto de funciones...
 function initializeCarouselDragHome() {
     if (!domElementsHome.carouselTrack) {
         console.error('CarouselTrack no encontrado para drag');
@@ -469,7 +469,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Cargar plantas estáticas como placeholder inicial
     loadCarouselImagesHome();
 
-    // ¡NUEVO! Cargar plantas reales desde API
+    //Cargar plantas reales desde API
     await cargarPlantasDesdeAPI();
 
     console.log('✅ Aplicación home inicializada correctamente');
