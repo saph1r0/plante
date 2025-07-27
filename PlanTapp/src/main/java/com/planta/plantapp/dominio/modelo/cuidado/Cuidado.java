@@ -24,6 +24,11 @@ public class Cuidado {
         programarProximo();
     }
 
+    // Para que MongoDB pueda deserializar
+    public Cuidado() {
+        // Constructor vacío requerido por MongoDB
+    }
+
     public void programarProximo() {
         if (frecuenciaDias != null && frecuenciaDias > 0) {
             this.fechaProxima = this.fechaAplicacion.plusDays(frecuenciaDias);

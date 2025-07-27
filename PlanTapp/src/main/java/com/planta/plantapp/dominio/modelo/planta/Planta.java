@@ -21,8 +21,8 @@ public class Planta {
     private String nombreCientifico;
     private String descripcion;
     private String imagenURL;
-    private final List<Etiqueta> etiquetas;
-    private final List<Cuidado> cuidados;
+    private List<Etiqueta> etiquetas;
+    private List<Cuidado> cuidados;
 
     public Planta(String nombreComun, String nombreCientifico, String descripcion, String imagenURL) {
         if (nombreComun == null || nombreComun.isBlank())

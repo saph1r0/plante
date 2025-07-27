@@ -45,6 +45,48 @@ public class PlantaController {
     }
 
     /**
+     * Debug específico para verificar cuidados
+     */
+    @GetMapping("/debug-cuidados/{id}")
+    public ResponseEntity<?> debugCuidados(@PathVariable String id) {
+        try {
+            System.out.println("🔍 DEBUG CUIDADOS: Buscando planta con ID: " + id);
+            Optional<Planta> plantaOpt = servicioPlanta.obtenerPorId(id);
+
+            if (plantaOpt.isPresent()) {
+                Planta planta = plantaOpt.get();
+
+                System.out.println("✅ Planta encontrada: " + planta.getNombreComun());
+                System.out.println("🌱 ID de la planta: " + planta.getId());
+
+                // DEBUG ESPECÍFICO DE CUIDADOS
+                if (planta.getCuidados() != null) {
+                    System.out.println("📋 Número de cuidados: " + planta.getCuidados().size());
+
+                    if (!planta.getCuidados().isEmpty()) {
+                        for (int i = 0; i < planta.getCuidados().size(); i++) {
+                            var cuidado = planta.getCuidados().get(i);
+                            System.out.println("🌿 Cuidado " + (i+1) + ": " + cuidado.getTipo() + " - " + cuidado.getDescripcion());
+                        }
+                    } else {
+                        System.out.println("⚠️ La lista de cuidados está vacía");
+                    }
+                } else {
+                    System.out.println("❌ La lista de cuidados es NULL");
+                }
+
+                return ResponseEntity.ok(planta);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            System.err.println("❌ Error en debug cuidados: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error: " + e.getMessage());
+        }
+    }
+
+    /**
      * Obtiene una planta por su ID.
      */
     @GetMapping("/{id}")
@@ -54,7 +96,17 @@ public class PlantaController {
             Optional<Planta> planta = servicioPlanta.obtenerPorId(id);
 
             if (planta.isPresent()) {
-                return ResponseEntity.ok(planta.get());
+                Planta p = planta.get();
+
+                // AGREGAR ESTOS LOGS PARA DEBUG
+                System.out.println("🌱 Planta encontrada: " + p.getNombreComun());
+                if (p.getCuidados() != null) {
+                    System.out.println("📋 Cuidados cargados: " + p.getCuidados().size());
+                } else {
+                    System.out.println("❌ Cuidados es NULL");
+                }
+
+                return ResponseEntity.ok(p);
             } else {
                 return ResponseEntity.notFound().build();
             }
