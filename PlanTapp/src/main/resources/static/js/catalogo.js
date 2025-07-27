@@ -19,6 +19,34 @@ const appDataCatalogo = {
     }
 };
 
+/**
+ * Renderiza las etiquetas en el modal
+ */
+function renderizarEtiquetasModal(etiquetas) {
+    const modalTags = document.getElementById('modal-plant-tags');
+    const tagsSection = document.querySelector('.plant-modal-tags');
+
+    if (!modalTags || !tagsSection) return;
+
+    if (!etiquetas || etiquetas.length === 0) {
+        tagsSection.style.display = 'none';
+        return;
+    }
+
+    tagsSection.style.display = 'block';
+    modalTags.innerHTML = etiquetas.map(etiqueta => `
+        <span class="plant-tag modal-tag"
+              style="background-color: ${etiqueta.color}20;
+                     color: ${etiqueta.color};
+                     border: 2px solid ${etiqueta.color}40;
+                     font-weight: 600;
+                     padding: 8px 16px;
+                     font-size: 0.9rem;">
+            ${etiqueta.nombre}
+        </span>
+    `).join('');
+};
+
 // --- 2. Referencias a Elementos del DOM ---
 const domElementsCatalogo = {
     // Elementos principales
@@ -54,9 +82,167 @@ const domElementsCatalogo = {
 // --- 3. Funciones de API ---
 
 /**
+ * Genera filtros dinámicamente desde las etiquetas de la base de datos
+ */
+function generarFiltrosDinamicos() {
+    console.log('🏷️ Generando filtros dinámicos...');
+
+    // Obtener todas las etiquetas únicas
+    const etiquetasUnicas = new Set();
+
+    appDataCatalogo.plantasOriginales.forEach(planta => {
+        planta.etiquetas.forEach(etiqueta => {
+            etiquetasUnicas.add(JSON.stringify({
+                id: etiqueta.id,
+                nombre: etiqueta.nombre,
+                color: etiqueta.color
+            }));
+        });
+    });
+
+    // Convertir de vuelta a objetos y ordenar
+    const etiquetasArray = Array.from(etiquetasUnicas)
+        .map(etiquetaStr => JSON.parse(etiquetaStr))
+        .sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+    // Iconos para cada tipo de etiqueta
+    const iconosEtiquetas = {
+        'todas': 'fas fa-globe',
+        'interior': 'fas fa-home',
+        'exterior': 'fas fa-sun',
+        'suculenta': 'fas fa-cactus',
+        'flores': 'fas fa-flower',
+        'medicinal': 'fas fa-heartbeat',
+        'aromática': 'fas fa-leaf',
+        'purificadora': 'fas fa-wind',
+        'default': 'fas fa-tag'
+    };
+
+    // Buscar el contenedor de filtros
+    const quickFiltersContainer = document.querySelector('.quick-filters');
+    if (!quickFiltersContainer) {
+        console.error('❌ No se encontró el contenedor .quick-filters');
+        return;
+    }
+
+    // Limpiar filtros existentes
+    quickFiltersContainer.innerHTML = '';
+
+    // Crear botón "Todas" siempre primero
+    const botonTodas = document.createElement('button');
+    botonTodas.className = 'filter-btn active';
+    botonTodas.dataset.filter = 'all';
+    botonTodas.innerHTML = `
+        <i class="${iconosEtiquetas['todas']}"></i>
+        Todas
+    `;
+    quickFiltersContainer.appendChild(botonTodas);
+
+    // Crear botones para cada etiqueta única
+    etiquetasArray.forEach(etiqueta => {
+        const boton = document.createElement('button');
+        boton.className = 'filter-btn';
+        boton.dataset.filter = etiqueta.nombre.toLowerCase();
+
+        // Seleccionar icono apropiado
+        const nombreLower = etiqueta.nombre.toLowerCase();
+        const icono = iconosEtiquetas[nombreLower] || iconosEtiquetas['default'];
+
+        boton.innerHTML = `
+            <i class="${icono}" style="color: ${etiqueta.color}"></i>
+            ${etiqueta.nombre}
+        `;
+
+        // Agregar estilo hover con el color de la etiqueta
+        boton.addEventListener('mouseenter', () => {
+            boton.style.borderColor = etiqueta.color;
+            boton.style.color = etiqueta.color;
+        });
+
+        boton.addEventListener('mouseleave', () => {
+            if (!boton.classList.contains('active')) {
+                boton.style.borderColor = '';
+                boton.style.color = '';
+            }
+        });
+
+        quickFiltersContainer.appendChild(boton);
+    });
+
+    // Re-inicializar los event listeners para los nuevos botones
+    inicializarFiltrosDinamicos();
+
+    console.log(`✅ ${etiquetasArray.length + 1} filtros generados dinámicamente`);
+}
+
+/**
+ * Inicializa los event listeners para los filtros dinámicos
+ */
+function inicializarFiltrosDinamicos() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Actualizar estado visual
+            filterButtons.forEach(b => {
+                b.classList.remove('active');
+                b.style.borderColor = '';
+                b.style.color = '';
+            });
+            btn.classList.add('active');
+
+            // Aplicar filtro
+            const filtro = btn.dataset.filter;
+            aplicarFiltroPorEtiqueta(filtro);
+        });
+    });
+}
+
+/**
+ * Nueva función para filtrar por etiquetas específicas
+ */
+function aplicarFiltroPorEtiqueta(etiqueta) {
+    appDataCatalogo.filtroActivo = etiqueta;
+    console.log(`🔍 Aplicando filtro: ${etiqueta}`);
+
+    let plantasFiltradas = [...appDataCatalogo.plantasOriginales];
+
+    // Filtro por búsqueda (mantener funcionalidad existente)
+    if (appDataCatalogo.terminoBusqueda) {
+        plantasFiltradas = plantasFiltradas.filter(planta =>
+            planta.nombreComun.toLowerCase().includes(appDataCatalogo.terminoBusqueda) ||
+            planta.nombreCientifico.toLowerCase().includes(appDataCatalogo.terminoBusqueda) ||
+            planta.descripcion.toLowerCase().includes(appDataCatalogo.terminoBusqueda) ||
+            planta.etiquetas.some(etiquetaPlanta =>
+                etiquetaPlanta.nombre.toLowerCase().includes(appDataCatalogo.terminoBusqueda)
+            )
+        );
+    }
+
+    // Filtro por etiqueta específica
+    if (etiqueta !== 'all') {
+        plantasFiltradas = plantasFiltradas.filter(planta => {
+            return planta.etiquetas.some(etiquetaPlanta =>
+                etiquetaPlanta.nombre.toLowerCase() === etiqueta.toLowerCase()
+            );
+        });
+    }
+
+    appDataCatalogo.plantasFiltradas = plantasFiltradas;
+
+    // Actualizar UI
+    actualizarContadorResultados();
+    actualizarTerminoBusqueda();
+    renderizarPlantas();
+
+    console.log(`🎯 Filtro aplicado: ${plantasFiltradas.length} plantas encontradas`);
+}
+
+
+/**
  * Carga todas las plantas desde la API
  */
-async function cargarPlantasAPI() {
+async function cargarPlantasAPIConFiltros() {
     try {
         console.log('🌱 Cargando plantas desde API...');
         appDataCatalogo.cargando = true;
@@ -80,11 +266,14 @@ async function cargarPlantasAPI() {
             imagenURL: planta.imagenURL || '/images/default-plant.jpg',
             cuidados: planta.cuidados || [],
             categoria: planta.categoria || 'general',
-            tags: planta.tags || [],
+            etiquetas: planta.etiquetas || [],
             fechaCreacion: planta.fechaCreacion || new Date().toISOString()
         }));
 
         appDataCatalogo.plantasFiltradas = [...appDataCatalogo.plantasOriginales];
+
+        // ¡AQUÍ ESTÁ LA CLAVE! Generar filtros dinámicos después de cargar los datos
+        generarFiltrosDinamicos();
 
         // Actualizar UI
         actualizarContadorResultados();
@@ -129,16 +318,19 @@ function aplicarFiltros() {
         plantasFiltradas = plantasFiltradas.filter(planta =>
             planta.nombreComun.toLowerCase().includes(appDataCatalogo.terminoBusqueda) ||
             planta.nombreCientifico.toLowerCase().includes(appDataCatalogo.terminoBusqueda) ||
-            planta.descripcion.toLowerCase().includes(appDataCatalogo.terminoBusqueda)
+            planta.descripcion.toLowerCase().includes(appDataCatalogo.terminoBusqueda) ||
+            planta.etiquetas.some(etiqueta =>
+                etiqueta.nombre.toLowerCase().includes(appDataCatalogo.terminoBusqueda)
+            )
         );
     }
 
     // Filtro por categoría (cuando implementes en backend)
     if (appDataCatalogo.filtroActivo !== 'all') {
         plantasFiltradas = plantasFiltradas.filter(planta => {
-            // Por ahora, filtro básico por descripción/tags
+            // Por ahora, filtro básico por descripción/etiquetas
             // Cuando tengas categorías en el backend, cambia esto por: planta.categoria === appDataCatalogo.filtroActivo
-            const textoCompleto = `${planta.descripcion} ${planta.tags.join(' ')}`.toLowerCase();
+            const textoCompleto = `${planta.descripcion} ${planta.etiquetas.map(e => e.nombre).join(' ')}`.toLowerCase();
             const categorias = appDataCatalogo.categoriasFiltros[appDataCatalogo.filtroActivo] || [];
             return categorias.some(cat => textoCompleto.includes(cat));
         });
@@ -209,11 +401,14 @@ function crearTarjetaPlanta(planta, index) {
                 <p class="plant-card-scientific">${planta.nombreCientifico}</p>
             </div>
             <p class="plant-card-description">${descripcionCorta}</p>
-            ${planta.tags.length > 0 ? `
+            ${planta.etiquetas.length > 0 ? `
                 <div class="plant-card-tags">
-                    ${planta.tags.slice(0, 3).map(tag => `
-                        <span class="plant-tag">${tag}</span>
+                    ${planta.etiquetas.slice(0, 3).map(etiqueta => `
+                        <span class="plant-tag" style="background-color: ${etiqueta.color}20; color: ${etiqueta.color}; border-color: ${etiqueta.color}40;">
+                            ${etiqueta.nombre}
+                        </span>
                     `).join('')}
+                    ${planta.etiquetas.length > 3 ? `<span class="plant-tag-more">+${planta.etiquetas.length - 3}</span>` : ''}
                 </div>
             ` : ''}
             <div class="plant-card-footer">
@@ -273,6 +468,9 @@ function mostrarModalPlanta(planta) {
 
     // Renderizar cuidados
     renderizarCuidadosModal(planta.cuidados);
+
+    // Renderizar etiquetas en el modal
+    renderizarEtiquetasModal(planta.etiquetas);
 
     // Mostrar modal
     domElementsCatalogo.modalOverlay.classList.add('show');
@@ -427,7 +625,7 @@ function generarSugerencias(termino) {
     const sugerencias = [];
     const terminoLower = termino.toLowerCase();
 
-    // Buscar en nombres de plantas
+    // Buscar en nombres de plantas y etiquetas
     appDataCatalogo.plantasOriginales.forEach(planta => {
         if (planta.nombreComun.toLowerCase().includes(terminoLower)) {
             sugerencias.push({
@@ -443,6 +641,18 @@ function generarSugerencias(termino) {
                 icono: 'fas fa-microscope'
             });
         }
+
+        // Buscar en etiquetas
+        planta.etiquetas.forEach(etiqueta => {
+            if (etiqueta.nombre.toLowerCase().includes(terminoLower)) {
+                sugerencias.push({
+                    texto: etiqueta.nombre,
+                    tipo: 'etiqueta',
+                    icono: 'fas fa-tag',
+                    color: etiqueta.color
+                });
+            }
+        });
     });
 
     // Limitar sugerencias y eliminar duplicados
@@ -461,8 +671,10 @@ function generarSugerencias(termino) {
 function renderizarSugerencias(sugerencias) {
     domElementsCatalogo.searchSuggestions.innerHTML = sugerencias.map(sugerencia => `
         <div class="suggestion-item" data-texto="${sugerencia.texto}">
-            <i class="suggestion-icon ${sugerencia.icono}"></i>
+            <i class="suggestion-icon ${sugerencia.icono}"
+               ${sugerencia.color ? `style="color: ${sugerencia.color}"` : ''}></i>
             <span>${sugerencia.texto}</span>
+            ${sugerencia.tipo === 'etiqueta' ? '<small style="color: #666; margin-left: auto;">etiqueta</small>' : ''}
         </div>
     `).join('');
 
@@ -671,21 +883,21 @@ function inicializarReset() {
  * Inicializa toda la aplicación del catálogo
  */
 async function inicializarCatalogo() {
-    console.log('🌱 Inicializando catálogo de plantas...');
+    console.log('🌱 Inicializando catálogo de plantas con filtros dinámicos...');
 
     try {
-        // Inicializar componentes de UI
+        // Inicializar componentes de UI (excepto filtros, que se harán dinámicamente)
         inicializarSidebar();
         inicializarBusqueda();
-        inicializarFiltros();
+        // ❌ NO llamar inicializarFiltros() aquí - se hará automáticamente
         inicializarVistas();
         inicializarModal();
         inicializarReset();
 
-        // Cargar plantas desde API
-        await cargarPlantasAPI();
+        // Cargar plantas desde API y generar filtros dinámicos
+        await cargarPlantasAPIConFiltros();
 
-        // Verificar si hay un parámetro de planta en la URL (para enlaces directos)
+        // Verificar si hay un parámetro de planta en la URL
         const urlParams = new URLSearchParams(window.location.search);
         const plantaId = urlParams.get('planta');
         if (plantaId) {
@@ -695,7 +907,7 @@ async function inicializarCatalogo() {
             }
         }
 
-        console.log('✅ Catálogo inicializado correctamente');
+        console.log('✅ Catálogo con filtros dinámicos inicializado correctamente');
 
     } catch (error) {
         console.error('❌ Error al inicializar catálogo:', error);

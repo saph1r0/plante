@@ -221,7 +221,7 @@ public class PlantaController {
 
     @GetMapping("/test2")
     public String test2() {
-        return "index";
+        return "redirect:/index.html";
     }
 
     /**
