@@ -3,6 +3,7 @@ package com.planta.plantapp.presentacion.controlador;
 import com.planta.plantapp.aplicacion.interfaces.IServicioPlanta;
 import com.planta.plantapp.dominio.modelo.planta.Planta;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
@@ -14,7 +15,7 @@ import java.util.Optional;
 /**
  * Controlador para gestionar las operaciones relacionadas con las plantas.
  */
-@RestController
+@Controller
 @RequestMapping("/api/plantas")
 public class PlantaController {
 
@@ -216,6 +217,11 @@ public class PlantaController {
 
             return ResponseEntity.status(500).body(response);
         }
+    }
+
+    @GetMapping("/test2")
+    public String test2() {
+        return "index";
     }
 
     /**

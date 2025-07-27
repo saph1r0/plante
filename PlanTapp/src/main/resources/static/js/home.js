@@ -1,68 +1,141 @@
 // home.js - Lógica para la página de inicio (index.html) de la aplicación "Plantee"
+// ¡NUEVO! Integración con API de plantas
 
-// --- 1. Datos Iniciales (Solo los necesarios para la página de inicio) ---
+// --- 1. Datos Iniciales ---
 const appDataHome = {
+    // Datos estáticos originales como fallback
     catalogImages: [
         { src: '/images/AA1H7uuE.jpeg', name: 'Orquídea Phalaenopsis', date: '2024-03-15', description: 'Una hermosa orquídea con flores vibrantes, ideal para interiores luminosos. Requiere riego moderado y alta humedad ambiental.' },
         { src: '/images/AA1HFmux.jpeg', name: 'Echeveria Elegans', date: '2023-11-20', description: 'Suculenta de fácil cuidado, perfecta para principiantes. Necesita mucha luz solar directa y muy poco riego.' },
         { src: '/images/AA1HpE4h.jpeg', name: 'Helecho Espada', date: '2024-01-10', description: 'Popular por su frondoso follaje, ideal para crear un ambiente tropical. Prefiere sombra parcial y alta humedad.' },
         { src: '/images/bulbosas.jpg', name: 'Rosa Roja Clásica', date: '2023-07-01', description: 'La reina del jardín, con sus pétalos suaves y fragancia inconfundible. Requiere sol pleno y poda regular para florecer.' },
         { src: '/images/flower-g6e77477b1_1280.jpg', name: 'Bonsái Ficus', date: '2024-02-28', description: 'Un arte milenario que convierte árboles en miniatura. Este Ficus es ideal para empezar en el mundo del bonsái, resistente y adaptable.' },
-        { src: '/images/R (1).jpeg', name: 'Girasol Gigante', date: '2023-09-05', description: 'Flores grandes y alegres que siguen el sol. Perfectos para dar un toque vibrante a tu jardín y atraer polinizadores.' },
-        { src: '/images/R.jpeg', name: 'Lavanda Angustifolia', date: '2024-04-22', description: 'Planta aromática con hermosas flores moradas, conocida por sus propiedades relajantes y su uso en aceites esenciales.' },
-        { src: '/images/sorta-gortenzii_643b7eb5eb1f6.jpg', name: 'Cactus San Pedro', date: '2023-10-10', description: 'Cactus columnar de crecimiento rápido, muy resistente y de bajo mantenimiento. Ideal para jardines desérticos o macetas grandes.' },
     ],
     searchableOptions: [
         'Inicio', 'Servicios', 'Catálogo', 'Contáctanos', 'Mi Cuenta',
         'Orquídeas', 'Suculentas', 'Helechos', 'Rosas', 'Bonsái', 'Girasoles', 'Lavanda', 'Cactus',
         'Consultoría de Jardinería', 'Diseño de Paisajes', 'Mantenimiento de Jardines', 'Control de Plagas Orgánico', 'Venta de Semillas y Plantas', 'Talleres y Cursos',
     ],
+    // ¡NUEVO! Datos de plantas desde API
+    plantasReales: [],
+    plantasFiltradas: []
 };
 
-// --- 2. Referencias a Elementos del DOM ---
+// --- 2. Referencias a Elementos del DOM (igual que antes) ---
 const domElementsHome = {
-    // Sidebar y menú
     menuToggle: document.getElementById('menu-toggle'),
     sidebar: document.getElementById('sidebar'),
     mainContent: document.querySelector('main'),
-
-    // Barra de búsqueda
     searchIcon: document.getElementById('search-icon'),
     searchBar: document.getElementById('search-bar'),
     searchInput: document.getElementById('search-input'),
     searchSuggestions: document.getElementById('search-suggestions'),
-
-    // Catálogo (Carrusel)
     carouselTrack: document.getElementById('carousel-track'),
     carouselPrevBtn: document.getElementById('carousel-prev-btn'),
     carouselNextBtn: document.getElementById('carousel-next-btn'),
     photoModalOverlay: document.getElementById('photo-modal-overlay'),
     photoModalContent: document.getElementById('photo-modal-content'),
-    modalImage: null, // Se asignará dinámicamente
-    modalTitle: null, // Se asignará dinámicamente
-    modalDescription: null, // Se asignará dinámicamente
-    photoModalClose: null, // Se asignará dinámicamente
-
-    // Botones de autenticación
+    modalImage: null,
+    modalTitle: null,
+    modalDescription: null,
+    photoModalClose: null,
     registerBtn: document.getElementById('register-btn'),
     loginBtn: document.getElementById('login-btn'),
 };
 
-// --- 3. Funciones de Utilidad ---
+// --- 3. ¡NUEVAS! Funciones para API de Plantas ---
 
 /**
- * Muestra u oculta un elemento HTML.
- * @param {HTMLElement} element - El elemento HTML a manipular.
- * @param {boolean} show - True para mostrar, false para ocultar.
+ * Carga las plantas desde la API del backend
  */
+async function cargarPlantasDesdeAPI() {
+    try {
+        console.log('🌱 Cargando plantas desde API...');
+
+        const response = await fetch('/api/plantas');
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+
+        const plantas = await response.json();
+        console.log('✅ Plantas cargadas:', plantas.length);
+
+        // Convertir plantas a formato compatible con el carrusel
+        appDataHome.plantasReales = plantas.map(planta => ({
+            id: planta.id,
+            src: planta.imagenURL || '/images/default-plant.jpg',
+            name: planta.nombreComun,
+            scientificName: planta.nombreCientifico,
+            description: planta.descripcion,
+            date: new Date().toISOString().split('T')[0], // Fecha actual como placeholder
+            cuidados: planta.cuidados || []
+        }));
+
+        appDataHome.plantasFiltradas = [...appDataHome.plantasReales];
+
+        // Actualizar opciones de búsqueda con nombres de plantas
+        const nombresPlanta = plantas.map(p => p.nombreComun);
+        appDataHome.searchableOptions = [
+            ...appDataHome.searchableOptions,
+            ...nombresPlanta
+        ];
+
+        // Re-renderizar carrusel con plantas reales
+        loadCarouselImagesHome();
+
+        return plantas;
+
+    } catch (error) {
+        console.error('❌ Error al cargar plantas:', error);
+        // Usar datos estáticos como fallback
+        console.log('📋 Usando datos estáticos como fallback');
+        return appDataHome.catalogImages;
+    }
+}
+
+/**
+ * Busca plantas por nombre
+ */
+function buscarPlantas(query) {
+    if (!query || query.length < 2) {
+        appDataHome.plantasFiltradas = [...appDataHome.plantasReales];
+    } else {
+        appDataHome.plantasFiltradas = appDataHome.plantasReales.filter(planta =>
+            planta.name.toLowerCase().includes(query.toLowerCase()) ||
+            planta.scientificName.toLowerCase().includes(query.toLowerCase())
+        );
+    }
+
+    console.log(`🔍 Búsqueda "${query}": ${appDataHome.plantasFiltradas.length} resultados`);
+    loadCarouselImagesHome();
+}
+
+/**
+ * Genera descripción detallada de la planta incluyendo cuidados
+ */
+function generarDescripcionCompleta(planta) {
+    let descripcion = planta.description || 'Información de la planta no disponible.';
+
+    if (planta.cuidados && planta.cuidados.length > 0) {
+        descripcion += '\n\n🌿 Cuidados principales:\n';
+        planta.cuidados.slice(0, 3).forEach(cuidado => {
+            const tipo = cuidado.tipo || 'Cuidado';
+            const desc = cuidado.descripcion || 'Sin descripción';
+            const frecuencia = cuidado.frecuenciaDias ? `cada ${cuidado.frecuenciaDias} días` : '';
+            descripcion += `• ${tipo}: ${desc} ${frecuencia}\n`;
+        });
+    }
+
+    return descripcion;
+}
+
+// --- 4. Funciones de Utilidad (mantenemos las originales) ---
+
 function toggleVisibility(element, show) {
     element.style.display = show ? 'block' : 'none';
 }
 
-/**
- * Función para desplazar a la sección correspondiente.
- * @param {string} query - El texto de la búsqueda o nombre de la sección.
- */
 function scrollToSection(query) {
     let targetId = '';
     switch(query.toLowerCase()) {
@@ -72,12 +145,25 @@ function scrollToSection(query) {
         case 'contáctanos': targetId = 'contactanos'; break;
         case 'mi cuenta': window.location.href = 'dashboard.html'; return;
         default:
+            // Buscar en plantas reales primero
             let foundSection = false;
-            for (const item of appDataHome.catalogImages) {
+            for (const item of appDataHome.plantasReales) {
                 if (item.name.toLowerCase().includes(query.toLowerCase())) {
                     targetId = 'catalogo';
                     foundSection = true;
+                    // También filtrar las plantas
+                    buscarPlantas(query);
                     break;
+                }
+            }
+            if (!foundSection) {
+                // Fallback a datos estáticos
+                for (const item of appDataHome.catalogImages) {
+                    if (item.name.toLowerCase().includes(query.toLowerCase())) {
+                        targetId = 'catalogo';
+                        foundSection = true;
+                        break;
+                    }
                 }
             }
             if (!foundSection) {
@@ -98,11 +184,8 @@ function scrollToSection(query) {
     }
 }
 
-// --- 4. Inicialización de Componentes ---
+// --- 5. Inicialización de Componentes (actualizados) ---
 
-/**
- * Inicializa la funcionalidad de la barra lateral.
- */
 function initializeSidebarHome() {
     if (!domElementsHome.menuToggle || !domElementsHome.sidebar) {
         console.error('Elementos del sidebar no encontrados');
@@ -131,7 +214,7 @@ function initializeSidebarHome() {
 }
 
 /**
- * Inicializa la funcionalidad de la barra de búsqueda.
+ * ¡ACTUALIZADA! Inicializa la funcionalidad de la barra de búsqueda con plantas reales
  */
 function initializeSearchBarHome() {
     if (!domElementsHome.searchIcon || !domElementsHome.searchBar) {
@@ -148,6 +231,9 @@ function initializeSearchBarHome() {
         } else {
             toggleVisibility(domElementsHome.searchSuggestions, false);
             domElementsHome.searchInput.value = '';
+            // Resetear filtros
+            appDataHome.plantasFiltradas = [...appDataHome.plantasReales];
+            loadCarouselImagesHome();
         }
     });
 
@@ -156,9 +242,16 @@ function initializeSearchBarHome() {
         domElementsHome.searchSuggestions.innerHTML = '';
 
         if (query.length > 0) {
-            const filteredSuggestions = appDataHome.searchableOptions.filter(option =>
-                option.toLowerCase().includes(query)
-            ).slice(0, 5);
+            // Buscar en plantas reales + opciones estáticas
+            const todasLasOpciones = [
+                ...appDataHome.searchableOptions,
+                ...appDataHome.plantasReales.map(p => p.name),
+                ...appDataHome.plantasReales.map(p => p.scientificName)
+            ];
+
+            const filteredSuggestions = [...new Set(todasLasOpciones)]
+                .filter(option => option.toLowerCase().includes(query))
+                .slice(0, 5);
 
             if (filteredSuggestions.length > 0) {
                 filteredSuggestions.forEach(suggestion => {
@@ -167,6 +260,17 @@ function initializeSearchBarHome() {
                     div.addEventListener('click', () => {
                         domElementsHome.searchInput.value = suggestion;
                         toggleVisibility(domElementsHome.searchSuggestions, false);
+
+                        // Si es una planta, buscar y mostrar
+                        const esPlanta = appDataHome.plantasReales.some(p =>
+                            p.name.toLowerCase() === suggestion.toLowerCase() ||
+                            p.scientificName.toLowerCase() === suggestion.toLowerCase()
+                        );
+
+                        if (esPlanta) {
+                            buscarPlantas(suggestion);
+                        }
+
                         scrollToSection(suggestion);
                         domElementsHome.searchBar.classList.remove('active');
                     });
@@ -176,8 +280,14 @@ function initializeSearchBarHome() {
             } else {
                 toggleVisibility(domElementsHome.searchSuggestions, false);
             }
+
+            // Buscar plantas en tiempo real
+            buscarPlantas(query);
         } else {
             toggleVisibility(domElementsHome.searchSuggestions, false);
+            // Resetear filtros
+            appDataHome.plantasFiltradas = [...appDataHome.plantasReales];
+            loadCarouselImagesHome();
         }
     });
 
@@ -186,12 +296,15 @@ function initializeSearchBarHome() {
             toggleVisibility(domElementsHome.searchSuggestions, false);
             domElementsHome.searchBar.classList.remove('active');
             domElementsHome.searchInput.value = '';
+            // Resetear filtros
+            appDataHome.plantasFiltradas = [...appDataHome.plantasReales];
+            loadCarouselImagesHome();
         }
     });
 }
 
 /**
- * Carga y renderiza las imágenes del catálogo en el carrusel para la página de inicio.
+ * ¡ACTUALIZADA! Carga y renderiza las plantas (reales o estáticas) en el carrusel
  */
 function loadCarouselImagesHome() {
     if (!domElementsHome.carouselTrack) {
@@ -201,39 +314,70 @@ function loadCarouselImagesHome() {
 
     domElementsHome.carouselTrack.innerHTML = '';
 
-    appDataHome.catalogImages.forEach((image, index) => {
-        const item = document.createElement('div');
-        item.classList.add('carousel-item');
-        item.innerHTML = `
-            <img src="${image.src}" alt="${image.name}" data-index="${index}">
+    // Usar plantas filtradas si existen, sino usar datos estáticos
+    const datosAMostrar = appDataHome.plantasFiltradas.length > 0
+        ? appDataHome.plantasFiltradas
+        : appDataHome.catalogImages;
+
+    datosAMostrar.forEach((item, index) => {
+        const carouselItem = document.createElement('div');
+        carouselItem.classList.add('carousel-item');
+
+        // Template para plantas reales vs estáticas
+        const esPlantaReal = item.id !== undefined;
+
+        carouselItem.innerHTML = `
+            <img src="${item.src}"
+                 alt="${item.name}"
+                 data-index="${index}"
+                 data-es-planta-real="${esPlantaReal}">
             <div class="image-info">
-                <strong>${image.name}</strong>
-                <span>${image.date}</span>
+                <strong>${item.name}</strong>
+                ${esPlantaReal ?
+                    `<em>${item.scientificName}</em>` :
+                    `<span>${item.date}</span>`
+                }
             </div>
         `;
-        domElementsHome.carouselTrack.appendChild(item);
 
-        const imgElement = item.querySelector('img');
+        domElementsHome.carouselTrack.appendChild(carouselItem);
+
+        const imgElement = carouselItem.querySelector('img');
         if (imgElement) {
             imgElement.addEventListener('click', (e) => {
                 const clickedIndex = parseInt(e.target.dataset.index);
-                const photo = appDataHome.catalogImages[clickedIndex];
+                const esPlantaReal = e.target.dataset.esPlantaReal === 'true';
+
+                const item = esPlantaReal ?
+                    appDataHome.plantasFiltradas[clickedIndex] :
+                    appDataHome.catalogImages[clickedIndex];
 
                 if (domElementsHome.photoModalOverlay && domElementsHome.modalImage) {
-                    domElementsHome.modalImage.src = photo.src;
-                    domElementsHome.modalImage.alt = photo.name;
-                    domElementsHome.modalTitle.textContent = photo.name;
-                    domElementsHome.modalDescription.textContent = photo.description;
+                    domElementsHome.modalImage.src = item.src;
+                    domElementsHome.modalImage.alt = item.name;
+
+                    // Título con nombre científico si es planta real
+                    if (esPlantaReal) {
+                        domElementsHome.modalTitle.innerHTML = `
+                            ${item.name}
+                            <br><em style="font-size: 0.8em; color: #666;">${item.scientificName}</em>
+                        `;
+                        domElementsHome.modalDescription.textContent = generarDescripcionCompleta(item);
+                    } else {
+                        domElementsHome.modalTitle.textContent = item.name;
+                        domElementsHome.modalDescription.textContent = item.description;
+                    }
+
                     domElementsHome.photoModalOverlay.classList.add('visible');
                 }
             });
         }
     });
+
+    console.log(`🎠 Carrusel actualizado con ${datosAMostrar.length} elementos`);
 }
 
-/**
- * Inicializa la funcionalidad de arrastre del carrusel.
- */
+// Resto de funciones igual que antes...
 function initializeCarouselDragHome() {
     if (!domElementsHome.carouselTrack) {
         console.error('CarouselTrack no encontrado para drag');
@@ -270,16 +414,12 @@ function initializeCarouselDragHome() {
     });
 }
 
-/**
- * Inicializa el cierre del modal de fotos.
- */
 function initializePhotoModalCloseHome() {
     if (!domElementsHome.photoModalOverlay || !domElementsHome.photoModalContent) {
         console.error('Elementos del modal de fotos no encontrados');
         return;
     }
 
-    // Asignar referencias a elementos dentro del modal de fotos
     domElementsHome.modalImage = domElementsHome.photoModalContent.querySelector('img');
     domElementsHome.modalTitle = domElementsHome.photoModalContent.querySelector('h3');
     domElementsHome.modalDescription = domElementsHome.photoModalContent.querySelector('p');
@@ -301,9 +441,6 @@ function initializePhotoModalCloseHome() {
     });
 }
 
-/**
- * Inicializa la lógica de redirección de botones de autenticación.
- */
 function initializeAuthButtonsHome() {
     if (domElementsHome.registerBtn) {
         domElementsHome.registerBtn.addEventListener('click', () => {
@@ -318,16 +455,22 @@ function initializeAuthButtonsHome() {
     }
 }
 
-// --- 5. Inicialización de la Aplicación (Punto de Entrada) ---
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Inicializando aplicación home...');
+// --- 6. ¡ACTUALIZADA! Inicialización de la Aplicación ---
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('🌱 Inicializando aplicación home con plantas reales...');
 
+    // Inicializar componentes básicos primero
     initializeSidebarHome();
     initializeSearchBarHome();
-    loadCarouselImagesHome();
     initializeCarouselDragHome();
     initializePhotoModalCloseHome();
     initializeAuthButtonsHome();
 
-    console.log('Aplicación home inicializada correctamente');
+    // Cargar plantas estáticas como placeholder inicial
+    loadCarouselImagesHome();
+
+    // ¡NUEVO! Cargar plantas reales desde API
+    await cargarPlantasDesdeAPI();
+
+    console.log('✅ Aplicación home inicializada correctamente');
 });
