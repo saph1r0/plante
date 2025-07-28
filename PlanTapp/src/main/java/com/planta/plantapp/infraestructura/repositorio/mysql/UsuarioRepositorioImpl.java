@@ -5,7 +5,6 @@ import com.planta.plantapp.dominio.usuario.modelo.Usuario;
 import com.planta.plantapp.infraestructura.entidad.UsuarioEntidad;
 import com.planta.plantapp.infraestructura.repositorio.mysql.jpa.UsuarioJpaRepositorio;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
 

@@ -1,7 +1,6 @@
 package com.planta.plantapp.dominio.usuario.modelo;
 
 import com.planta.plantapp.dominio.modelo.planta.Planta;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +28,8 @@ public class Usuario {
     public Usuario(String nombre, String correo, String contrasena) {
         this.nombre = nombre;
         this.correo = correo;
-        this.contrasena = contrasena;
+        this.contrasena = contrasena; // Hash
+
     }
 
     // Getters
@@ -86,10 +86,10 @@ public class Usuario {
         this.plantas = plantas;
     }
 
-    public void setPassword(String password) {
-        this.contrasena = password;
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
     }
-    
+
 
     @Override
     public boolean equals(Object o) {

@@ -123,9 +123,8 @@ public class ServicioUsuarioImpl implements IServicioUsuario {
     @Override
     public void recuperarContrasena(String email) {
         if (email == null || !existeCorreo(email)) {
-            return; // Validación esperada, no se lanza excepción
+            //  enviar correo
         }
-        // Lógica de recuperación (ej: enviar correo)
     }
 
     @Override
@@ -136,7 +135,7 @@ public class ServicioUsuarioImpl implements IServicioUsuario {
             Usuario usuario = repositorioUsuario.obtenerPorId(id);
             if (usuario == null) return false;
 
-            usuario.setPassword(nuevaContrasena);
+            usuario.setContrasena(nuevaContrasena);
             repositorioUsuario.guardar(usuario);
             return true;
         } catch (Exception e) {

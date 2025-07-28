@@ -144,49 +144,43 @@ function showSuccessMessage(message) {
 }
 
 function handleFormSubmit(event, formType) {
-    event.preventDefault();
+    function handleFormSubmit(event, formType) {
+        event.preventDefault();
 
-    if (validateForm(formType)) {
-        const form = event.target;
-        const formData = new FormData(form);
-        const params = new URLSearchParams();
+        if (validateForm(formType)) {
+            const form = event.target;
+            const formData = new FormData(form);
+            const params = new URLSearchParams();
 
-        for (const pair of formData.entries()) {
-            params.append(pair[0], pair[1]);
-        }
-
-        const url = formType === 'login'
-            ? 'http://localhost:8080/usuarios/login'
-            : 'http://localhost:8080/usuarios/registrar';
-
-
-        fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: params
-        })
-        .then(response => response.text())
-        .then(data => {
-            showSuccessMessage(data);
-
-            if (formType === 'login') {
-                const correo = formData.get('email');
-                const contrasena = formData.get('contrasena');
-                params.set('email', correo); // lo renombramos como 'email'
-                params.set('contrasena', contrasena);
-            } else {
-                for (const pair of formData.entries()) {
-                    if (pair[0] !== 'confirmar' && pair[0] !== 'terminos') {
-                        params.append(pair[0], pair[1]);
-                    }
-                }
+            for (const pair of formData.entries()) {
+                params.append(pair[0], pair[1]);
             }
 
-        })
-        .catch(() => {
-            showSuccessMessage('Error en la conexión con el servidor');
-        });
+            const url = formType === 'login'
+                ? 'http://localhost:8080/usuarios/login'
+                : 'http://localhost:8080/usuarios/registrar';
+
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params
+            })
+            .then(async response => {
+                if (response.ok) {
+                    const data = await response.text();
+                    showSuccessMessage(data.includes("Usuario registrado") ? "¡Registrado exitosamente!" : "¡Sesión iniciada!");
+                } else if (response.status === 401) {
+                    showSuccessMessage("Credenciales inválidas");
+                } else {
+                    showSuccessMessage("Error del servidor");
+                }
+            })
+            .catch(() => {
+                showSuccessMessage('Error en la conexión con el servidor');
+            });
+        }
     }
+
 }
 
 
