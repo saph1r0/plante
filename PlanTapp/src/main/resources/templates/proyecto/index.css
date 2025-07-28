@@ -85,6 +85,19 @@ body::-webkit-scrollbar-thumb {
     margin-top: 2rem; /* 32px */
 }
 
+/* Screen reader only class for accessibility */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
 /* --- 3. Encabezado (Header) --- */
 .app-header {
     background: var(--color-cream-medium);
@@ -166,15 +179,21 @@ body::-webkit-scrollbar-thumb {
     padding: 20px;
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Sombra más profunda */
-    display: none; /* Oculto por defecto, JS lo controla */
     box-sizing: border-box;
     z-index: 999; /* Just below header */
     transform: translateY(-100%); /* Start off-screen */
-    transition: transform 0.4s ease-out; /* Smooth slide down */
+    /* MODIFICADO: Usar opacity, visibility y pointer-events para un control más suave */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none; /* Evita clics cuando está oculto */
+    transition: opacity 0.4s ease-out, visibility 0.4s ease-out, transform 0.4s ease-out; /* Transición para todos */
 }
 .search-bar.active {
     transform: translateY(0); /* Slide into view */
-    display: block; /* Asegura que se muestre */
+    /* MODIFICADO: Hacer visible y permitir clics cuando está activo */
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto; /* Permite clics cuando está activo */
 }
 
 .search-input {
@@ -577,11 +596,65 @@ table.calendar td.has-event {
     resize: vertical;
     min-height: 60px; /* Altura mínima */
     box-sizing: border-box;
+    margin-bottom: 10px; /* Espacio entre textarea y botones */
 }
 .forum-textarea:focus {
     border-color: var(--color-green-medium);
     box-shadow: 0 0 0 3px rgba(111, 168, 120, 0.2); /* Sombra al enfocar */
 }
+.forum-actions {
+    display: flex;
+    justify-content: flex-end; /* Alinear botones a la derecha */
+    gap: 10px; /* Espacio entre botones */
+    margin-top: 10px;
+}
+.forum-action-btn {
+    padding: 8px 15px;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.forum-action-btn i {
+    font-size: 1em;
+}
+
+/* Estilos para mensajes con imagen */
+.chat-message .chat-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-top: 5px;
+}
+
+/* Estilos para tarjetas de invitación a evento */
+.chat-message .event-invite-card {
+    background-color: #f0f8f0; /* Fondo más claro para la tarjeta */
+    border: 1px solid var(--color-green-light);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 10px;
+    text-align: left;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+.chat-message .event-invite-card h4 {
+    color: var(--color-green-dark);
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+.chat-message .event-invite-card p {
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+.chat-message .event-invite-card .btn-small {
+    padding: 5px 10px;
+    font-size: 0.8em;
+    margin-top: 10px;
+}
+
+
 .login-message {
     position: absolute;
     bottom: 10px;
@@ -896,6 +969,27 @@ table.calendar td.has-event {
     line-height: 1.7;
     font-size: 1.1em;
 }
+.photo-modal-content .plant-care-details {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed var(--color-border-light);
+    text-align: left;
+}
+.photo-modal-content .plant-care-details h4 {
+    color: var(--color-green-dark);
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.3em;
+}
+.photo-modal-content .plant-care-details p {
+    margin-bottom: 5px;
+    font-size: 1em;
+    line-height: 1.5;
+}
+.photo-modal-content .plant-care-details strong {
+    color: var(--color-green-dark);
+}
+
 .photo-modal-close {
     position: absolute;
     top: 15px;
@@ -941,7 +1035,8 @@ table.calendar td.has-event {
 .add-form-section input[type="text"],
 .add-form-section input[type="date"],
 .add-form-section input[type="file"],
-.add-form-section textarea {
+.add-form-section textarea,
+.add-form-section select { /* Añadido select para consistencia */
     padding: 12px 15px;
     border: 1px solid var(--color-border-light);
     border-radius: 8px;
@@ -956,7 +1051,8 @@ table.calendar td.has-event {
 }
 .add-form-section input[type="text"]:focus,
 .add-form-section input[type="date"]:focus,
-.add-form-section textarea:focus {
+.add-form-section textarea:focus,
+.add-form-section select:focus { /* Añadido select para consistencia */
     border-color: var(--color-green-medium);
     box-shadow: 0 0 0 3px rgba(111, 168, 120, 0.2);
     outline: none;
@@ -1112,7 +1208,7 @@ table.calendar td.has-event {
         top: auto; /* Allow header to collapse */
         padding: 15px;
     }
-    .search-input {
+    .search-bar input {
         width: 90%;
     }
     .search-suggestions {
@@ -1232,7 +1328,7 @@ table.calendar td.has-event {
     .photo-modal-content {
         padding: 20px;
     }
-    .photo-modal-content .modal-title {
+    .photo-modal-content h3 {
         font-size: 1.5em;
     }
     .photo-modal-close {

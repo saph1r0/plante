@@ -117,7 +117,7 @@
             </div>
         </section>
 
-        <!-- Sección de Foro Comunitario -->
+        <!-- Sección de Foro Comunitario (Minimalista con opciones de envío) -->
         <section id="foro" class="content-section">
             <h2 class="section-title">Foro Comunitario</h2>
             <div id="chat-history" class="chat-history">
@@ -126,7 +126,7 @@
                     <strong class="message-author">Usuario1:</strong> ¡Hola a todos! ¿Alguien tiene consejos para cultivar orquídeas en climas cálidos?
                 </div>
                 <div class="chat-message user-message">
-                    <strong class="message-author">Usuario2:</strong> Hola @Usuario1! Yo las tengo en exterior con malla de sombra y riego diario en verano. ¡Funcionan genial!
+                    <strong class="message-author">Tú:</strong> Hola @Usuario1! Yo las tengo en exterior con malla de sombra y riego diario en verano. ¡Funcionan genial!
                 </div>
                 <div class="chat-message">
                     <strong class="message-author">Usuario3:</strong> ¡Qué buena idea lo de la feria de intercambio! Espero poder asistir.
@@ -134,6 +134,11 @@
             </div>
             <div id="forum-input-container" class="forum-input-container">
                 <textarea id="forum-input" rows="3" placeholder="Escribe tu mensaje y presiona Enter..." class="forum-textarea" aria-label="Campo para escribir mensajes en el foro"></textarea>
+                <div class="forum-actions">
+                    <button id="send-photo-btn" class="btn btn-secondary forum-action-btn" aria-label="Enviar foto"><i class="fas fa-image"></i> Foto</button>
+                    <button id="invite-event-btn" class="btn btn-secondary forum-action-btn" aria-label="Invitar a evento"><i class="fas fa-calendar-plus"></i> Evento</button>
+                    <button id="send-message-btn" class="btn btn-primary forum-action-btn" aria-label="Enviar mensaje"><i class="fas fa-paper-plane"></i> Enviar</button>
+                </div>
                 <div id="login-message" class="login-message">Inicia sesión para poder comentar</div>
             </div>
         </section>
@@ -182,6 +187,15 @@
                     <label for="plant-description">Descripción:</label>
                     <textarea id="plant-description" placeholder="Breve descripción y cuidados..." required></textarea>
 
+                    <label for="plant-watering">Frecuencia de Riego:</label>
+                    <input type="text" id="plant-watering" placeholder="Ej: Cada 3 días / 2 veces por semana">
+
+                    <label for="plant-climate">Clima Ideal:</label>
+                    <input type="text" id="plant-climate" placeholder="Ej: Cálido y húmedo / Templado y seco">
+
+                    <label for="plant-capabilities">Otras Capacidades/Cuidados:</label>
+                    <textarea id="plant-capabilities" placeholder="Ej: Requiere mucha luz, podar en primavera, ideal para principiantes..."></textarea>
+
                     <label for="plant-image">Imagen de la Planta:</label>
                     <input type="file" id="plant-image" accept="image/*" required>
                     <small>Solo con fines de demostración; la imagen no se guardará permanentemente.</small>
@@ -221,7 +235,28 @@
             <!-- SonarLint S6850: Añadido span sr-only para encabezado dinámico -->
             <h3 class="modal-title"><span class="sr-only">Título de la foto</span></h3>
             <p class="modal-description"></p>
+            <div class="plant-care-details">
+                <h4>Detalles de Cuidado:</h4>
+                <p><strong>Riego:</strong> <span id="modal-watering-frequency"></span></p>
+                <p><strong>Clima:</strong> <span id="modal-ideal-climate"></span></p>
+                <p><strong>Capacidades/Otros:</strong> <span id="modal-other-capabilities"></span></p>
+            </div>
             <button class="photo-modal-close" aria-label="Cerrar modal de foto">&times;</button>
+        </div>
+    </div>
+
+    <!-- Modal para Invitar a Evento (simulado) -->
+    <div class="modal-overlay hidden" id="event-invite-modal-overlay">
+        <div class="modal-content">
+            <h3>Invitar a Evento</h3>
+            <p>Selecciona un evento para compartir:</p>
+            <select id="event-select-for-invite" class="filter-input">
+                <!-- Opciones de eventos se cargarán con JS -->
+            </select>
+            <div class="modal-actions">
+                <button id="confirm-invite-btn" class="btn btn-primary">Enviar Invitación</button>
+                <button id="cancel-invite-btn" class="btn btn-secondary">Cancelar</button>
+            </div>
         </div>
     </div>
 
