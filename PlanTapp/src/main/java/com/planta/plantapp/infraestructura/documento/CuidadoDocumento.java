@@ -14,6 +14,7 @@ public class CuidadoDocumento {
         this.frecuenciaDias = frecuenciaDias;
     }
 
+
     public String getTipo() {
         return tipo;
     }

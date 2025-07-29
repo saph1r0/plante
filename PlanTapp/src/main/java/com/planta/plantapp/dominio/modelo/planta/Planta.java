@@ -126,4 +126,7 @@ public class Planta {
         return Objects.hash(id);
     }
 
+    public void setEtiquetas(List<Etiqueta> etiquetas) {
+        this.etiquetas=etiquetas;
+    }
 }

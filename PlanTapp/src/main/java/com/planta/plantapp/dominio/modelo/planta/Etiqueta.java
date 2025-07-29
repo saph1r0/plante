@@ -20,6 +20,11 @@ public class Etiqueta {
         this.color = color;
     }
 
+    public Etiqueta(String nombre, String color) {
+        this.nombre = nombre;
+        this.color = color;
+    }
+
     // Getters y setters
     public int getId() {
         return id;

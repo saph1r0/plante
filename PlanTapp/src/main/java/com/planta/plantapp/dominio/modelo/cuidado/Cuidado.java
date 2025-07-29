@@ -29,6 +29,12 @@ public class Cuidado {
         // Constructor vacío requerido por MongoDB
     }
 
+    public Cuidado(TipoCuidado tipo, String descripcion, int frecuenciaDias) {
+        this.tipo = tipo;
+        this.descripcion = descripcion;
+        this.frecuenciaDias = frecuenciaDias;
+    }
+
     public void programarProximo() {
         if (frecuenciaDias != null && frecuenciaDias > 0) {
             this.fechaProxima = this.fechaAplicacion.plusDays(frecuenciaDias);

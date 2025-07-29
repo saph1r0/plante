@@ -2,10 +2,14 @@ package com.planta.plantapp.presentacion.controlador;
 
 import com.planta.plantapp.aplicacion.interfaces.IServicioPlanta;
 import com.planta.plantapp.dominio.modelo.planta.Planta;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.planta.plantapp.dominio.modelo.planta.dto.PlantaRequestDTO;
+import com.planta.plantapp.dominio.modelo.planta.dto.PlantaResponseDTO;
+import com.planta.plantapp.infraestructura.mapper.PlantaMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.HashMap;
@@ -19,11 +23,11 @@ import java.util.Optional;
 @RequestMapping("/api/plantas")
 public class PlantaController {
 
-    @Autowired
-    private IServicioPlanta servicioPlanta;
+    private static final Logger logger = LoggerFactory.getLogger(PlantaController.class);
+    private final IServicioPlanta servicioPlanta;
 
-    public PlantaController() {
-        // Constructor por defecto
+    public PlantaController(IServicioPlanta servicioPlanta) {
+        this.servicioPlanta = servicioPlanta;
     }
 
     /**
@@ -31,17 +35,16 @@ public class PlantaController {
      * 🌱 ¡Aquí es donde verás tus plantitas de MongoDB!
      */
     @GetMapping
-    public ResponseEntity<List<Planta>> obtenerTodas() {
+    public ResponseEntity<List<Planta>> obtenerTodas(){
         try {
-            System.out.println("🌍 Controlador: Obteniendo todas las plantas...");
+            logger.info("🌍 Controlador: Obteniendo todas las plantas...");
             List<Planta> plantas = servicioPlanta.obtenerTodas();
-            System.out.println("✅ Controlador: " + plantas.size() + " plantas obtenidas exitosamente");
+            logger.info("✅ Controlador: {} plantas obtenidas exitosamente", plantas.size());
             return ResponseEntity.ok(plantas);
         } catch (Exception e) {
-            System.err.println("❌ Error en controlador: " + e.getMessage());
-            e.printStackTrace();
-            // Devolver lista vacía en caso de error para no romper la app
-            return ResponseEntity.ok(List.of());
+            logger.error("❌ Error en controlador: {}", e.getMessage(), e);
+            // Devolver error 500 en lugar de 200 con lista vacía
+            return ResponseEntity.status(500).body(List.of());
         }
     }
 
@@ -49,40 +52,40 @@ public class PlantaController {
      * Debug específico para verificar cuidados
      */
     @GetMapping("/debug-cuidados/{id}")
-    public ResponseEntity<?> debugCuidados(@PathVariable String id) {
+    public ResponseEntity<Object> debugCuidados(@PathVariable String id) {
         try {
-            System.out.println("🔍 DEBUG CUIDADOS: Buscando planta con ID: " + id);
+            logger.info("🔍 DEBUG CUIDADOS: Buscando planta con ID: {}", id);
             Optional<Planta> plantaOpt = servicioPlanta.obtenerPorId(id);
 
             if (plantaOpt.isPresent()) {
                 Planta planta = plantaOpt.get();
 
-                System.out.println("✅ Planta encontrada: " + planta.getNombreComun());
-                System.out.println("🌱 ID de la planta: " + planta.getId());
+                logger.info("✅ Planta encontrada: {}", planta.getNombreComun());
+                logger.info("🌱 ID de la planta: {}", planta.getId());
 
                 // DEBUG ESPECÍFICO DE CUIDADOS
                 if (planta.getCuidados() != null) {
-                    System.out.println("📋 Número de cuidados: " + planta.getCuidados().size());
+                    logger.info("📋 Número de cuidados: {}", planta.getCuidados().size());
 
                     if (!planta.getCuidados().isEmpty()) {
                         for (int i = 0; i < planta.getCuidados().size(); i++) {
                             var cuidado = planta.getCuidados().get(i);
-                            System.out.println("🌿 Cuidado " + (i+1) + ": " + cuidado.getTipo() + " - " + cuidado.getDescripcion());
+                            logger.info("🌿 Cuidado {}: {} - {}", (i+1), cuidado.getTipo(), cuidado.getDescripcion());
                         }
                     } else {
-                        System.out.println("⚠️ La lista de cuidados está vacía");
+                        logger.warn("⚠️ La lista de cuidados está vacía");
                     }
                 } else {
-                    System.out.println("❌ La lista de cuidados es NULL");
+                    logger.warn("❌ La lista de cuidados es NULL");
                 }
 
                 return ResponseEntity.ok(planta);
             } else {
+                logger.warn("🚫 Planta no encontrada ID: {}", id);
                 return ResponseEntity.notFound().build();
             }
         } catch (Exception e) {
-            System.err.println("❌ Error en debug cuidados: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("❌ Error en debug cuidados: {}", e.getMessage(), e);
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
     }
@@ -91,28 +94,29 @@ public class PlantaController {
      * Obtiene una planta por su ID.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<?> obtenerPorId(@PathVariable String id) {
+    public ResponseEntity<Object> obtenerPorId(@PathVariable String id) {
         try {
-            System.out.println("🔍 Controlador: Buscando planta con ID: " + id);
+            logger.info("🔍 Controlador: Buscando planta con ID: {}", id);
             Optional<Planta> planta = servicioPlanta.obtenerPorId(id);
 
             if (planta.isPresent()) {
                 Planta p = planta.get();
 
                 // AGREGAR ESTOS LOGS PARA DEBUG
-                System.out.println("🌱 Planta encontrada: " + p.getNombreComun());
+                logger.info("🌱 Planta encontrada: {}", p.getNombreComun());
                 if (p.getCuidados() != null) {
-                    System.out.println("📋 Cuidados cargados: " + p.getCuidados().size());
+                    logger.info("📋 Cuidados cargados: {}", p.getCuidados().size());
                 } else {
-                    System.out.println("❌ Cuidados es NULL");
+                    logger.warn("❌ Cuidados es NULL");
                 }
 
                 return ResponseEntity.ok(p);
             } else {
+                logger.warn("🚫 Planta no encontrada con ID: {}", id);
                 return ResponseEntity.notFound().build();
             }
         } catch (Exception e) {
-            System.err.println("❌ Error al buscar planta: " + e.getMessage());
+            logger.error("❌ Error al buscar planta: {}", e.getMessage(), e);
             return ResponseEntity.status(500).body("Error al buscar planta: " + e.getMessage());
         }
     }
@@ -121,14 +125,18 @@ public class PlantaController {
      * Guarda una planta en el sistema.
      */
     @PostMapping
-    public ResponseEntity<?> guardar(@RequestBody Planta planta) {
+    public ResponseEntity<PlantaResponseDTO> guardar(@RequestBody PlantaRequestDTO plantaDto) {
         try {
-            System.out.println("💾 Controlador: Guardando planta: " + planta.getNombreComun());
+            logger.info("💾 Controlador: Guardando planta: {}", plantaDto.getNombreComun());
+            Planta planta = PlantaMapper.dtoADominio(plantaDto);
             Planta plantaGuardada = servicioPlanta.guardar(planta);
-            return ResponseEntity.ok(plantaGuardada);
+            PlantaResponseDTO response = PlantaMapper.dominioADto(plantaGuardada);
+
+            logger.info("✅ Planta guardada exitosamente con ID: {}", plantaGuardada.getId());
+            return ResponseEntity.status(201).body(response); // 201 CREATED
         } catch (Exception e) {
-            System.err.println("❌ Error al guardar planta: " + e.getMessage());
-            return ResponseEntity.status(500).body("Error al guardar planta: " + e.getMessage());
+            logger.error("❌ Error al guardar planta: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).build();
         }
     }
 
@@ -136,13 +144,14 @@ public class PlantaController {
      * Elimina una planta por su ID.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminar(@PathVariable String id) {
+    public ResponseEntity<String> eliminar(@PathVariable String id) {
         try {
-            System.out.println("🗑️ Controlador: Eliminando planta con ID: " + id);
+            logger.info("🗑️ Controlador: Eliminando planta con ID: {}", id);
             servicioPlanta.eliminar(id);
+            logger.info("✅ Planta eliminada exitosamente: {}", id);
             return ResponseEntity.ok("Planta eliminada exitosamente");
         } catch (Exception e) {
-            System.err.println("❌ Error al eliminar planta: " + e.getMessage());
+            logger.error("❌ Error al eliminar planta: {}", e.getMessage(), e);
             return ResponseEntity.status(500).body("Error al eliminar planta: " + e.getMessage());
         }
     }
@@ -153,12 +162,12 @@ public class PlantaController {
     @GetMapping("/buscar")
     public ResponseEntity<List<Planta>> buscarPorTipo(@RequestParam String tipo) {
         try {
-            System.out.println("🔍 Controlador: Buscando plantas de tipo: " + tipo);
+            logger.info("🔍 Controlador: Buscando plantas de tipo: {}", tipo);
             List<Planta> plantas = servicioPlanta.buscarPorTipo(tipo);
             return ResponseEntity.ok(plantas);
         } catch (Exception e) {
-            System.err.println("❌ Error al buscar por tipo: " + e.getMessage());
-            return ResponseEntity.ok(List.of());
+            logger.error("❌ Error al buscar por tipo: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body(List.of());
         }
     }
 
@@ -168,12 +177,12 @@ public class PlantaController {
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<Planta>> listarPorUsuario(@PathVariable Long usuarioId) {
         try {
-            System.out.println("👤 Controlador: Buscando plantas del usuario: " + usuarioId);
+            logger.info("👤 Controlador: Buscando plantas del usuario: {}", usuarioId);
             List<Planta> plantas = servicioPlanta.buscarPorUsuario(usuarioId);
             return ResponseEntity.ok(plantas);
         } catch (Exception e) {
-            System.err.println("❌ Error al buscar por usuario: " + e.getMessage());
-            return ResponseEntity.ok(List.of());
+            logger.error("❌ Error al buscar por usuario: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body(List.of());
         }
     }
 
@@ -186,7 +195,7 @@ public class PlantaController {
         Map<String, Object> response = new HashMap<>();
 
         try {
-            System.out.println("🧪 Test: Probando conexión a MongoDB...");
+            logger.info("🧪 Test: Probando conexión a MongoDB...");
 
             List<Planta> plantas = servicioPlanta.obtenerTodas();
 
@@ -203,11 +212,11 @@ public class PlantaController {
                 response.put("info", "No hay plantas en la base de datos");
             }
 
-            System.out.println("✅ Test exitoso: " + plantas.size() + " plantas encontradas");
+            logger.info("✅ Test exitoso: {} plantas encontradas", plantas.size());
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            System.err.println("❌ Test fallido: " + e.getMessage());
+            logger.error("❌ Test fallido: {}", e.getMessage(), e);
             e.printStackTrace();
 
             response.put("status", "❌ Error de conexión");
