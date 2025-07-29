@@ -1,0 +1,769 @@
+/* =========================================
+   PLANTAS.CSS - ESTILOS COMPLETOS PLANTCARE
+   ========================================= */
+
+/* VARIABLES CSS */
+:root {
+    --color-cream-light: #FDF9F3; 
+    --color-cream-medium: #F5EFE6;
+    --color-green-light: #C8E6C9; 
+    --color-green-medium: #81C784;
+    --color-green-dark: #388E3C; 
+    --color-gray-text: #555555; 
+    --color-border-light: #E0E0E0;
+    --shadow-soft: 0 4px 20px rgba(0,0,0,0.08);
+    --shadow-hover: 0 8px 30px rgba(0,0,0,0.12);
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+}
+
+/* RESET Y BASE */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--color-cream-light) 0%, var(--color-cream-medium) 100%);
+    color: var(--color-gray-text);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* HEADER */
+.header {
+    background: linear-gradient(135deg, var(--color-green-dark), var(--color-green-medium));
+    color: white;
+    padding: 1rem 2rem;
+    box-shadow: var(--shadow-soft);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.nav h1 {
+    font-size: 1.8rem;
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-links {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.nav-links a, .nav-links button {
+    color: white;
+    text-decoration: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    transition: var(--transition);
+    border: none;
+    background: rgba(255,255,255,0.1);
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.nav-links a:hover, .nav-links button:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+}
+
+/* CONTENIDO PRINCIPAL */
+.main-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* BREADCRUMB */
+.breadcrumb {
+    background: white;
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+}
+
+.breadcrumb a {
+    color: var(--color-green-medium);
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    color: var(--color-green-dark);
+}
+
+/* PAGE HEADER */
+.page-header {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 6px solid var(--color-green-medium);
+}
+
+.page-header h1 {
+    color: var(--color-green-dark);
+    font-size: 2.2rem;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.page-header h1 i {
+    font-size: 2rem;
+}
+
+/* CARDS GRID */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.card {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: var(--shadow-soft);
+    transition: var(--transition);
+    border: 1px solid var(--color-border-light);
+    position: relative;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-green-medium), var(--color-green-light));
+}
+
+/* STATS CARDS */
+.stat-card {
+    text-align: center;
+    background: linear-gradient(135deg, white, var(--color-cream-light));
+}
+
+.stat-card .stat-number {
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--color-green-dark);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card .stat-label {
+    font-size: 1.1rem;
+    color: var(--color-gray-text);
+    font-weight: 500;
+}
+
+.stat-card i {
+    font-size: 2rem;
+    color: var(--color-green-medium);
+    margin-bottom: 1rem;
+}
+
+/* PLANT CARDS - Estilos unificados y optimizados */
+.plant-card {
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    border: 1px solid var(--color-border-light);
+}
+
+.plant-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+.plant-image {
+    width: 100%;
+    height: 200px;
+    background: var(--color-cream-medium);
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.plant-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.plant-card:hover .plant-image img {
+    transform: scale(1.05);
+}
+
+.plant-status {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status-saludable { background: var(--color-green-light); color: var(--color-green-dark); }
+.status-necesita_agua { background: #fff3cd; color: #856404; }
+.status-enferma { background: #f8d7da; color: #721c24; }
+.status-marchita { background: #f5c6cb; color: #721c24; }
+.status-floreciendo { background: #d4edda; color: #155724; }
+
+.plant-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    min-width: 0;
+}
+
+.plant-info h3 {
+    color: var(--color-green-dark);
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.plant-info .scientific-name {
+    color: var(--color-gray-text);
+    font-style: italic;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.plant-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.plant-meta span {
+    color: var(--color-gray-text);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Ocultar ID si está presente (4to span o último) */
+.plant-meta span:nth-child(4),
+.plant-meta span:last-child {
+    display: none;
+}
+
+.plant-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: auto;
+    flex-wrap: nowrap;
+    min-height: 40px;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.plant-actions .btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    min-width: auto;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* BOTONES */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: var(--transition);
+    text-align: center;
+    justify-content: center;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--color-green-medium), var(--color-green-dark));
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(129, 199, 132, 0.4);
+}
+
+.btn-secondary {
+    background: var(--color-cream-medium);
+    color: var(--color-gray-text);
+    border: 1px solid var(--color-border-light);
+}
+
+.btn-secondary:hover {
+    background: var(--color-green-light);
+    color: var(--color-green-dark);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+}
+
+.btn-icon {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 50%;
+    background: var(--color-cream-medium);
+    color: var(--color-gray-text);
+    border: 1px solid var(--color-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.btn-icon:hover {
+    background: var(--color-green-light);
+    color: var(--color-green-dark);
+}
+
+.btn-icon i {
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* FORMULARIOS */
+.form-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 2rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--color-gray-text);
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--color-border-light);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: var(--transition);
+    background: white;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--color-green-medium);
+    box-shadow: 0 0 0 3px rgba(200, 230, 201, 0.3);
+}
+
+/* BUSCADOR */
+.search-container {
+    position: relative;
+}
+
+.search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid var(--color-border-light);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: var(--shadow-soft);
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.search-option {
+    padding: 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--color-border-light);
+    transition: var(--transition);
+}
+
+.search-option:hover {
+    background: var(--color-green-light);
+}
+
+.search-option:last-child {
+    border-bottom: none;
+}
+
+.search-option .option-name {
+    font-weight: 500;
+    color: var(--color-green-dark);
+}
+
+.search-option .option-scientific {
+    font-style: italic;
+    color: var(--color-gray-text);
+    font-size: 0.9rem;
+}
+
+.search-option .option-info {
+    color: var(--color-gray-text);
+    font-size: 0.8rem;
+    margin-top: 0.3rem;
+}
+
+/* VISTA PLANTA DETALLE */
+.plant-detail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: var(--shadow-soft);
+}
+
+.plant-detail-image img {
+    max-width: 100%;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-soft);
+}
+
+.plant-detail-info h2 {
+    color: var(--color-green-dark);
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    font-weight: 400;
+}
+
+.plant-detail-info .scientific-name {
+    font-style: italic;
+    color: var(--color-gray-text);
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    background: var(--color-cream-light);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.info-item i {
+    color: var(--color-green-medium);
+    width: 20px;
+}
+
+/* INFORMACIÓN AUTOMÁTICA */
+.info-automatica {
+    background: var(--color-cream-light);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+    border-left: 4px solid var(--color-green-medium);
+}
+
+.info-automatica h4 {
+    color: var(--color-green-dark);
+    margin-bottom: 1rem;
+}
+
+.readonly-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.readonly-fields span {
+    color: var(--color-gray-text);
+}
+
+.readonly-fields strong {
+    color: var(--color-green-dark);
+}
+
+/* ESTADOS VACÍOS */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow-soft);
+}
+
+.empty-state i {
+    font-size: 4rem;
+    color: var(--color-green-light);
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    color: var(--color-green-dark);
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+
+.empty-state p {
+    color: var(--color-gray-text);
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+/* MODAL */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+}
+
+.modal.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+
+.modal-content h3 {
+    color: var(--color-green-dark);
+    margin-bottom: 1rem;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+/* LOADING */
+.loading {
+    text-align: center;
+    padding: 2rem;
+    color: var(--color-gray-text);
+}
+
+.loading i {
+    font-size: 2rem;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* NOTIFICACIONES */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    z-index: 3000;
+    transform: translateX(400px);
+    transition: var(--transition);
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification.success {
+    background: var(--color-green-medium);
+}
+
+.notification.error {
+    background: #dc3545;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .main-content {
+        padding: 1rem;
+    }
+    .page-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    .page-header h1 {
+        font-size: 1.8rem;
+    }
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    .plant-detail {
+        grid-template-columns: 1fr;
+    }
+    .info-grid, .readonly-fields {
+        grid-template-columns: 1fr;
+    }
+    .nav {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .cards-grid {
+        grid-template-columns: 1fr;
+    }
+    /* Responsive ajustes específicos */
+    .plant-actions {
+        gap: 0.3rem;
+    }
+    .plant-actions .btn {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.8rem;
+    }
+    .btn-icon {
+        width: 36px;
+        height: 36px;
+        padding: 0.5rem;
+    }
+    .plant-meta {
+        grid-template-columns: 1fr;
+        gap: 0.3rem;
+    }
+}
+
+/* UTILIDADES */
+.hidden {
+    display: none !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mt-1 { margin-top: 1rem; }
+.mt-2 { margin-top: 2rem; }
+.mb-1 { margin-bottom: 1rem; }
+.mb-2 { margin-bottom: 2rem; }
+
+/* GRID RESPONSIVO PARA PLANTAS */
+.plants-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+@media (min-width: 1200px) {
+    .plants-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Plantas - PlantCare</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/plantas.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <h1><i class="fas fa-seedling"></i> PlantCare</h1>
+            <div class="nav-links">
+                <a href="dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a>
+                <a href="mis-plantas.html"><i class="fas fa-leaf"></i> Mis Plantas</a>
+                <a href="registro-planta.html"><i class="fas fa-plus"></i> Agregar Planta</a>
+                <button onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> Salir</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <i class="fas fa-home"></i> <a href="dashboard.html">Inicio</a> / Mis Plantas
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-leaf"></i> Mis Plantas</h1>
+            <div>
+                <a href="registro-planta.html" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Agregar Planta
+                </a>
+            </div>
+        </div>
+
+        <!-- Filtros y búsqueda -->
+        <div class="form-container">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="buscar-planta">
+                        <i class="fas fa-search"></i> Buscar plantas
+                    </label>
+                    <div class="search-container">
+                        <input type="text" id="buscar-planta" placeholder="Buscar por nombre o ubicación..." 
+                               oninput="filtrarPlantas()">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="filtro-estado">
+                        <i class="fas fa-filter"></i> Filtrar por estado
+                    </label>
+                    <select id="filtro-estado" onchange="filtrarPlantas()">
+                        <option value="">Todos los estados</option>
+                        <option value="SALUDABLE">Saludable</option>
+                        <option value="NECESITA_AGUA">Necesita Agua</option>
+                        <option value="ENFERMA">Enferma</option>
+                        <option value="MARCHITA">Marchita</option>
+                        <option value="FLORECIENDO">Floreciendo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="filtro-tipo">
+                        <i class="fas fa-tag"></i> Filtrar por tipo
+                    </label>
+                    <select id="filtro-tipo" onchange="filtrarPlantas()">
+                        <option value="">Todos los tipos</option>
+                        <option value="interior">Interior</option>
+                        <option value="exterior">Exterior</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ordenar-por">
+                        <i class="fas fa-sort"></i> Ordenar por
+                    </label>
+                    <select id="ordenar-por" onchange="filtrarPlantas()">
+                        <option value="fechaRegistro">Fecha de registro</option>
+                        <option value="apodo">Nombre</option>
+                        <option value="estado">Estado</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de plantas -->
+        <div id="lista-plantas" class="cards-grid">
+            <!-- Se llena dinámicamente desde MongoDB -->
+        </div>
+
+        <!-- Estado vacío -->
+        <div id="estado-vacio" class="empty-state hidden">
+            <i class="fas fa-seedling"></i>
+            <h3>¡Comienza tu jardín digital!</h3>
+            <p>Aún no tienes plantas registradas. Agrega tu primera planta para comenzar.</p>
+            <a href="registro-planta.html" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Agregar mi primera planta
+            </a>
+        </div>
+
+        <!-- Sin resultados -->
+        <div id="sin-resultados" class="empty-state hidden">
+            <i class="fas fa-search"></i>
+            <h3>Sin resultados</h3>
+            <p>No se encontraron plantas con los filtros aplicados.</p>
+            <button class="btn btn-secondary" onclick="limpiarFiltros()">
+                <i class="fas fa-times"></i> Limpiar filtros
+            </button>
+        </div>
+
+        <!-- Loading state -->
+        <div id="loading-plantas" class="loading text-center hidden">
+            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--color-green-medium);"></i>
+            <p style="margin-top: 1rem;">Cargando plantas desde MongoDB...</p>
+        </div>
+    </div>
+
+    <!-- Modal de cuidado rápido -->
+    <div id="modal-cuidado" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-hand-holding-water"></i> Cuidado Rápido</h3>
+            <p>Selecciona el tipo de cuidado realizado:</p>
+            <div class="form-group">
+                <select id="tipo-cuidado">
+                    <option value="riego">💧 Riego</option>
+                    <option value="fertilizacion">🌱 Fertilización</option>
+                    <option value="poda">✂️ Poda</option>
+                    <option value="limpieza">🧽 Limpieza</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="notas-cuidado">Notas (opcional):</label>
+                <textarea id="notas-cuidado" rows="3" placeholder="Agregar observaciones..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="cerrarModalCuidado()">Cancelar</button>
+                <button class="btn btn-primary" onclick="guardarCuidado()">Guardar Cuidado</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación de eliminación -->
+    <div id="modal-confirmacion" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-exclamation-triangle"></i> Confirmar eliminación</h3>
+            <p>¿Estás seguro de que quieres eliminar esta planta? Esta acción no se puede deshacer.</p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+                <button class="btn btn-danger" id="btn-confirmar-eliminar">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificación -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Scripts -->
+    <script src="js/plantas-api.js"></script>
+    
+    <script>
+        // ========================================
+        // VARIABLES GLOBALES (SOLO PARA FRONTEND)
+        // ========================================
+        let plantasOriginales = [];
+        let plantasFiltradas = [];
+        let plantaSeleccionada = null;
+
+        // ========================================
+        // CARGAR PLANTAS DESDE MONGODB
+        // ========================================
+        async function cargarPlantas() {
+            console.log(' Cargando plantas desde MongoDB...');
+            
+            const container = document.getElementById('lista-plantas');
+            const loading = document.getElementById('loading-plantas');
+            
+
+            if (loading) {
+                loading.classList.remove('hidden');
+            }
+            container.innerHTML = '';
+            
+            try {
+                if (window.PlantasAPI) {
+                    const plantas = await PlantasAPI.obtenerMisPlantas();
+                    console.log(' Plantas recibidas de MongoDB:', plantas.length);
+                    
+                    plantasOriginales = plantas;
+                    plantasFiltradas = [...plantas];
+                    
+                    if (loading) {
+                        loading.classList.add('hidden');
+                    }
+                    mostrarPlantas();
+                    
+                } else {
+                    throw new Error('PlantasAPI no disponible');
+                }
+                
+            } catch (error) {
+                console.error(' Error cargando plantas:', error);
+                if (loading) {
+                    loading.classList.add('hidden');
+                }
+                
+                UIUtils.mostrarError(container, 'Error cargando plantas: ' + error.message);
+                
+                // Estado de error - plantas vacías
+                plantasOriginales = [];
+                plantasFiltradas = [];
+                mostrarPlantas();
+            }
+        }
+
+        // ========================================
+        // MOSTRAR PLANTAS EN LA UI
+        // ========================================
+        function mostrarPlantas() {
+            const container = document.getElementById('lista-plantas');
+            const estadoVacio = document.getElementById('estado-vacio');
+            const sinResultados = document.getElementById('sin-resultados');
+
+            // Ocultar todos los estados especiales
+            estadoVacio.classList.add('hidden');
+            sinResultados.classList.add('hidden');
+
+            if (plantasOriginales.length === 0) {
+                container.innerHTML = '';
+                estadoVacio.classList.remove('hidden');
+                return;
+            }
+
+            if (plantasFiltradas.length === 0) {
+                container.innerHTML = '';
+                sinResultados.classList.remove('hidden');
+                return;
+            }
+
+            container.innerHTML = plantasFiltradas.map(planta => {
+                
+
+                console.log(' Procesando planta:', {
+                    id: planta.id,
+                    apodo: planta.apodo,
+                    plantaReferencia: planta.planta
+                });
+
+
+                const plantaCatalogo = planta.planta; // Viene de MongoDB @DBRef
+                const nombrePlanta = plantaCatalogo ? plantaCatalogo.nombreComun : 'Planta desconocida';
+                const nombreCientifico = plantaCatalogo ? plantaCatalogo.nombreCientifico : 'No disponible';
+                const tipoPlanta = plantaCatalogo ? plantaCatalogo.tipo : 'N/A';
+
+
+                const estadoClass = `status-${planta.estado.toLowerCase()}`;
+                const fechaRegistro = new Date(planta.fechaRegistro);
+                const diasRegistro = Math.floor((new Date() - fechaRegistro) / (1000 * 60 * 60 * 24));
+
+                return `
+                    <div class="card plant-card">
+                        <div class="plant-image">
+                            <img src="${planta.fotoPersonal || `https://via.placeholder.com/200x150/81C784/FFFFFF?text=${encodeURIComponent(planta.apodo)}`}" 
+                                 alt="${planta.apodo}">
+                            <span class="plant-status ${estadoClass}">${planta.estado.replace('_', ' ')}</span>
+                        </div>
+                        <div class="plant-info">
+                            <h3>${planta.apodo}</h3>
+                            <div class="scientific-name">
+                                ${nombrePlanta}
+                                ${nombreCientifico !== 'No disponible' ? `(${nombreCientifico})` : ''}
+                            </div>
+                            <div class="plant-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> ${planta.ubicacion}</span>
+                                <span><i class="fas fa-calendar"></i> ${diasRegistro} días registrada</span>
+                                <span><i class="fas fa-tag"></i> ${tipoPlanta}</span>
+                            </div>
+                            <div class="plant-actions">
+                                <button class="btn btn-primary" onclick="abrirModalCuidado('${planta.id}')">
+                                    <i class="fas fa-hand-holding-water"></i> Cuidar
+                                </button>
+                                <button class="btn btn-secondary" onclick="verPlanta('${planta.id}')">
+                                    <i class="fas fa-eye"></i> Ver
+                                </button>
+                                <button class="btn btn-secondary" onclick="editarPlanta('${planta.id}')">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                                <button class="btn btn-icon btn-danger" onclick="confirmarEliminar('${planta.id}')" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ========================================
+        // FILTROS Y BÚSQUEDA
+        // ========================================
+        function filtrarPlantas() {
+            const busqueda = document.getElementById('buscar-planta').value.toLowerCase();
+            const filtroEstado = document.getElementById('filtro-estado').value;
+            const filtroTipo = document.getElementById('filtro-tipo').value;
+            const ordenarPor = document.getElementById('ordenar-por').value;
+
+            plantasFiltradas = plantasOriginales.filter(planta => {
+                const plantaCatalogo = planta.planta;
+                
+                // Filtro de búsqueda
+                const coincideBusqueda = !busqueda || 
+                    planta.apodo.toLowerCase().includes(busqueda) ||
+                    planta.ubicacion.toLowerCase().includes(busqueda) ||
+                    (plantaCatalogo && plantaCatalogo.nombreComun.toLowerCase().includes(busqueda));
+
+                // Filtro de estado
+                const coincibeEstado = !filtroEstado || planta.estado === filtroEstado;
+
+                // Filtro de tipo
+                const coincideTipo = !filtroTipo || (plantaCatalogo && plantaCatalogo.tipo === filtroTipo);
+
+                return coincideBusqueda && coincibeEstado && coincideTipo;
+            });
+
+            // Ordenar
+            plantasFiltradas.sort((a, b) => {
+                switch (ordenarPor) {
+                    case 'apodo':
+                        return a.apodo.localeCompare(b.apodo);
+                    case 'estado':
+                        return a.estado.localeCompare(b.estado);
+                    case 'fechaRegistro':
+                    default:
+                        return new Date(b.fechaRegistro) - new Date(a.fechaRegistro);
+                }
+            });
+
+            mostrarPlantas();
+        }
+
+        function limpiarFiltros() {
+            document.getElementById('buscar-planta').value = '';
+            document.getElementById('filtro-estado').value = '';
+            document.getElementById('filtro-tipo').value = '';
+            document.getElementById('ordenar-por').value = 'fechaRegistro';
+            filtrarPlantas();
+        }
+
+        // ========================================
+        // MODAL DE CUIDADO
+        // ========================================
+        function abrirModalCuidado(plantaId) {
+            console.log('💧 Abriendo modal de cuidado para planta:', plantaId);
+            plantaSeleccionada = plantaId;
+            document.getElementById('modal-cuidado').classList.add('visible');
+            document.getElementById('tipo-cuidado').value = 'riego';
+            document.getElementById('notas-cuidado').value = '';
+        }
+
+        function cerrarModalCuidado() {
+            document.getElementById('modal-cuidado').classList.remove('visible');
+            plantaSeleccionada = null;
+        }
+
+	async function guardarCuidado() {
+	    if (!plantaSeleccionada) {
+		UIUtils.mostrarNotificacion('No hay planta seleccionada', 'error');
+		return;
+	    }
+
+	    try {
+		const tipoCuidado = document.getElementById('tipo-cuidado').value;
+		const notas = document.getElementById('notas-cuidado').value.trim();
+
+		console.log('💾 Guardando cuidado:', { plantaSeleccionada, tipoCuidado, notas });
+
+
+		if (window.PlantasAPI) {
+		    const resultado = await PlantasAPI.registrarCuidado(plantaSeleccionada, tipoCuidado, notas);
+		    
+		    if (resultado.success) {
+		        UIUtils.mostrarNotificacion(
+		            `¡Cuidado registrado! ${tipoCuidado.charAt(0).toUpperCase() + tipoCuidado.slice(1)} aplicado.`, 
+		            'success'
+		        );
+		        
+		        // Recargar plantas para ver cambios
+		        await cargarPlantas();
+		        cerrarModalCuidado();
+		    } else {
+		        throw new Error(resultado.message || 'Error desconocido');
+		    }
+		    
+		} else {
+		    throw new Error('PlantasAPI no disponible');
+		}
+
+	    } catch (error) {
+		console.error('Error guardando cuidado:', error);
+		UIUtils.mostrarNotificacion('Error al guardar cuidado: ' + error.message, 'error');
+	    }
+	}
+
+        // ========================================
+        // ELIMINACIÓN DE PLANTAS
+        // ========================================
+        function confirmarEliminar(plantaId) {
+            console.log(' Confirmar eliminación de planta:', plantaId);
+            const planta = plantasOriginales.find(p => p.id === plantaId);
+            
+            if (planta) {
+                document.getElementById('modal-confirmacion').classList.add('visible');
+                document.getElementById('btn-confirmar-eliminar').onclick = () => eliminarPlanta(plantaId);
+            }
+        }
+
+        async function eliminarPlanta(plantaId) {
+            try {
+                console.log(' Eliminando planta de MongoDB:', plantaId);
+                
+                if (window.PlantasAPI) {
+                    await PlantasAPI.eliminarPlanta(plantaId);
+                    UIUtils.mostrarNotificacion('Planta eliminada exitosamente', 'success');
+                    
+                    // Recargar lista desde MongoDB
+                    await cargarPlantas();
+                    cerrarModal();
+                } else {
+                    throw new Error('PlantasAPI no disponible');
+                }
+                
+            } catch (error) {
+                console.error(' Error eliminando planta:', error);
+                UIUtils.mostrarNotificacion('Error al eliminar planta: ' + error.message, 'error');
+            }
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal-confirmacion').classList.remove('visible');
+        }
+
+        // ========================================
+        // NAVEGACIÓN
+        // ========================================
+        function verPlanta(plantaId) {
+            console.log(' Navegando a vista de planta:', plantaId);
+            window.location.href = `vista-planta.html?id=${plantaId}`;
+        }
+
+        function editarPlanta(plantaId) {
+            console.log(' Navegando a editar planta:', plantaId);
+            window.location.href = `editar-planta.html?id=${plantaId}`;
+        }
+
+        function cerrarSesion() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // ========================================
+        // EVENT LISTENERS
+        // ========================================
+        document.getElementById('modal-confirmacion').addEventListener('click', function(e) {
+            if (e.target === this) cerrarModal();
+        });
+
+        document.getElementById('modal-cuidado').addEventListener('click', function(e) {
+            if (e.target === this) cerrarModalCuidado();
+        });
+
+        // ========================================
+        // INICIALIZACIÓN
+        // ========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🌱 Mis Plantas cargando ');
+            
+            cargarPlantas();
+        });
+    </script>
+</body>
+</html>

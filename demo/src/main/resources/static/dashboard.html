@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - PlantCare</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/plantas.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <h1><i class="fas fa-seedling"></i> PlantCare</h1>
+            <div class="nav-links">
+                <a href="dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a>
+                <a href="mis-plantas.html"><i class="fas fa-leaf"></i> Mis Plantas</a>
+                <a href="registro-planta.html"><i class="fas fa-plus"></i> Agregar Planta</a>
+                <button onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> Salir</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <i class="fas fa-home"></i> <a href="dashboard.html">Inicio</a> / Dashboard
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-chart-pie"></i> Dashboard Personal</h1>
+            <div id="fecha-actual"></div>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="cards-grid">
+            <div class="card stat-card">
+                <i class="fas fa-seedling"></i>
+                <span class="stat-number" id="total-plantas">0</span>
+                <span class="stat-label">Plantas Registradas</span>
+            </div>
+            <div class="card stat-card">
+                <i class="fas fa-heart-pulse"></i>
+                <span class="stat-number" id="plantas-saludables">0</span>
+                <span class="stat-label">Plantas Saludables</span>
+            </div>
+            <div class="card stat-card">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span class="stat-number" id="plantas-cuidado">0</span>
+                <span class="stat-label">Necesitan Atención</span>
+            </div>
+            <div class="card stat-card">
+                <i class="fas fa-calendar-check"></i>
+                <span class="stat-number" id="cuidados-hoy">0</span>
+                <span class="stat-label">Cuidados Hoy</span>
+            </div>
+        </div>
+
+        <!-- Plantas que necesitan atención -->
+        <div class="form-container">
+            <h2><i class="fas fa-bell"></i> Plantas que Necesitan Atención</h2>
+            <div id="plantas-atencion" class="cards-grid"></div>
+        </div>
+
+        <!-- Últimas plantas agregadas -->
+        <div class="form-container">
+            <h2><i class="fas fa-plus-circle"></i> Últimas Plantas Agregadas</h2>
+            <div id="ultimas-plantas" class="cards-grid"></div>
+        </div>
+
+        <!-- Próximos cuidados -->
+        <div class="form-container">
+            <h2><i class="fas fa-calendar-alt"></i> Próximos Cuidados Programados</h2>
+            <div id="proximos-cuidados"></div>
+        </div>
+    </div>
+
+    <!-- Notificación -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Scripts -->
+    <script src="js/plantas-api.js"></script>
+    <script>
+        // Variables globales
+        let estadisticasUsuario = {};
+        let plantasUsuario = [];
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            actualizarFecha();
+            cargarEstadisticas();
+
+            // Recargar cada 5 minutos
+            setInterval(cargarEstadisticas, 300000);
+        });
+
+        // Actualiza la fecha en el header
+        function actualizarFecha() {
+            const ahora = new Date();
+            const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const elemento = document.getElementById('fecha-actual');
+            if (elemento) {
+                elemento.textContent = ahora.toLocaleDateString('es-ES', opciones);
+            }
+        }
+
+        // Cargar estadísticas y plantas desde API
+        async function cargarEstadisticas() {
+            try {
+                estadisticasUsuario = await PlantasAPI.obtenerEstadisticas();
+                plantasUsuario = await PlantasAPI.obtenerMisPlantas();
+
+                actualizarEstadisticas();
+                mostrarPlantasAtencion();
+                mostrarUltimasPlantas();
+                mostrarProximosCuidados();
+            } catch (error) {
+                UIUtils.mostrarNotificacion('Error al cargar el dashboard.', 'error');
+            }
+        }
+
+        // Actualiza los contadores con animación
+        function actualizarEstadisticas() {
+            document.getElementById('total-plantas').textContent = estadisticasUsuario.totalPlantas || 0;
+            document.getElementById('plantas-saludables').textContent = estadisticasUsuario.plantasSaludables || 0;
+            document.getElementById('plantas-cuidado').textContent = estadisticasUsuario.plantasNecesitanAtencion || 0;
+            document.getElementById('cuidados-hoy').textContent = calcularCuidadosRecientes();
+
+            // Animación de pulso
+            animarContadores();
+        }
+
+        // Calcula cuidados aplicados en las últimas 24 horas
+        function calcularCuidadosRecientes() {
+            const hoy = new Date();
+            const limite = new Date(hoy.getTime() - 24 * 60 * 60 * 1000);
+            let cuidados = 0;
+
+            plantasUsuario.forEach(planta => {
+                if (planta.cuidados) {
+                    planta.cuidados.forEach(c => {
+                        const fecha = new Date(c.fecha);
+                        if (fecha >= limite) cuidados++;
+                    });
+                }
+            });
+            return cuidados;
+        }
+
+        // Aplica animación a los contadores
+        function animarContadores() {
+            ['total-plantas', 'plantas-saludables', 'plantas-cuidado', 'cuidados-hoy'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.style.animation = 'none';
+                    setTimeout(() => el.style.animation = 'pulse 0.6s ease-in-out', 10);
+                }
+            });
+        }
+
+        // Muestra plantas que necesitan atención
+        function mostrarPlantasAtencion() {
+            const container = document.getElementById('plantas-atencion');
+            const plantasAtencion = plantasUsuario.filter(planta => {
+                return ['NECESITA_AGUA', 'ENFERMA', 'MARCHITA'].includes(planta.estado) ||
+                       (planta.ultimoCuidado && daysSince(planta.ultimoCuidado) > 7);
+            });
+
+            if (plantasAtencion.length === 0) {
+                container.innerHTML = crearEstadoVacio('¡Excelente!', 'Todas tus plantas están bien cuidadas');
+                return;
+            }
+
+            container.innerHTML = plantasAtencion.map(planta => {
+                const estado = planta.estado.toLowerCase().replace('_', '-');
+                const dias = daysSince(planta.ultimoCuidado || planta.fechaRegistro);
+                const nombre = planta.planta?.nombreComun || 'Planta desconocida';
+                return `
+                    <div class="card plant-card" onclick="verPlanta('${planta.id}')">
+                        <div class="plant-image">
+                            <img src="${planta.fotoPersonal || generarPlaceholder(planta.apodo)}" alt="${planta.apodo}">
+                            <span class="plant-status status-${estado}">${planta.estado.replace('_', ' ')}</span>
+                        </div>
+                        <div class="plant-info">
+                            <h3>${planta.apodo}</h3>
+                            <div class="scientific-name">${nombre}</div>
+                            <div class="plant-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> ${planta.ubicacion}</span>
+                                <span><i class="fas fa-clock"></i> ${dias} días sin cuidado</span>
+                            </div>
+                            <div class="plant-actions">
+                                <button class="btn btn-primary" onclick="event.stopPropagation(); cuidarRapido('${planta.id}')">
+                                    <i class="fas fa-hand-holding-water"></i> Cuidar Ahora
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Muestra las últimas 3 plantas agregadas
+        function mostrarUltimasPlantas() {
+            const container = document.getElementById('ultimas-plantas');
+            const ultimas = [...plantasUsuario]
+                .sort((a, b) => new Date(b.fechaRegistro) - new Date(a.fechaRegistro))
+                .slice(0, 3);
+
+            if (ultimas.length === 0) {
+                container.innerHTML = crearEstadoVacio(
+                    'Sin plantas registradas',
+                    '<a href="registro-planta.html" class="btn btn-primary">Agregar tu primera planta</a>'
+                );
+                return;
+            }
+
+            container.innerHTML = ultimas.map(planta => {
+                const estado = planta.estado.toLowerCase().replace('_', '-');
+                const dias = daysSince(planta.fechaRegistro);
+                const nombre = planta.planta?.nombreComun || 'Planta desconocida';
+                return `
+                    <div class="card plant-card" onclick="verPlanta('${planta.id}')">
+                        <div class="plant-image">
+                            <img src="${planta.fotoPersonal || generarPlaceholder(planta.apodo)}" alt="${planta.apodo}">
+                            <span class="plant-status status-${estado}">${planta.estado.replace('_', ' ')}</span>
+                        </div>
+                        <div class="plant-info">
+                            <h3>${planta.apodo}</h3>
+                            <div class="scientific-name">${nombre}</div>
+                            <div class="plant-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> ${planta.ubicacion}</span>
+                                <span><i class="fas fa-calendar"></i> ${dias} días registrada</span>
+                                <span><i class="fas fa-heart"></i> ${planta.cuidados?.length || 0} cuidados</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Muestra sugerencias de cuidados
+        function mostrarProximosCuidados() {
+            const container = document.getElementById('proximos-cuidados');
+            const sugerencias = [];
+
+            plantasUsuario.forEach(planta => {
+                const dias = daysSince(planta.ultimoCuidado || planta.fechaRegistro);
+                const tipo = planta.planta?.tipo;
+
+                if (dias >= 7) {
+                    sugerencias.push({
+                        planta: planta.apodo,
+                        plantaId: planta.id,
+                        tipo: 'Riego',
+                        prioridad: dias >= 14 ? 'alta' : 'media',
+                        descripcion: `${dias} días sin cuidado`,
+                        icono: '💧'
+                    });
+                }
+
+                if (dias >= 30) {
+                    sugerencias.push({
+                        planta: planta.apodo,
+                        plantaId: planta.id,
+                        tipo: 'Fertilización',
+                        prioridad: 'media',
+                        descripcion: 'Fertilización mensual recomendada',
+                        icono: '🌱'
+                    });
+                }
+
+                if (tipo === 'interior' && dias >= 14) {
+                    sugerencias.push({
+                        planta: planta.apodo,
+                        plantaId: planta.id,
+                        tipo: 'Limpieza de hojas',
+                        prioridad: 'baja',
+                        descripcion: 'Limpieza de hojas para plantas de interior',
+                        icono: '🧽'
+                    });
+                }
+            });
+
+            sugerencias.sort((a, b) => {
+                const orden = { alta: 1, media: 2, baja: 3 };
+                return orden[a.prioridad] - orden[b.prioridad] || b.dias - a.dias;
+            });
+
+            if (sugerencias.length === 0) {
+                container.innerHTML = crearEstadoVacio(
+                    'Al día con los cuidados',
+                    'Todas tus plantas están bien cuidadas por ahora'
+                );
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="cards-grid">
+                    ${sugerencias.slice(0, 6).map(s => {
+                        const color = { alta: '#dc3545', media: '#ffc107', baja: '#28a745' }[s.prioridad];
+                        return `
+                            <div class="card">
+                                <h4 style="color: ${color};">${s.icono} ${s.tipo}</h4>
+                                <p><strong>${s.planta}</strong></p>
+                                <p><i class="fas fa-info-circle"></i> ${s.descripcion}</p>
+                                <p><strong>Prioridad:</strong> 
+                                   <span style="color: ${color}; font-weight: bold;">
+                                       ${s.prioridad.charAt(0).toUpperCase() + s.prioridad.slice(1)}
+                                   </span>
+                                </p>
+                                <div class="plant-actions">
+                                    <button class="btn btn-primary" onclick="cuidarRapido('${s.plantaId}')">
+                                        <i class="fas fa-plus"></i> Aplicar Cuidado
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="verPlanta('${s.plantaId}')">
+                                        <i class="fas fa-eye"></i> Ver Planta
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        // Calcula días transcurridos desde una fecha
+        function daysSince(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            return Math.floor((now - date) / (1000 * 60 * 60 * 24));
+        }
+
+        // Genera imagen placeholder
+        function generarPlaceholder(texto) {
+            return `https://via.placeholder.com/200x150/81C784/FFFFFF?text=${encodeURIComponent(texto)}`;
+        }
+
+        // Crea estado vacío reutilizable
+        function crearEstadoVacio(titulo, mensaje) {
+            return `
+                <div class="empty-state">
+                    <i class="fas fa-check-circle" style="color: var(--color-green-medium); font-size: 3rem;"></i>
+                    <h3>${titulo}</h3>
+                    <p>${mensaje}</p>
+                </div>
+            `;
+        }
+
+        // Acciones rápidas
+        async function cuidarRapido(plantaId, tipo = 'riego') {
+            try {
+                await PlantasAPI.registrarCuidado(plantaId, tipo, 'Cuidado rápido desde dashboard');
+                UIUtils.mostrarNotificacion(`${tipo.charAt(0).toUpperCase() + tipo.slice(1)} aplicado.`, 'success');
+                setTimeout(cargarEstadisticas, 1000);
+            } catch (error) {
+                UIUtils.mostrarNotificacion('Error al aplicar cuidado.', 'error');
+            }
+        }
+
+        function verPlanta(plantaId) {
+            window.location.href = `vista-planta.html?id=${plantaId}`;
+        }
+
+        function cerrarSesion() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>

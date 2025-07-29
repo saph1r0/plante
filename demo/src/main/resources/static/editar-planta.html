@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Planta - PlantCare</title>
+    
+    <!-- Iconos (Font Awesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Estilos principales -->
+    <link rel="stylesheet" href="css/plantas.css">
+    
+    <!-- Estilos específicos para esta página -->
+    <style>
+        .readonly-info {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .readonly-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .readonly-fields span {
+            color: #495057;
+        }
+        .readonly-fields strong {
+            color: #28a745;
+        }
+        .btn-outline-danger {
+            background: transparent;
+            color: #dc3545;
+            border: 1px solid #dc3545;
+        }
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+            border-color: #dc3545;
+            transition: all 0.2s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- ========================================
+         HEADER DE NAVEGACIÓN
+         ======================================== -->
+    <header class="header">
+        <nav class="nav">
+            <h1><i class="fas fa-seedling"></i> PlantCare</h1>
+            <div class="nav-links">
+                <a href="dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a>
+                <a href="mis-plantas.html"><i class="fas fa-leaf"></i> Mis Plantas</a>
+                <a href="registro-planta.html"><i class="fas fa-plus"></i> Agregar Planta</a>
+                <button onclick="cerrarSesion()">
+                    <i class="fas fa-sign-out-alt"></i> Salir
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ========================================
+         CONTENIDO PRINCIPAL
+         ======================================== -->
+    <div class="main-content">
+        
+        <!-- Estado: Cargando -->
+        <div id="loading" class="text-center" style="padding: 3rem;">
+            <i class="fas fa-spinner fa-spin fa-3x" style="color: var(--color-green-medium);"></i>
+            <p style="margin-top: 1rem; color: var(--color-gray-text);">Cargando información de la planta...</p>
+        </div>
+
+        <!-- Estado: Error - Planta no encontrada -->
+        <div id="planta-no-encontrada" class="hidden" style="text-align: center; padding: 3rem;">
+            <i class="fas fa-exclamation-triangle fa-3x" style="color: #dc3545; margin-bottom: 1rem;"></i>
+            <h2>Planta no encontrada</h2>
+            <p style="color: var(--color-gray-text); margin: 1rem 0;">
+                La planta que intentas editar no existe o fue eliminada.
+            </p>
+            <a href="mis-plantas.html" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Volver a Mis Plantas
+            </a>
+        </div>
+
+        <!-- Formulario de edición (visible cuando carga) -->
+        <div id="contenido-edicion" class="hidden">
+            
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <i class="fas fa-home"></i> 
+                <a href="dashboard.html">Inicio</a> / 
+                <a href="mis-plantas.html">Mis Plantas</a> / 
+                <span id="breadcrumb-planta">Editar Planta</span>
+            </div>
+
+            <!-- Encabezado de página -->
+            <div class="page-header">
+                <h1><i class="fas fa-edit"></i> Editar <span id="titulo-planta"></span></h1>
+                <a href="mis-plantas.html" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+
+            <!-- Información de la especie (solo lectura) -->
+            <div class="readonly-info">
+                <h4><i class="fas fa-info-circle"></i> Información de la Especie</h4>
+                <div class="readonly-fields">
+                    <span><strong>Nombre:</strong> <span id="nombre-catalogo"></span></span>
+                    <span><strong>Nombre científico:</strong> <span id="cientifico-catalogo"></span></span>
+                    <span><strong>Tipo:</strong> <span id="tipo-catalogo"></span></span>
+                    <span><strong>Descripción:</strong> <span id="descripcion-catalogo"></span></span>
+                </div>
+            </div>
+
+            <!-- Formulario de edición -->
+            <div class="form-container">
+                <form id="form-edicion" onsubmit="guardarCambios(event)">
+                    <div class="form-grid">
+                        <!-- Apodo -->
+                        <div class="form-group">
+                            <label for="apodo"><i class="fas fa-heart"></i> Apodo *</label>
+                            <input type="text" id="apodo" required placeholder="Ej: Mi rosa favorita">
+                        </div>
+
+                        <!-- Ubicación -->
+                        <div class="form-group">
+                            <label for="ubicacion"><i class="fas fa-map-marker-alt"></i> Ubicación *</label>
+                            <input type="text" id="ubicacion" required placeholder="Ej: Jardín, Oficina">
+                        </div>
+
+                        <!-- Estado -->
+                        <div class="form-group">
+                            <label for="estado"><i class="fas fa-heart-pulse"></i> Estado actual</label>
+                            <select id="estado">
+                                <option value="SALUDABLE">🟢 Saludable</option>
+                                <option value="NECESITA_AGUA">🟡 Necesita agua</option>
+                                <option value="ENFERMA">🔴 Enferma</option>
+                                <option value="MARCHITA">🟠 Marchita</option>
+                                <option value="FLORECIENDO">🌸 Floreciendo</option>
+                            </select>
+                        </div>
+
+                        <!-- Fecha de obtención -->
+                        <div class="form-group">
+                            <label for="fecha-obtencion"><i class="fas fa-calendar"></i> Fecha de obtención</label>
+                            <input type="date" id="fecha-obtencion">
+                        </div>
+
+                        <!-- Foto personal -->
+                        <div class="form-group full-width">
+                            <label for="foto-url"><i class="fas fa-camera"></i> URL de foto personal</label>
+                            <input type="url" id="foto-url" placeholder="https://ejemplo.com/foto.jpg" oninput="previsualizarFoto()">
+                            <div style="margin-top: 1rem;">
+                                <strong>Foto actual:</strong>
+                                <img id="img-actual" src="" alt="Foto actual" style="max-width: 200px; border-radius: 8px; margin-top: 0.5rem;">
+                            </div>
+                            <div id="preview-foto" class="hidden" style="margin-top: 1rem;">
+                                <strong>Nueva foto (vista previa):</strong>
+                                <img id="img-preview" src="" alt="Vista previa" style="max-width: 200px; border-radius: 8px; margin-top: 0.5rem;">
+                            </div>
+                        </div>
+
+                        <!-- Notas -->
+                        <div class="form-group full-width">
+                            <label for="notas"><i class="fas fa-sticky-note"></i> Notas personales</label>
+                            <textarea id="notas" rows="4" placeholder="Observaciones o cuidados especiales..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Información automática -->
+                    <div class="info-automatica">
+                        <small>
+                            <i class="fas fa-info-circle"></i> 
+                            <span id="info-registro"></span>
+                        </small>
+                    </div>
+
+                    <!-- Errores de validación -->
+                    <div id="errores-validacion" class="hidden" style="background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 6px solid #dc3545;">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Errores:</h4>
+                        <ul id="lista-errores" style="margin: 0.5rem 0 0 1.5rem;"></ul>
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div style="display: flex; gap: 1rem; justify-content: space-between; margin-top: 2rem;">
+                        <div style="display: flex; gap: 1rem;">
+                            <button type="button" class="btn btn-secondary" onclick="cancelarEdicion()">
+                                <i class="fas fa-times"></i> Cancelar
+                            </button>
+                            <button type="button" class="btn btn-outline-danger" onclick="confirmarEliminar()">
+                                <i class="fas fa-trash-alt"></i> Eliminar
+                            </button>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="btn-guardar">
+                            <i class="fas fa-save"></i> Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         MODALES
+         ======================================== -->
+
+    <!-- Modal: Confirmar eliminación -->
+    <div id="modal-eliminar" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-trash-alt" style="color: #dc3545;"></i> Eliminar Planta</h3>
+            <p>¿Estás seguro de que quieres eliminar <strong id="nombre-eliminar"></strong>?</p>
+            <p style="color: #6c757d; font-size: 0.9em;">Esta acción eliminará permanentemente la planta y su historial.</p>
+            <div class="modal-actions">
+                <button onclick="cerrarModalEliminar()" class="btn btn-secondary">Cancelar</button>
+                <button onclick="eliminarPlanta()" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Sí, Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Confirmar cancelación -->
+    <div id="modal-cancelar" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-question-circle" style="color: #ffa500;"></i> Cambios sin Guardar</h3>
+            <p>Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?</p>
+            <div class="modal-actions">
+                <button onclick="cerrarModalCancelar()" class="btn btn-secondary">Continuar Editando</button>
+                <button onclick="confirmarCancelacion()" class="btn btn-warning">
+                    <i class="fas fa-times"></i> Salir sin Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         NOTIFICACIONES
+         ======================================== -->
+    <div id="notification" class="notification"></div>
+
+    <!-- ========================================
+         SCRIPTS
+         ======================================== -->
+    <script src="js/plantas-api.js"></script>
+    <script>
+        // ========================================
+        // VARIABLES GLOBALES
+        // ========================================
+        let plantaId;
+        let plantaActual;
+        let datosOriginales;
+        let hayCambios = false;
+
+        // ========================================
+        // CARGAR PLANTA DESDE EL BACKEND
+        // ========================================
+        async function cargarPlanta() {
+            plantaId = obtenerParametroURL('id');
+            if (!plantaId) return mostrarError();
+
+            try {
+                plantaActual = await PlantasAPI.obtenerPlantaPorId(plantaId);
+                if (!plantaActual) return mostrarError();
+
+                datosOriginales = JSON.parse(JSON.stringify(plantaActual));
+                mostrarFormulario();
+            } catch (error) {
+                console.error('Error cargando planta:', error);
+                mostrarError();
+            }
+        }
+
+        // ========================================
+        // MOSTRAR FORMULARIO CON DATOS
+        // ========================================
+        function mostrarFormulario() {
+            const { planta: plantaCatalogo } = plantaActual;
+
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('contenido-edicion').classList.remove('hidden');
+
+            document.getElementById('titulo-planta').textContent = plantaActual.apodo;
+            document.getElementById('breadcrumb-planta').textContent = `Editar ${plantaActual.apodo}`;
+            document.title = `Editar ${plantaActual.apodo} - PlantCare`;
+
+            // Datos del catálogo
+            if (plantaCatalogo) {
+                document.getElementById('nombre-catalogo').textContent = plantaCatalogo.nombreComun || 'N/A';
+                document.getElementById('cientifico-catalogo').textContent = plantaCatalogo.nombreCientifico || 'N/A';
+                document.getElementById('tipo-catalogo').textContent = plantaCatalogo.tipo || 'N/A';
+                document.getElementById('descripcion-catalogo').textContent = plantaCatalogo.descripcion || 'N/A';
+            }
+
+            // Datos editables
+            document.getElementById('apodo').value = plantaActual.apodo || '';
+            document.getElementById('ubicacion').value = plantaActual.ubicacion || '';
+            document.getElementById('estado').value = plantaActual.estado || 'SALUDABLE';
+
+            if (plantaActual.fechaObtencion) {
+                const fecha = new Date(plantaActual.fechaObtencion);
+                document.getElementById('fecha-obtencion').value = fecha.toISOString().split('T')[0];
+            }
+
+            document.getElementById('foto-url').value = plantaActual.fotoPersonal || '';
+            document.getElementById('notas').value = plantaActual.notas || '';
+
+            // Foto actual
+            const imgActual = document.getElementById('img-actual');
+            imgActual.src = plantaActual.fotoPersonal || 
+                `https://via.placeholder.com/200x150/C8E6C9/388E3C?text=${encodeURIComponent(plantaActual.apodo)}`;
+
+            // Info de registro
+            const fechaRegistro = new Date(plantaActual.fechaRegistro);
+            const dias = Math.floor((new Date() - fechaRegistro) / (1000 * 60 * 60 * 24));
+            const totalCuidados = plantaActual.bitacoras?.length || 0;
+            document.getElementById('info-registro').textContent = 
+                `Registrada el ${fechaRegistro.toLocaleDateString()} (${dias} días) • ${totalCuidados} cuidados`;
+
+            configurarDeteccionCambios();
+        }
+
+        // ========================================
+        // DETECTAR CAMBIOS EN EL FORMULARIO
+        // ========================================
+        function configurarDeteccionCambios() {
+            ['apodo', 'ubicacion', 'estado', 'fecha-obtencion', 'foto-url', 'notas'].forEach(id => {
+                const el = document.getElementById(id);
+                el?.addEventListener('input', () => hayCambios = true);
+            });
+        }
+
+        // ========================================
+        // PREVISUALIZAR FOTO
+        // ========================================
+        function previsualizarFoto() {
+            const url = document.getElementById('foto-url').value.trim();
+            const preview = document.getElementById('preview-foto');
+            const img = document.getElementById('img-preview');
+
+            if (url && url.startsWith('http')) {
+                img.src = url;
+                img.onerror = () => {
+                    preview.classList.add('hidden');
+                    mostrarNotificacion('URL de imagen inválida', 'error');
+                };
+                img.onload = () => preview.classList.remove('hidden');
+            } else {
+                preview.classList.add('hidden');
+            }
+        }
+
+        // ========================================
+        // VALIDAR FORMULARIO
+        // ========================================
+        function validarFormulario() {
+            const errores = [];
+            const apodo = document.getElementById('apodo').value.trim();
+            const ubicacion = document.getElementById('ubicacion').value.trim();
+            const fotoUrl = document.getElementById('foto-url').value.trim();
+
+            if (!apodo) errores.push('El apodo es obligatorio');
+            else if (apodo.length < 2) errores.push('El apodo debe tener al menos 2 caracteres');
+
+            if (!ubicacion) errores.push('La ubicación es obligatoria');
+
+            if (fotoUrl && !fotoUrl.startsWith('http')) errores.push('La URL de la foto debe ser válida');
+
+            return errores;
+        }
+
+        function mostrarErrores(errores) {
+            const container = document.getElementById('errores-validacion');
+            const lista = document.getElementById('lista-errores');
+            if (errores.length > 0) {
+                lista.innerHTML = errores.map(e => `<li>${e}</li>`).join('');
+                container.classList.remove('hidden');
+                container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        // ========================================
+        // GUARDAR CAMBIOS
+        // ========================================
+        async function guardarCambios(event) {
+            event.preventDefault();
+            const errores = validarFormulario();
+            if (errores.length > 0) return mostrarErrores(errores);
+
+            mostrarErrores([]);
+            const btn = document.getElementById('btn-guardar');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+
+            try {
+                const datos = {
+                    apodo: document.getElementById('apodo').value.trim(),
+                    ubicacion: document.getElementById('ubicacion').value.trim(),
+                    estado: document.getElementById('estado').value,
+                    fechaObtencion: document.getElementById('fecha-obtencion').value || null,
+                    fotoPersonal: document.getElementById('foto-url').value.trim() || null,
+                    notas: document.getElementById('notas').value.trim() || null
+                };
+
+                await PlantasAPI.actualizarPlanta(plantaId, datos);
+                mostrarNotificacion('¡Cambios guardados exitosamente!', 'success');
+                hayCambios = false;
+                setTimeout(() => window.location.href = `vista-planta.html?id=${plantaId}`, 1500);
+            } catch (error) {
+                mostrarNotificacion('Error al guardar: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save"></i> Guardar Cambios';
+            }
+        }
+
+        // ========================================
+        // ELIMINAR PLANTA
+        // ========================================
+        function confirmarEliminar() {
+            document.getElementById('nombre-eliminar').textContent = plantaActual.apodo;
+            document.getElementById('modal-eliminar').classList.add('visible');
+        }
+
+        async function eliminarPlanta() {
+            try {
+                await PlantasAPI.eliminarPlanta(plantaId);
+                mostrarNotificacion('Planta eliminada exitosamente', 'success');
+                setTimeout(() => window.location.href = 'mis-plantas.html', 1500);
+            } catch (error) {
+                mostrarNotificacion('Error al eliminar: ' + error.message, 'error');
+            }
+        }
+
+        // ========================================
+        // CANCELAR EDICIÓN
+        // ========================================
+        function cancelarEdicion() {
+            hayCambios ? document.getElementById('modal-cancelar').classList.add('visible') : window.location.href = 'mis-plantas.html';
+        }
+
+        function confirmarCancelacion() {
+            window.location.href = 'mis-plantas.html';
+        }
+
+        // ========================================
+        // MODALES
+        // ========================================
+        function cerrarModalEliminar() {
+            document.getElementById('modal-eliminar').classList.remove('visible');
+        }
+
+        function cerrarModalCancelar() {
+            document.getElementById('modal-cancelar').classList.remove('visible');
+        }
+
+        // ========================================
+        // UTILIDADES
+        // ========================================
+        function obtenerParametroURL(nombre) {
+            return new URLSearchParams(window.location.search).get(nombre);
+        }
+
+        function mostrarError() {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('planta-no-encontrada').classList.remove('hidden');
+        }
+
+        function mostrarNotificacion(mensaje, tipo = 'success') {
+            const notif = document.getElementById('notification');
+            notif.textContent = mensaje;
+            notif.className = `notification ${tipo} show`;
+            setTimeout(() => notif.classList.remove('show'), tipo === 'success' ? 3000 : 5000);
+        }
+
+        function cerrarSesion() {
+            if (confirm('¿Cerrar sesión?')) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // ========================================
+        // EVENT LISTENERS
+        // ========================================
+        document.getElementById('modal-eliminar').addEventListener('click', e => e.target === e.currentTarget && cerrarModalEliminar());
+        document.getElementById('modal-cancelar').addEventListener('click', e => e.target === e.currentTarget && cerrarModalCancelar());
+
+        window.addEventListener('beforeunload', e => {
+            if (hayCambios) {
+                e.returnValue = 'Tienes cambios sin guardar.';
+                return e.returnValue;
+            }
+        });
+
+        // ========================================
+        // INICIALIZACIÓN
+        // ========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const fechaInput = document.getElementById('fecha-obtencion');
+            if (fechaInput) fechaInput.max = new Date().toISOString().split('T')[0];
+            cargarPlanta();
+        });
+    </script>
+</body>
+</html>
