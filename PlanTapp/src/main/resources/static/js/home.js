@@ -442,11 +442,11 @@ function initializePhotoModalCloseHome() {
 }
 
 function initializeAuthButtonsHome() {
-    if (domElementsHome.registerBtn) {
-        domElementsHome.registerBtn.addEventListener('click', () => {
-            alert('La funcionalidad de registro será implementada en la página de usuario.');
-        });
-    }
+    //if (domElementsHome.registerBtn) {
+    //    domElementsHome.registerBtn.addEventListener('click', () => {
+    //        alert('La funcionalidad de registro será implementada en la página de usuario.');
+    //    });
+    //}
 
     if (domElementsHome.loginBtn) {
         domElementsHome.loginBtn.addEventListener('click', () => {
