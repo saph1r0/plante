@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Controller
-@RequestMapping("/web")
+@RequestMapping("/api")
 public class UsuarioWebController {
 
     private static final Logger logger = LoggerFactory.getLogger(UsuarioWebController.class);
@@ -55,7 +55,7 @@ public class UsuarioWebController {
                 session.setAttribute(ATTR_USUARIO_NOMBRE, u.getNombre());
                 session.setAttribute(ATTR_USUARIO_CORREO, u.getCorreo());
                 logger.info("Login exitoso para usuario {}", u.getCorreo());
-                return "redirect:/web/home";
+                return "redirect:/api/home";
             }
         } catch (Exception e) {
             logger.warn("Fallo de login para {}: {}", dto.getCorreo(), e.getMessage());
@@ -74,7 +74,7 @@ public class UsuarioWebController {
             Usuario nuevo = new Usuario(dto.getNombre(), dto.getCorreo(), contrasenaEncriptada);
             usuarioServicio.registrarUsuario(nuevo);
             logger.info("Usuario {} registrado correctamente", dto.getCorreo());
-            return "redirect:/web/login";
+            return "redirect:/api/login";
         } catch (Exception e) {
             logger.error("Error al registrar usuario: {}", e.getMessage());
             model.addAttribute("error", "Error al registrar usuario");
@@ -91,7 +91,7 @@ public class UsuarioWebController {
 
         if (nombre == null || correo == null) {
             logger.warn("Intento de acceso a /home sin sesión válida");
-            return "redirect:/web/login";
+            return "redirect:/api/login";
         }
 
         model.addAttribute(ATTR_USUARIO_NOMBRE, nombre);

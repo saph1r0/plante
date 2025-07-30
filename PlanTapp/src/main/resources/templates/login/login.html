@@ -46,7 +46,7 @@
                 <p>Sign in to your account</p>
             </div>
 
-            <form class="auth-form" th:action="@{/web/login}" method="post" th:object="${loginDTO}">
+            <form class="auth-form" th:action="@{/api/login}" method="post" th:object="${loginDTO}">
                 <div class="input-group">
                     <div class="input-container">
                         <i class="fas fa-envelope input-icon"></i>
@@ -104,7 +104,7 @@
                 <p>Join our community</p>
             </div>
 
-            <form class="auth-form" th:action="@{/web/registro}" method="post" th:object="${registroDTO}">
+            <form class="auth-form" th:action="@{/api/registro}" method="post" th:object="${registroDTO}">
                 <div class="input-row">
                     <div class="input-group">
                         <div class="input-container">
