@@ -352,7 +352,8 @@ public class RegistroPlanta {
     private String apodo;
     private EstadoPlanta estado;
 }
-
+}
+```
 ## 🔍 Análisis Estático SonarLint/SonarQube
 
 Durante el desarrollo, se utilizaron herramientas como **SonarLint** para realizar análisis estático y mejorar la calidad del código. A continuación, se documenta una de las recomendaciones aplicadas:
