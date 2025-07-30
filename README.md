@@ -1,3 +1,4 @@
+
 # 🌿 PlantApp - Sistema de Gestión de Plantas (Java + DDD)
 
 ## 📌 Descripción del Proyecto
@@ -627,3 +628,4 @@ public class UsuarioWebController {
 4. **Validación**: Manejo apropiado de errores y validaciones
 5. **Testabilidad**: Alto desacoplamiento facilita testing
 6. **Escalabilidad**: Estructura preparada para crecimiento
+
