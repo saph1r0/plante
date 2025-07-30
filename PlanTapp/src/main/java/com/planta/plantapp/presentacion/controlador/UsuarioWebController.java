@@ -55,7 +55,7 @@ public class UsuarioWebController {
                 session.setAttribute(ATTR_USUARIO_NOMBRE, u.getNombre());
                 session.setAttribute(ATTR_USUARIO_CORREO, u.getCorreo());
                 logger.info("Login exitoso para usuario {}", u.getCorreo());
-                return "redirect:/web/home";
+                return "redirect:/web/index";
             }
         } catch (Exception e) {
             logger.warn("Fallo de login para {}: {}", dto.getCorreo(), e.getMessage());
@@ -84,18 +84,18 @@ public class UsuarioWebController {
         }
     }
 
-    @GetMapping("/home")
-    public String home(HttpSession session, Model model) {
+    @GetMapping("/index")
+    public String index(HttpSession session, Model model) {
         String nombre = (String) session.getAttribute(ATTR_USUARIO_NOMBRE);
         String correo = (String) session.getAttribute(ATTR_USUARIO_CORREO);
 
         if (nombre == null || correo == null) {
-            logger.warn("Intento de acceso a /home sin sesión válida");
+            logger.warn("Intento de acceso a /index sin sesión válida");
             return "redirect:/web/login";
         }
 
         model.addAttribute(ATTR_USUARIO_NOMBRE, nombre);
         model.addAttribute(ATTR_USUARIO_CORREO, correo);
-        return "login/home";  // home.html
+        return "login/index";  // index.html
     }
 }

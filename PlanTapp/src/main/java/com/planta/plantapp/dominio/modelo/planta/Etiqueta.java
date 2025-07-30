@@ -20,6 +20,11 @@ public class Etiqueta {
         this.color = color;
     }
 
+    public Etiqueta(String nombre, String color) {
+        this.nombre = nombre;
+        this.color = color;
+    }
+
     // Getters y setters
     public int getId() {
         return id;
@@ -62,8 +67,8 @@ public class Etiqueta {
         if (!(o instanceof Etiqueta)) return false;
         Etiqueta etiqueta = (Etiqueta) o;
         return id == etiqueta.id &&
-               Objects.equals(nombre, etiqueta.nombre) &&
-               Objects.equals(color, etiqueta.color);
+                Objects.equals(nombre, etiqueta.nombre) &&
+                Objects.equals(color, etiqueta.color);
     }
 
     @Override

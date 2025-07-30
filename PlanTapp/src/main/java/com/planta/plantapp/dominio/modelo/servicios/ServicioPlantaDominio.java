@@ -5,7 +5,6 @@ import com.planta.plantapp.dominio.modelo.cuidado.Cuidado;
 import com.planta.plantapp.dominio.modelo.cuidado.TipoCuidado;
 
 import java.time.LocalDateTime;
-//import java.util.List;
 import java.util.Objects;
 
 /**
@@ -28,12 +27,6 @@ public class ServicioPlantaDominio {
         Cuidado nuevoCuidado = new Cuidado(tipo, tipo.name(), frecuenciaDias);
         nuevoCuidado.setFechaAplicacion(LocalDateTime.now());
         nuevoCuidado.setNotas(notas);
-/* 
-        // Agregar directamente a la lista, si no hay método en Planta
-        List<Cuidado> lista = planta.getCuidados();
-        if (lista != null) {
-            lista.add(nuevoCuidado);
-        }*/
     }
 
     /**

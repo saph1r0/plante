@@ -9,15 +9,12 @@ import java.util.Objects;
 public class Cuidado {
 
     private TipoCuidado tipo;
+
     private String descripcion;
     private Integer frecuenciaDias;
     private LocalDateTime fechaAplicacion;
     private LocalDateTime fechaProxima;
     private String notas;
-
-    public Cuidado() {
-        this.fechaAplicacion = LocalDateTime.now();
-    }
 
     public Cuidado(TipoCuidado tipo, String descripcion, Integer frecuenciaDias) {
         this.tipo = tipo;
@@ -25,6 +22,17 @@ public class Cuidado {
         this.frecuenciaDias = frecuenciaDias;
         this.fechaAplicacion = LocalDateTime.now();
         programarProximo();
+    }
+
+    // Para que MongoDB pueda deserializar
+    public Cuidado() {
+        // Constructor vacío requerido por MongoDB
+    }
+
+    public Cuidado(TipoCuidado tipo, String descripcion, int frecuenciaDias) {
+        this.tipo = tipo;
+        this.descripcion = descripcion;
+        this.frecuenciaDias = frecuenciaDias;
     }
 
     public void programarProximo() {
@@ -36,6 +44,8 @@ public class Cuidado {
     public boolean esPendiente() {
         return fechaProxima != null && fechaProxima.isAfter(LocalDateTime.now());
     }
+
+    // Getters y setters
 
     public TipoCuidado getTipo() {
         return tipo;
@@ -85,6 +95,8 @@ public class Cuidado {
         this.notas = notas;
     }
 
+    // Métodos de utilidad
+
     @Override
     public String toString() {
         return "Cuidado{" +
@@ -93,14 +105,15 @@ public class Cuidado {
                 ", frecuenciaDias=" + frecuenciaDias +
                 ", fechaAplicacion=" + fechaAplicacion +
                 ", fechaProxima=" + fechaProxima +
-                ", notas='" + (notas != null ? notas : "") + '\'' +
+                ", notas='" + notas + '\'' +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Cuidado cuidado)) return false;
+        if (!(o instanceof Cuidado)) return false;
+        Cuidado cuidado = (Cuidado) o;
         return tipo == cuidado.tipo &&
                 Objects.equals(descripcion, cuidado.descripcion) &&
                 Objects.equals(fechaAplicacion, cuidado.fechaAplicacion);
