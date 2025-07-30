@@ -4,7 +4,6 @@ import com.planta.plantapp.dominio.modelo.bitacora.Bitacora;
 import com.planta.plantapp.dominio.modelo.planta.Planta;
 import com.planta.plantapp.dominio.modelo.IBitacoraRepositorio;
 
-import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -32,8 +31,8 @@ public class ServicioBitacoraDominio {
         Objects.requireNonNull(planta, "La planta no puede ser null");
         Objects.requireNonNull(descripcion, "La descripción no puede ser null");
 
-        Bitacora bitacora = new Bitacora(descripcion, fotoUrl, planta);
-        bitacora.setFecha(new Date());
+        Bitacora bitacora = new Bitacora(descripcion, fotoUrl, planta.getId(), "observacion");
+        // La fecha se asigna automáticamente en el constructor de Bitacora
 
         repositorioBitacora.guardar(bitacora);
     }

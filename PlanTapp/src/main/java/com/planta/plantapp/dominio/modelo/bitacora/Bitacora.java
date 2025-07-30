@@ -1,31 +1,51 @@
 package com.planta.plantapp.dominio.modelo.bitacora;
 
-import com.planta.plantapp.dominio.modelo.planta.Planta;
 
-import java.util.Date;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
  * Entidad de dominio que representa una entrada de bitácora de cuidado de una planta.
  */
+@Document(collection = "bitacoras")
 public class Bitacora {
 
+    @Id
     private String id;
-    private Date fecha = new Date();  // inicialización directa
+    private LocalDateTime fecha;
     private String descripcion;
     private String foto;
-    private Planta planta;
-
-    public Bitacora(String descripcion, String foto, Planta planta) {
-        this.descripcion = descripcion;
-        this.foto = foto;
-        this.planta = planta;
-    }
+    private String plantaId;
+    private String tipoCuidado;
+    private String observaciones;
 
     public Bitacora() {
-        // Constructor vacío
+        this.fecha = LocalDateTime.now();
     }
 
+    public Bitacora(String descripcion, String foto, String plantaId, String tipoCuidado) {
+        this();
+        if (descripcion == null || descripcion.isBlank()) {
+            throw new IllegalArgumentException("La descripción no puede ser nula o vacía");
+        }
+        if (plantaId == null || plantaId.isBlank()) {
+            throw new IllegalArgumentException("El ID de la planta no puede ser nulo o vacío");
+        }
+        this.descripcion = descripcion;
+        this.foto = foto;
+        this.plantaId = plantaId;
+        this.tipoCuidado = tipoCuidado;
+    }
+
+    public Bitacora(String descripcion, String foto, String plantaId, String tipoCuidado, String observaciones) {
+        this(descripcion, foto, plantaId, tipoCuidado);
+        this.observaciones = observaciones;
+    }
+
+    // Getters y Setters
     public String getId() {
         return id;
     }
@@ -34,11 +54,11 @@ public class Bitacora {
         this.id = id;
     }
 
-    public Date getFecha() {
+    public LocalDateTime getFecha() {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(LocalDateTime fecha) {
         this.fecha = fecha;
     }
 
@@ -47,6 +67,9 @@ public class Bitacora {
     }
 
     public void setDescripcion(String descripcion) {
+        if (descripcion == null || descripcion.isBlank()) {
+            throw new IllegalArgumentException("La descripción no puede ser nula o vacía");
+        }
         this.descripcion = descripcion;
     }
 
@@ -58,32 +81,54 @@ public class Bitacora {
         this.foto = foto;
     }
 
-    public Planta getPlanta() {
-        return planta;
+    public String getPlantaId() {
+        return plantaId;
     }
 
-    public void setPlanta(Planta planta) {
-        this.planta = planta;
+    public void setPlantaId(String plantaId) {
+        if (plantaId == null || plantaId.isBlank()) {
+            throw new IllegalArgumentException("El ID de la planta no puede ser nulo o vacío");
+        }
+        this.plantaId = plantaId;
+    }
+
+    public String getTipoCuidado() {
+        return tipoCuidado;
+    }
+
+    public void setTipoCuidado(String tipoCuidado) {
+        this.tipoCuidado = tipoCuidado;
+    }
+
+    public String getObservaciones() {
+        return observaciones;
+    }
+
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
     }
 
     @Override
-    public String toString() {
-        return "Bitacora{" +
-                "fecha=" + fecha +
-                ", descripcion='" + descripcion + '\'' +
-                ", planta=" + (planta != null ? planta.getNombreComun() : "N/A") +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Bitacora other)) return false;
-        return Objects.equals(id, other.id);
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Bitacora bitacora = (Bitacora) obj;
+        return Objects.equals(id, bitacora.id);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Bitacora{" +
+                "id='" + id + '\'' +
+                ", fecha=" + fecha +
+                ", descripcion='" + descripcion + '\'' +
+                ", plantaId='" + plantaId + '\'' +
+                ", tipoCuidado='" + tipoCuidado + '\'' +
+                '}';
     }
 }

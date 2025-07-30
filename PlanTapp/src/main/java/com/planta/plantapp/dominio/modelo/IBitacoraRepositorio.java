@@ -2,7 +2,7 @@ package com.planta.plantapp.dominio.modelo;
 
 import com.planta.plantapp.dominio.modelo.bitacora.Bitacora;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -52,45 +52,41 @@ public interface IBitacoraRepositorio {
     List<Bitacora> listarPorPlanta(String plantaId);
 
     /**
-     * Lista todas las bitácoras registradas por un usuario específico.
-     * @param usuarioId ID del usuario
-     * @return Lista de bitácoras creadas por el usuario
+     * Lista las bitácoras filtradas por tipo de cuidado.
+     * @param tipoCuidado Tipo de cuidado a filtrar
+     * @return Lista de bitácoras del tipo especificado
      */
-    List<Bitacora> listarPorUsuario(String usuarioId);
+    List<Bitacora> listarPorTipoCuidado(String tipoCuidado);
 
     /**
-     * Lista todas las bitácoras dentro de un rango de fechas.
+     * Lista las bitácoras en un rango de fechas.
      * @param fechaInicio Fecha de inicio del rango
-     * @param fechaFin Fecha final del rango
-     * @return Lista de bitácoras en el rango
+     * @param fechaFin Fecha de fin del rango
+     * @return Lista de bitácoras en el rango especificado
      */
-    List<Bitacora> listarPorFecha(Date fechaInicio, Date fechaFin);
+    List<Bitacora> listarPorRangoFechas(LocalDateTime fechaInicio, LocalDateTime fechaFin);
 
     /**
-     * Lista las bitácoras por tipo de actividad (riego, poda, etc.).
-     * @param tipoActividad Nombre del tipo de actividad
+     * Lista las bitácoras de una planta en un rango de fechas.
+     * @param plantaId ID de la planta
+     * @param fechaInicio Fecha de inicio
+     * @param fechaFin Fecha de fin
      * @return Lista de bitácoras filtradas
      */
-    List<Bitacora> listarPorTipoActividad(String tipoActividad);
+    List<Bitacora> listarPorPlantaYFechas(String plantaId, LocalDateTime fechaInicio, LocalDateTime fechaFin);
 
     /**
-     * Busca bitácoras que contengan una descripción parcial o total.
-     * @param descripcion Texto a buscar
-     * @return Lista de coincidencias
-     */
-    List<Bitacora> buscarPorDescripcion(String descripcion);
-
-    /**
-     * Cuenta cuántas bitácoras existen para una planta.
+     * Cuenta el número total de bitácoras de una planta.
      * @param plantaId ID de la planta
-     * @return Número total de registros
+     * @return Número de bitácoras
      */
-    Long contarRegistrosPorPlanta(String plantaId);
+    long contarPorPlanta(String plantaId);
 
     /**
-     * Obtiene la última bitácora registrada para una planta.
+     * Obtiene las últimas bitácoras de una planta.
      * @param plantaId ID de la planta
-     * @return Último registro de bitácora o null si no hay registros
+     * @param limite Número máximo de bitácoras a obtener
+     * @return Lista de las últimas bitácoras
      */
-    Bitacora obtenerUltimoRegistro(String plantaId);
+    List<Bitacora> obtenerUltimasPorPlanta(String plantaId, int limite);
 }

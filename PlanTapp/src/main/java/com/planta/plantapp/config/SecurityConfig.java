@@ -23,14 +23,34 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                // Rutas existentes
                                 "/web/login", "/web/registro","/web/index", "/web/dashboard",
                                 "/usuarios/**", "/web/dashboard#eventos", "/web/plantas/catalogo", "/web/test2", "/web/plantas",
-                                "/login/**", "/css/**", "/js/**", "/images/**","/static/**"
+                                "/login/**", "/css/**", "/js/**", "/images/**","/static/**",
+                                // Nuevas rutas para bitácora
+                                "/", "/home", "/dashboard",
+                                "/bitacora/**", "/api/bitacoras/**",
+                                "/plantas/**", "/recordatorios/**",
+                                // Consola H2 para desarrollo
+                                "/h2-console/**",
+                                // Recursos estáticos adicionales
+                                "/templates/**", "/vista/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(login -> login.disable())
-                .logout(logout -> logout.disable());
+                .formLogin(login -> login
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/dashboard", true)
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login")
+                        .permitAll()
+                )
+                // Configuración especial para H2 Console - Method reference
+                .headers(headers -> headers
+                        .frameOptions(FrameOptionsConfig::disable));
 
         return http.build();
     }

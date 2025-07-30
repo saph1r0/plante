@@ -1,25 +1,23 @@
 package com.planta.plantapp.aplicacion.servicios;
 
-import com.planta.plantapp.dominio.modelo.IBitacoraRepositorio;
 import com.planta.plantapp.dominio.modelo.bitacora.Bitacora;
-import com.planta.plantapp.dominio.modelo.planta.Planta;
-import com.planta.plantapp.dominio.modelo.servicios.ServicioBitacoraDominio;
+import com.planta.plantapp.dominio.modelo.IBitacoraRepositorio;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 /**
- * Servicio de aplicación que orquesta el uso del dominio para gestionar bitácoras.
- * Forma parte del dominio de la solución.
+ * Implementación del servicio de aplicación para bitácoras.
  */
+@Service
 public class ServicioBitacoraImpl {
 
-    private final ServicioBitacoraDominio servicioDominio;
     private final IBitacoraRepositorio repositorioBitacora;
 
-    public ServicioBitacoraImpl(ServicioBitacoraDominio servicioDominio, IBitacoraRepositorio repositorioBitacora) {
-        this.servicioDominio = servicioDominio;
+    @Autowired
+    public ServicioBitacoraImpl(IBitacoraRepositorio repositorioBitacora) {
         this.repositorioBitacora = repositorioBitacora;
     }
 
@@ -27,7 +25,7 @@ public class ServicioBitacoraImpl {
      * Registra una nueva observación para una planta.
      */
     public void registrarObservacion(String plantaId, String descripcion) {
-        Bitacora nueva = new Bitacora(descripcion, null, new Planta(plantaId));
+        Bitacora nueva = new Bitacora(descripcion, null, plantaId, "observacion");
         repositorioBitacora.guardar(nueva);
     }
 
@@ -41,8 +39,8 @@ public class ServicioBitacoraImpl {
     /**
      * Obtiene bitácoras dentro de un rango de fechas.
      */
-    public List<Bitacora> obtenerPorFechaRango(Date desde, Date hasta) {
-        return repositorioBitacora.listarPorFecha(desde, hasta);
+    public List<Bitacora> obtenerPorFechaRango(LocalDateTime desde, LocalDateTime hasta) {
+        return repositorioBitacora.listarPorRangoFechas(desde, hasta);
     }
 
     /**
@@ -75,16 +73,13 @@ public class ServicioBitacoraImpl {
      * Busca bitácoras por tipo de actividad (riego, poda, etc.).
      */
     public List<Bitacora> buscarPorTipo(String tipo) {
-        return repositorioBitacora.listarPorTipoActividad(tipo);
+        return repositorioBitacora.listarPorTipoCuidado(tipo);
     }
 
     /**
-     * Lista todas las bitácoras pendientes de atención por usuario.
+     * Lista todas las bitácoras del sistema.
      */
-    public List<Bitacora> listarPendientesPorUsuario(String usuarioId) {
-        return repositorioBitacora.listarPorUsuario(usuarioId)
-                .stream()
-                .filter(bitacora -> bitacora.getDescripcion() != null && bitacora.getDescripcion().contains("pendiente"))
-                .toList(); // Filtro de ejemplo, depende de cómo se marca lo "pendiente"
+    public List<Bitacora> listarTodas() {
+        return repositorioBitacora.listarTodas();
     }
 }

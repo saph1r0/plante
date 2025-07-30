@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitácoras de Planta</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand" href="/dashboard">
+                <i class="fas fa-leaf"></i> PlantApp
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/plantas">Mis Plantas</a>
+                <a class="nav-link active" href="/bitacora">Bitácora</a>
+                <a class="nav-link" href="/recordatorios">Recordatorios</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1><i class="fas fa-seedling"></i> Bitácora de la Planta</h1>
+                    <div>
+                        <a th:href="@{/bitacora/nueva(plantaId=${plantaId})}" class="btn btn-success me-2">
+                            <i class="fas fa-plus"></i> Nueva Entrada
+                        </a>
+                        <a th:href="@{/bitacora/planta/{plantaId}/historial(plantaId=${plantaId})}" class="btn btn-info me-2">
+                            <i class="fas fa-history"></i> Historial
+                        </a>
+                        <a th:href="@{/bitacora/planta/{plantaId}/exportar(plantaId=${plantaId})}" class="btn btn-outline-secondary">
+                            <i class="fas fa-download"></i> Exportar
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Información de la planta -->
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-info-circle"></i> Planta ID: <span th:text="${plantaId}"></span></h6>
+                    <p class="mb-0">Total de entradas: <span th:text="${#lists.size(bitacoras)}"></span></p>
+                </div>
+
+                <!-- Mensajes -->
+                <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle"></i> <span th:text="${mensaje}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle"></i> <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- Lista de bitácoras -->
+                <div th:if="${#lists.isEmpty(bitacoras)}" class="text-center py-5">
+                    <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">No hay entradas para esta planta</h4>
+                    <p class="text-muted">Comienza registrando el primer cuidado</p>
+                    <a th:href="@{/bitacora/nueva(plantaId=${plantaId})}" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Primera Entrada
+                    </a>
+                </div>
+
+                <div th:if="${!#lists.isEmpty(bitacoras)}" class="timeline">
+                    <div th:each="bitacora, iterStat : ${bitacoras}" class="timeline-item mb-4">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span th:if="${bitacora.tipoCuidado}"
+                                          class="badge bg-primary me-2" th:text="${bitacora.tipoCuidado}"></span>
+                                    <span class="text-muted" th:text="${#temporals.format(bitacora.fecha, 'dd/MM/yyyy HH:mm')}"></span>
+                                </div>
+                                <div class="btn-group btn-group-sm">
+                                    <a th:href="@{/bitacora/{id}(id=${bitacora.id})}" class="btn btn-outline-primary">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a th:href="@{/bitacora/{id}/editar(id=${bitacora.id})}" class="btn btn-outline-warning">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form th:action="@{/bitacora/{id}/eliminar(id=${bitacora.id})}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-outline-danger"
+                                                onclick="return confirm('¿Eliminar esta entrada?')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div th:class="${bitacora.foto ? 'col-md-8' : 'col-12'}">
+                                        <p class="card-text" th:text="${bitacora.descripcion}"></p>
+                                        <p th:if="${bitacora.observaciones}" class="text-muted">
+                                            <small><strong>Observaciones:</strong> <span th:text="${bitacora.observaciones}"></span></small>
+                                        </p>
+                                    </div>
+                                    <div th:if="${bitacora.foto}" class="col-md-4">
+                                        <img th:src="${bitacora.foto}" class="img-fluid rounded" alt="Foto de cuidado">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navegación -->
+                <div class="text-center mt-4">
+                    <a href="/bitacora" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Ver Todas las Bitácoras
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
