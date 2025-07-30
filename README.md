@@ -681,6 +681,9 @@ public class UsuarioWebController {
     }
 }
 ```
+## 🚀 Diagrama de clases UML
+
+![diagrama](https://github.com/user-attachments/assets/4321524d-24e0-4a54-8735-31661deedc93)
 
 ## 🚀 Fortalezas del Proyecto
 
