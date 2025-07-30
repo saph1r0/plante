@@ -84,6 +84,7 @@ El sistema cuenta con una interfaz web moderna y responsive:
 ![Registro](img_2.png)
 ![Registro](img_3.png)
 
+<img width="547" height="482" alt="imagen" src="https://github.com/user-attachments/assets/ce8b63a2-b41d-406a-a007-3ee7227dbbfe" />
 
 <img width="533" height="628" alt="imagen" src="https://github.com/user-attachments/assets/ef19e21f-df04-4713-9df0-8a026514ad74" />
 
