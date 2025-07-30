@@ -307,26 +307,6 @@ public Optional<Usuario> buscarPorCorreo(String correo) {
 }
 ```
 
-###  Error / Exception Handling
-
-**Validación rigurosa** de parámetros y captura controlada de excepciones para mantener la robustez del sistema.
-
-```java
-// Error Handling: validación defensiva y manejo controlado
-@Override
-public Planta obtenerPorId(String id) {
-    if (id == null || id.trim().isEmpty()) {
-        throw new IllegalArgumentException("ID no puede ser nulo o vacío");
-    }
-    
-    try {
-        // TODO: Implementar consulta MongoDB real
-        return null; // Temporal hasta completar implementación
-    } catch (Exception e) {
-        throw new RuntimeException("Error al consultar planta con ID: " + id, e);
-    }
-}
-```
 
 #### **Programación Declarativa (Spring Annotations)**
 ```java
