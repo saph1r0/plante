@@ -28,7 +28,7 @@ public class CuidadoFabrica {
         try {
             tipo = TipoCuidado.valueOf(tipoTexto.toUpperCase()); //  coincidir con el enum
         } catch (IllegalArgumentException e) {
-            return null; 
+            return null;
         }
 
         return new Cuidado(tipo, descripcion, frecuenciaDias);

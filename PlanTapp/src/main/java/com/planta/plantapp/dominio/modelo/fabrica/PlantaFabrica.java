@@ -28,7 +28,7 @@ public class PlantaFabrica {
             for (String nombreEtiqueta : nombresEtiquetas) {
                 if (nombreEtiqueta != null && !nombreEtiqueta.isBlank()) {
                     Etiqueta etiqueta = new Etiqueta();
-                    etiqueta.setNombre(nombreEtiqueta); 
+                    etiqueta.setNombre(nombreEtiqueta);
                     planta.agregarEtiqueta(etiqueta);
                 }
             }

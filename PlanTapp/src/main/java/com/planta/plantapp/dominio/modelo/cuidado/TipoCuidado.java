@@ -9,7 +9,9 @@ public enum TipoCuidado {
 
     RIEGO("Riego", "Suministro de agua a la planta", 3, UnidadMedida.MILILITRO),
     FERTILIZACION("Fertilización", "Aplicación de nutrientes", 14, UnidadMedida.GRAMO),
+    FERTILIZANTE("Fertilizante", "Aplicación de nutrientes", 14, UnidadMedida.GRAMO), // Alias para compatibilidad
     PODA("Poda", "Corte de ramas o hojas", 30, UnidadMedida.UNIDAD),
+    LUZ("Luz", "Exposición solar adecuada", 1, UnidadMedida.UNIDAD), // ¡AGREGAR ESTE!
     TRASPLANTE("Trasplante", "Cambio de maceta o ubicación", 365, UnidadMedida.UNIDAD),
     FUMIGACION("Fumigación", "Aplicación de pesticidas o fungicidas", 21, UnidadMedida.MILILITRO),
     LIMPIEZA("Limpieza", "Limpieza de hojas y eliminación de partes muertas", 7, UnidadMedida.UNIDAD),
@@ -21,9 +23,9 @@ public enum TipoCuidado {
     private final int frecuenciaRecomendada;
     private final String unidadMedidaDefault;
 
-    // Grupos para métodos auxiliares
-    private static final EnumSet<TipoCuidado> CUIDADOS_CON_CANTIDAD = EnumSet.of(RIEGO, FERTILIZACION, FUMIGACION);
-    private static final EnumSet<TipoCuidado> MANTENIMIENTO_BASICO = EnumSet.of(RIEGO, LIMPIEZA, ROTACION);
+    // Grupos para métodos auxiliares - ACTUALIZAR TAMBIÉN
+    private static final EnumSet<TipoCuidado> CUIDADOS_CON_CANTIDAD = EnumSet.of(RIEGO, FERTILIZACION, FERTILIZANTE, FUMIGACION);
+    private static final EnumSet<TipoCuidado> MANTENIMIENTO_BASICO = EnumSet.of(RIEGO, LIMPIEZA, ROTACION, LUZ); // Agregar LUZ aquí
     private static final EnumSet<TipoCuidado> MANTENIMIENTO_AVANZADO = EnumSet.of(PODA, TRASPLANTE, FUMIGACION, AIREACION);
 
     TipoCuidado(String nombre, String descripcion, int frecuenciaRecomendada, String unidadMedidaDefault) {
@@ -33,6 +35,7 @@ public enum TipoCuidado {
         this.unidadMedidaDefault = unidadMedidaDefault;
     }
 
+    // Resto de métodos igual...
     public String getNombre() {
         return nombre;
     }

@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Repositorio del dominio para gestionar plantas.
  *
- * Esta interfaz define las operaciones del modelo del problema, 
+ * Esta interfaz define las operaciones del modelo del problema,
  * sin depender de detalles de infraestructura o persistencia.
  */
 public interface IPlantaRepositorio {

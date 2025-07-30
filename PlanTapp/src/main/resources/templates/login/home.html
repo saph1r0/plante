@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio</title>
+</head>
+<body>
+
+<h1 th:text="'Hola, ' + ${usuarioNombre} + '! Bienvenido a tu panel.'"></h1>
+<p th:text="'Correo: ' + ${usuarioCorreo}"></p>
+
+<p>Esta es tu página de inicio.</p>
+
+</body>
+</html>

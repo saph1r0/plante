@@ -2,53 +2,57 @@ package com.planta.plantapp.infraestructura.repositorio.mysql;
 
 import com.planta.plantapp.dominio.usuario.IUsuarioRepositorio;
 import com.planta.plantapp.dominio.usuario.modelo.Usuario;
+import com.planta.plantapp.infraestructura.entidad.UsuarioEntidad;
+import com.planta.plantapp.infraestructura.repositorio.mysql.jpa.UsuarioJpaRepositorio;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Implementación del repositorio de Usuario usando MySQL.
- * Esta clase forma parte de la capa de infraestructura.
- */
 @Repository
 public class UsuarioRepositorioImpl implements IUsuarioRepositorio {
 
-    public UsuarioRepositorioImpl() {
-        // Constructor por defecto
+    private final UsuarioJpaRepositorio usuarioJpaRepositorio;
+
+    public UsuarioRepositorioImpl(UsuarioJpaRepositorio usuarioJpaRepositorio) {
+        this.usuarioJpaRepositorio = usuarioJpaRepositorio;
     }
 
     @Override
     public Usuario obtenerPorId(String id) {
-        // TODO: Implementar búsqueda de usuario por ID
-        return null;
+        return usuarioJpaRepositorio.findById(id)
+                .map(e -> new Usuario(e.getId(), e.getNombre(), e.getCorreo(), e.getContrasena()))
+                .orElse(null);
     }
 
     @Override
     public List<Usuario> listarTodos() {
-        // TODO: Implementar consulta para listar todos los usuarios
-        return null;
+        return usuarioJpaRepositorio.findAll()
+                .stream()
+                .map(e -> new Usuario(e.getNombre(), e.getCorreo(), e.getContrasena()))
+                .toList();
     }
 
     @Override
     public void guardar(Usuario usuario) {
-        // TODO: Implementar inserción o actualización del usuario
+        UsuarioEntidad entidad = new UsuarioEntidad(null, usuario.getNombre(), usuario.getCorreo(), usuario.getContrasena());
+        usuarioJpaRepositorio.save(entidad);
     }
+
+
 
     @Override
     public void eliminar(String id) {
-        // TODO: Implementar eliminación de usuario por ID
+        usuarioJpaRepositorio.deleteById(id);
     }
 
     @Override
     public Optional<Usuario> buscarPorCorreo(String correo) {
-        // TODO: Implementar búsqueda por correo electrónico
-        return Optional.empty();
+        return usuarioJpaRepositorio.findByCorreo(correo)
+                .map(e -> new Usuario(e.getNombre(), e.getCorreo(), e.getContrasena()));
     }
 
     @Override
     public Boolean existeUsuario(String id) {
-        // TODO: Verificar existencia de usuario por ID
-        return false;
+        return usuarioJpaRepositorio.existsById(id);
     }
 }
