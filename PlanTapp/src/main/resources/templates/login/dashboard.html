@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plantee - Mi Cuenta</title>
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- CSS principal -->
+    <link rel="stylesheet" th:href="@{/login/css/index.css}">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Lora:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<!-- Header -->
+<header class="app-header">
+    <div class="header-brand">
+        <strong class="brand-name">Plantee</strong>
+    </div>
+    <div class="header-actions">
+        <i class="fas fa-search header-icon" id="search-icon" aria-label="Abrir barra de búsqueda"></i>
+        <!-- Información del usuario con valores por defecto -->
+        <span class="user-welcome">
+                Hola, <span th:text="${usuarioNombre ?: 'Usuario'}">Usuario</span>
+            </span>
+        <!-- Botón de logout simplificado -->
+        <a th:href="@{/web/index}" class="btn btn-secondary" id="logout-btn">
+            <i class="fas fa-home"></i> Inicio
+        </a>
+    </div>
+</header>
+
+<!-- Barra de búsqueda -->
+<div id="search-bar" class="search-bar hidden">
+    <input type="text" placeholder="Buscar..." id="search-input" class="search-input" aria-label="Campo de búsqueda">
+    <div id="search-suggestions" class="search-suggestions"></div>
+</div>
+
+<!-- Botón menú lateral -->
+<button id="menu-toggle" class="menu-toggle" aria-label="Abrir menú de navegación">☰</button>
+
+<!-- Sidebar -->
+<nav id="sidebar" class="sidebar">
+    <a class="nav-link active" href="#mi-perfil">
+        <i class="fas fa-user-circle nav-icon"></i>
+        <span class="nav-text">Mi Perfil</span>
+    </a>
+    <a class="nav-link" href="#eventos">
+        <i class="fas fa-calendar nav-icon"></i>
+        <span class="nav-text">Eventos</span>
+    </a>
+    <a class="nav-link" href="#foro">
+        <i class="fas fa-comments nav-icon"></i>
+        <span class="nav-text">Foro</span>
+    </a>
+    <a class="nav-link" href="#servicios">
+        <i class="fas fa-tools nav-icon"></i>
+        <span class="nav-text">Servicios</span>
+    </a>
+    <a class="nav-link" th:href="@{/web/plantas/catalogo}">
+        <i class="fas fa-leaf nav-icon"></i>
+        <span class="nav-text">Catálogo</span>
+    </a>
+    <a class="nav-link" href="#mis-registros">
+        <i class="fas fa-clipboard-list nav-icon"></i>
+        <span class="nav-text">Mis Registros</span>
+    </a>
+    <a class="nav-link" th:href="@{/web/index}" style="margin-top: auto; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px;">
+        <i class="fas fa-home nav-icon"></i>
+        <span class="nav-text">Ir a Inicio</span>
+    </a>
+</nav>
+
+<!-- Contenido principal -->
+<main class="main-content">
+    <!-- Sección Mi Perfil -->
+    <section id="mi-perfil" class="content-section">
+        <h2 class="section-title">
+            <i class="fas fa-user-circle"></i>
+            Mi Perfil
+        </h2>
+        <p class="section-description">
+            Bienvenido <span th:text="${usuarioNombre ?: 'Usuario'}">Usuario</span>,
+            aquí puedes gestionar tus actividades, plantas y eventos.
+        </p>
+        <div class="profile-info">
+            <div class="info-card">
+                <p><strong>Nombre de Usuario:</strong> <span th:text="${usuarioNombre ?: 'UsuarioEjemplo'}">UsuarioEjemplo</span></p>
+                <p><strong>Correo Electrónico:</strong> <span th:text="${usuarioCorreo ?: 'usuario@plantee.com'}">usuario@plantee.com</span></p>
+                <p><strong>Miembro desde:</strong> <span>15 de Enero, 2023</span></p>
+                <button class="btn btn-primary" onclick="alert('Funcionalidad de editar perfil próximamente')">
+                    <i class="fas fa-edit"></i> Editar Perfil
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Eventos -->
+    <section id="eventos" class="content-section">
+        <h2 class="section-title">
+            <i class="fas fa-calendar"></i>
+            Próximos Eventos
+        </h2>
+
+        <div class="event-controls">
+            <div class="view-toggle">
+                <button id="btn-vista-lista" class="btn btn-toggle active">
+                    <i class="fas fa-list"></i> Lista
+                </button>
+                <button id="btn-vista-calendario" class="btn btn-toggle">
+                    <i class="fas fa-calendar-alt"></i> Calendario
+                </button>
+            </div>
+        </div>
+
+        <div id="vista-lista" class="event-view event-list-view">
+            <div class="event-item">
+                <div class="event-date">
+                    <span class="day">15</span>
+                    <span class="month">Mar</span>
+                </div>
+                <div class="event-info">
+                    <h3>Taller de Plantas Suculentas</h3>
+                    <p><i class="fas fa-clock"></i> 15:00 - 17:00</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Jardín Botánico</p>
+                </div>
+            </div>
+            <div class="event-item">
+                <div class="event-date">
+                    <span class="day">22</span>
+                    <span class="month">Mar</span>
+                </div>
+                <div class="event-info">
+                    <h3>Intercambio de Semillas</h3>
+                    <p><i class="fas fa-clock"></i> 10:00 - 12:00</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Plaza Central</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="vista-calendario" class="event-view event-calendar-view hidden">
+            <h3 id="current-month-year" class="calendar-title">Marzo 2024</h3>
+            <div class="calendar-placeholder">
+                <p>Vista de calendario - En desarrollo</p>
+            </div>
+        </div>
+
+        <!-- Formulario para añadir eventos -->
+        <div class="add-form-section" id="add-event-section">
+            <h3><i class="fas fa-plus"></i> Añadir Nuevo Evento</h3>
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="event-title">Título del Evento:</label>
+                    <input type="text" id="event-title" name="titulo" placeholder="Ej: Taller de Bonsái">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="event-date">Fecha:</label>
+                        <input type="date" id="event-date" name="fecha">
+                    </div>
+                    <div class="form-group">
+                        <label for="event-time">Hora:</label>
+                        <input type="text" id="event-time" name="hora" placeholder="Ej: 15:00 - 17:00">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="event-location">Lugar:</label>
+                    <input type="text" id="event-location" name="lugar" placeholder="Ej: Jardín Botánico">
+                </div>
+
+                <div class="form-group">
+                    <label for="event-description">Descripción:</label>
+                    <textarea id="event-description" name="descripcion" placeholder="Detalles del evento..."></textarea>
+                </div>
+
+                <button type="button" class="btn btn-primary" onclick="añadirEvento()">
+                    <i class="fas fa-plus"></i> Añadir Evento
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Foro -->
+    <section id="foro" class="content-section">
+        <h2 class="section-title">
+            <i class="fas fa-comments"></i>
+            Foro Comunitario
+        </h2>
+
+        <div id="chat-history" class="chat-history">
+            <div class="chat-message">
+                <div class="message-header">
+                    <strong class="message-author">PlantLover23</strong>
+                    <span class="message-time">Hace 2 horas</span>
+                </div>
+                <p>¡Hola a todos! ¿Alguien tiene consejos para cultivar orquídeas en climas cálidos?</p>
+            </div>
+
+            <div class="chat-message user-message">
+                <div class="message-header">
+                    <strong class="message-author">
+                        <span th:text="${usuarioNombre ?: 'Usuario'}">Usuario</span>
+                    </strong>
+                    <span class="message-time">Hace 1 hora</span>
+                </div>
+                <p>¡Hola! Yo las tengo en exterior con malla de sombra y riego diario en verano. ¡Funcionan genial!</p>
+            </div>
+
+            <div class="chat-message">
+                <div class="message-header">
+                    <strong class="message-author">GreenThumb</strong>
+                    <span class="message-time">Hace 30 min</span>
+                </div>
+                <p>¡Qué buena idea lo de la feria de intercambio! Espero poder asistir.</p>
+            </div>
+        </div>
+
+        <div id="forum-input-container" class="forum-input-container">
+            <div class="input-group">
+                    <textarea id="forum-input" name="mensaje" rows="3"
+                              placeholder="Escribe tu mensaje..."
+                              class="forum-textarea"></textarea>
+                <button type="button" class="btn btn-primary" onclick="enviarMensaje()">
+                    <i class="fas fa-paper-plane"></i> Enviar
+                </button>
+            </div>
+            <div class="user-info">
+                <small>Escribiendo como: <strong th:text="${usuarioNombre ?: 'Usuario'}">Usuario</strong></small>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Servicios -->
+    <section id="servicios" class="content-section">
+        <h2 class="section-title">
+            <i class="fas fa-tools"></i>
+            Nuestros Servicios
+        </h2>
+
+        <div class="services-grid">
+            <div class="service-card" data-service="1">
+                <div class="service-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <div class="service-content">
+                    <h3>Consultoría de Jardinería</h3>
+                    <p>Asesoramiento profesional para tu jardín</p>
+                </div>
+            </div>
+
+            <div class="service-card" data-service="2">
+                <div class="service-icon">
+                    <i class="fas fa-drafting-compass"></i>
+                </div>
+                <div class="service-content">
+                    <h3>Diseño de Paisajes</h3>
+                    <p>Creamos espacios verdes únicos</p>
+                </div>
+            </div>
+
+            <div class="service-card" data-service="3">
+                <div class="service-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div class="service-content">
+                    <h3>Mantenimiento</h3>
+                    <p>Cuidado integral de jardines</p>
+                </div>
+            </div>
+
+            <div class="service-card" data-service="4">
+                <div class="service-icon">
+                    <i class="fas fa-bug"></i>
+                </div>
+                <div class="service-content">
+                    <h3>Control de Plagas</h3>
+                    <p>Soluciones orgánicas y ecológicas</p>
+                </div>
+            </div>
+
+            <div class="service-card" data-service="5">
+                <div class="service-icon">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <div class="service-content">
+                    <h3>Venta de Plantas</h3>
+                    <p>Amplio catálogo de especies</p>
+                </div>
+            </div>
+
+            <div class="service-card" data-service="6">
+                <div class="service-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="service-content">
+                    <h3>Talleres y Cursos</h3>
+                    <p>Aprende técnicas de jardinería</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Catálogo -->
+    <section id="catalogo" class="content-section">
+        <h2 class="section-title">
+            <i class="fas fa-leaf"></i>
+            Catálogo Botánico
+        </h2>
+
+        <div class="catalog-actions">
+            <a th:href="@{/web/plantas/catalogo}" class="btn btn-primary">
+                <i class="fas fa-external-link-alt"></i>
+                Ver Catálogo Completo
+            </a>
+        </div>
+    </section>
+
+    <!-- Sección Mis Registros -->
+    <section id="mis-registros" class="content-section">
+        <h2 class="section-title">
+            <i class="fas fa-clipboard-list"></i>
+            Mis Registros
+        </h2>
+        <p class="section-description">
+            Hola <span th:text="${usuarioNombre ?: 'Usuario'}">Usuario</span>,
+            aquí puedes ver tu actividad en la plataforma.
+        </p>
+
+        <div class="records-grid">
+            <div class="record-section">
+                <h3><i class="fas fa-calendar"></i> Mis Eventos</h3>
+                <ul id="my-events-list" class="record-list">
+                    <li class="empty-state">
+                        <i class="fas fa-calendar-plus"></i>
+                        <p>No tienes eventos registrados aún</p>
+                        <a href="#eventos" class="btn btn-outline">Añadir evento</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="record-section">
+                <h3><i class="fas fa-leaf"></i> Actividad en Catálogo</h3>
+                <div id="my-plants-activity" class="record-list">
+                    <div class="empty-state">
+                        <i class="fas fa-seedling"></i>
+                        <p>Aún no has interactuado con el catálogo</p>
+                        <a th:href="@{/web/plantas/catalogo}" class="btn btn-outline">Explorar catálogo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Scripts -->
+<script>
+    // Script básico del dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🌱 Dashboard cargado correctamente');
+        initializeDashboard();
+    });
+
+    function initializeDashboard() {
+        // Inicializar sidebar
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if (menuToggle && sidebar) {
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                menuToggle.classList.toggle('hidden');
+                document.body.classList.toggle('sidebar-active');
+            });
+        }
+
+        // Inicializar búsqueda
+        const searchIcon = document.getElementById('search-icon');
+        const searchBar = document.getElementById('search-bar');
+
+        if (searchIcon && searchBar) {
+            searchIcon.addEventListener('click', function() {
+                searchBar.classList.toggle('hidden');
+            });
+        }
+
+        // Cargar preview de plantas
+        cargarPlantasPreview();
+    }
+
+    // Función para cargar plantas preview
+    async function cargarPlantasPreview() {
+        const container = document.getElementById('plants-preview');
+
+        try {
+            const response = await fetch('/web/plantas');
+            if (response.ok) {
+                const plantas = await response.json();
+                mostrarPlantasPreview(plantas.slice(0, 6), container);
+            } else {
+                mostrarErrorPreview(container);
+            }
+        } catch (error) {
+            console.error('❌ Error al cargar plantas:', error);
+            mostrarErrorPreview(container);
+        }
+    }
+
+    function mostrarPlantasPreview(plantas, container) {
+        if (plantas.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-seedling"></i>
+                    <p>No hay plantas disponibles</p>
+                </div>
+            `;
+            return;
+        }
+
+        const plantasHTML = plantas.map(planta => `
+            <div class="plant-preview-card">
+                <div class="plant-image">
+                    <img src="${planta.imagenURL || '/images/default-plant.jpg'}"
+                         alt="${planta.nombreComun}"
+                         onerror="this.src='/images/default-plant.jpg'">
+                </div>
+                <div class="plant-info">
+                    <h4>${planta.nombreComun}</h4>
+                    <p class="scientific-name">${planta.nombreCientifico || ''}</p>
+                </div>
+            </div>
+        `).join('');
+
+        container.innerHTML = `<div class="plants-grid">${plantasHTML}</div>`;
+    }
+
+    function mostrarErrorPreview(container) {
+        container.innerHTML = `
+            <div class="error-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Error al cargar plantas</p>
+                <button onclick="cargarPlantasPreview()" class="btn btn-outline">Reintentar</button>
+            </div>
+        `;
+    }
+
+    // Funciones adicionales
+    function añadirEvento() {
+        alert('Funcionalidad de añadir evento en desarrollo');
+    }
+
+    function enviarMensaje() {
+        const textarea = document.getElementById('forum-input');
+        if (textarea.value.trim()) {
+            alert('Mensaje enviado: ' + textarea.value);
+            textarea.value = '';
+        }
+    }
+</script>
+</body>
+</html>
