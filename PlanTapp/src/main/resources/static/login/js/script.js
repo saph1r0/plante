@@ -1,14 +1,14 @@
 
-// DOM Elements
+// DOM Elements - CORREGIDO
 const loginToggle = document.getElementById('loginToggle');
 const registerToggle = document.getElementById('registerToggle');
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
-const loginFormElement = document.getElementById('loginFormElement');
-const registerFormElement = document.getElementById('registerFormElement');
+// ✅ CORREGIDO: Usar los elementos form reales del HTML
+const loginFormElement = loginForm.querySelector('form.auth-form');
+const registerFormElement = registerForm.querySelector('form.auth-form');
 const successMessage = document.getElementById('successMessage');
 const successText = document.getElementById('successText');
-
 
 // Toggle zwischen Login und Register - TheDoc's smooth transitions
 function switchToLogin() { // TheDoc magic

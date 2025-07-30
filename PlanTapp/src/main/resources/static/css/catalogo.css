@@ -588,7 +588,7 @@
 
 .plant-modal-body {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 10fr 10fr;
     gap: 0;
 }
 
@@ -605,7 +605,7 @@
 }
 
 .plant-modal-info {
-    padding: 35px;
+    padding:35px;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -785,11 +785,7 @@
     }
 
     .plant-modal-body {
-        grid-template-columns: 1fr;
-    }
-
-    .plant-modal-info {
-        padding: 25px;
+        grid-template-columns: 20fr;
     }
 
     .plants-grid.list-view .plant-card {
@@ -831,10 +827,6 @@
     .plant-modal-content {
         margin: 0.5rem;
         max-height: 95vh;
-    }
-
-    .plant-modal-info {
-        padding: 20px;
     }
 
     .plant-modal-actions {
