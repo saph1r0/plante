@@ -69,8 +69,6 @@ Capturas de pantalla del sistema:
 ![img\_1.png](img_1.png)
 ![img\_2.png](img_2.png)
 ![img\_3.png](img_3.png)
-![Uploading imagen.png…]()
-<img width="275" height="557" alt="imagen" src="https://github.com/user-attachments/assets/ac8e08a2-8c3c-4805-a167-e5aaee86539a" />
 
 ---
 
