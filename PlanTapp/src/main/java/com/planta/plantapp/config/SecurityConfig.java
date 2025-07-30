@@ -49,8 +49,7 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 // Configuración especial para H2 Console - Method reference
-                .headers(headers -> headers
-                        .frameOptions(FrameOptionsConfig::disable));
+                .headers(h -> h.frameOptions(f -> f.sameOrigin()));
 
         return http.build();
     }
