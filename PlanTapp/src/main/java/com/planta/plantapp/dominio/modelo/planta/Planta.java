@@ -3,19 +3,26 @@ package com.planta.plantapp.dominio.modelo.planta;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import com.planta.plantapp.dominio.modelo.cuidado.Cuidado;
 
 /**
  * Entidad del dominio que representa una planta.
  */
+@Document(collection = "plantas")
 public class Planta {
 
+    @Id
     private String id;
+
     private String estado;
     private String nombreComun;
     private String nombreCientifico;
     private String descripcion;
     private String imagenURL;
-    private final List<Etiqueta> etiquetas;
+    private List<Etiqueta> etiquetas;
+    private List<Cuidado> cuidados;
 
     public Planta(String nombreComun, String nombreCientifico, String descripcion, String imagenURL) {
         if (nombreComun == null || nombreComun.isBlank())
@@ -28,15 +35,19 @@ public class Planta {
         this.descripcion = descripcion;
         this.imagenURL = imagenURL;
         this.etiquetas = new ArrayList<>();
+        this.cuidados = new ArrayList<>();
     }
+
     public Planta(String id) {
         this.id = id;
         this.etiquetas = new ArrayList<>();
+        this.cuidados = new ArrayList<>();
     }
 
     // Solo para uso controlado por persistencia o fábricas
     protected Planta() {
         this.etiquetas = new ArrayList<>();
+        this.cuidados = new ArrayList<>();
     }
 
     // Métodos de comportamiento de dominio
@@ -56,6 +67,16 @@ public class Planta {
 
     public void quitarEtiqueta(Etiqueta etiqueta) {
         this.etiquetas.remove(etiqueta);
+    }
+
+    public void agregarCuidado(Cuidado cuidado) {
+        if (cuidado != null) {
+            this.cuidados.add(cuidado);
+        }
+    }
+
+    public void limpiarCuidados() {
+        this.cuidados.clear();
     }
 
     // Getters
@@ -78,6 +99,7 @@ public class Planta {
     public String getImagenURL() {
         return imagenURL;
     }
+
     public String getEstado() {
         return estado;
     }
@@ -85,6 +107,11 @@ public class Planta {
     public List<Etiqueta> getEtiquetas() {
         return new ArrayList<>(etiquetas);
     }
+
+    public List<Cuidado> getCuidados() {
+        return new ArrayList<>(cuidados);
+    }
+
     // equals/hashCode por identidad
     @Override
     public boolean equals(Object o) {
@@ -97,5 +124,9 @@ public class Planta {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public void setEtiquetas(List<Etiqueta> etiquetas) {
+        this.etiquetas=etiquetas;
     }
 }

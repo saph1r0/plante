@@ -9,6 +9,7 @@ import java.util.Objects;
 public class Cuidado {
 
     private TipoCuidado tipo;
+
     private String descripcion;
     private Integer frecuenciaDias;
     private LocalDateTime fechaAplicacion;
@@ -25,6 +26,17 @@ public class Cuidado {
         this.frecuenciaDias = frecuenciaDias;
         this.fechaAplicacion = LocalDateTime.now();
         programarProximo();
+    }
+
+    // Para que MongoDB pueda deserializar
+    public Cuidado() {
+        // Constructor vacío requerido por MongoDB
+    }
+
+    public Cuidado(TipoCuidado tipo, String descripcion, int frecuenciaDias) {
+        this.tipo = tipo;
+        this.descripcion = descripcion;
+        this.frecuenciaDias = frecuenciaDias;
     }
 
     public void programarProximo() {

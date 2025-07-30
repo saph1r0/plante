@@ -16,4 +16,8 @@ public class UsuarioDTO {
     public String getCorreo() {
         return correo;
     }
+<<<<<<< HEAD:PlanTapp/src/main/java/com/planta/plantapp/dominio/usuario/modelo/dto/UsuarioDTO.java
 }
+=======
+}
+>>>>>>> origin/hellen:PlanTapp/src/main/aplicacion/com/planta/plantapp/dominio/usuario/modelo/dto/UsuarioDTO.java

@@ -38,4 +38,8 @@ public class UsuarioRegistroDTO {
     public void setContrasena(String contrasena) {
         this.contrasena = contrasena;
     }
+<<<<<<< HEAD:PlanTapp/src/main/java/com/planta/plantapp/dominio/usuario/modelo/dto/UsuarioRegistroDTO.java
 }
+=======
+}
+>>>>>>> origin/hellen:PlanTapp/src/main/aplicacion/com/planta/plantapp/dominio/usuario/modelo/dto/UsuarioRegistroDTO.java

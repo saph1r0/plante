@@ -28,4 +28,8 @@ public class UsuarioLoginDTO {
     public void setContrasena(String contrasena) {
         this.contrasena = contrasena != null ? contrasena.trim() : null;
     }
+<<<<<<< HEAD:PlanTapp/src/main/java/com/planta/plantapp/dominio/usuario/modelo/dto/UsuarioLoginDTO.java
 }
+=======
+}
+>>>>>>> origin/hellen:PlanTapp/src/main/aplicacion/com/planta/plantapp/dominio/usuario/modelo/dto/UsuarioLoginDTO.java

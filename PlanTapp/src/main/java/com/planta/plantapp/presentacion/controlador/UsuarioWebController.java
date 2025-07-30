@@ -14,7 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Controller
+<<<<<<< HEAD:PlanTapp/src/main/java/com/planta/plantapp/presentacion/controlador/UsuarioWebController.java
 @RequestMapping("/api")
+=======
+@RequestMapping("/web")
+>>>>>>> origin/hellen:PlanTapp/src/main/aplicacion/com/planta/plantapp/presentacion/controlador/UsuarioWebController.java
 public class UsuarioWebController {
 
     private static final Logger logger = LoggerFactory.getLogger(UsuarioWebController.class);
@@ -55,7 +59,11 @@ public class UsuarioWebController {
                 session.setAttribute(ATTR_USUARIO_NOMBRE, u.getNombre());
                 session.setAttribute(ATTR_USUARIO_CORREO, u.getCorreo());
                 logger.info("Login exitoso para usuario {}", u.getCorreo());
+<<<<<<< HEAD:PlanTapp/src/main/java/com/planta/plantapp/presentacion/controlador/UsuarioWebController.java
                 return "redirect:/api/home";
+=======
+                return "redirect:/web/index";
+>>>>>>> origin/hellen:PlanTapp/src/main/aplicacion/com/planta/plantapp/presentacion/controlador/UsuarioWebController.java
             }
         } catch (Exception e) {
             logger.warn("Fallo de login para {}: {}", dto.getCorreo(), e.getMessage());
@@ -74,7 +82,11 @@ public class UsuarioWebController {
             Usuario nuevo = new Usuario(dto.getNombre(), dto.getCorreo(), contrasenaEncriptada);
             usuarioServicio.registrarUsuario(nuevo);
             logger.info("Usuario {} registrado correctamente", dto.getCorreo());
+<<<<<<< HEAD:PlanTapp/src/main/java/com/planta/plantapp/presentacion/controlador/UsuarioWebController.java
             return "redirect:/api/login";
+=======
+            return "redirect:/web/login";
+>>>>>>> origin/hellen:PlanTapp/src/main/aplicacion/com/planta/plantapp/presentacion/controlador/UsuarioWebController.java
         } catch (Exception e) {
             logger.error("Error al registrar usuario: {}", e.getMessage());
             model.addAttribute("error", "Error al registrar usuario");
@@ -84,18 +96,33 @@ public class UsuarioWebController {
         }
     }
 
+<<<<<<< HEAD:PlanTapp/src/main/java/com/planta/plantapp/presentacion/controlador/UsuarioWebController.java
     @GetMapping("/home")
+=======
+    @GetMapping("/index")
+>>>>>>> origin/hellen:PlanTapp/src/main/aplicacion/com/planta/plantapp/presentacion/controlador/UsuarioWebController.java
     public String home(HttpSession session, Model model) {
         String nombre = (String) session.getAttribute(ATTR_USUARIO_NOMBRE);
         String correo = (String) session.getAttribute(ATTR_USUARIO_CORREO);
 
         if (nombre == null || correo == null) {
+<<<<<<< HEAD:PlanTapp/src/main/java/com/planta/plantapp/presentacion/controlador/UsuarioWebController.java
             logger.warn("Intento de acceso a /home sin sesión válida");
             return "redirect:/api/login";
+=======
+            logger.warn("Intento de acceso a /index sin sesión válida");
+            return "redirect:/web/login";
+>>>>>>> origin/hellen:PlanTapp/src/main/aplicacion/com/planta/plantapp/presentacion/controlador/UsuarioWebController.java
         }
 
         model.addAttribute(ATTR_USUARIO_NOMBRE, nombre);
         model.addAttribute(ATTR_USUARIO_CORREO, correo);
+<<<<<<< HEAD:PlanTapp/src/main/java/com/planta/plantapp/presentacion/controlador/UsuarioWebController.java
         return "login/home";  // home.html
     }
 }
+=======
+        return "login/index";  // home.html
+    }
+}
+>>>>>>> origin/hellen:PlanTapp/src/main/aplicacion/com/planta/plantapp/presentacion/controlador/UsuarioWebController.java

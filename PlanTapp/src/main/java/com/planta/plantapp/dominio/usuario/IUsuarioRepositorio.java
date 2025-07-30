@@ -13,7 +13,7 @@ public interface IUsuarioRepositorio {
 
     /**
      * Obtiene un usuario por su ID.
-     * 
+     *
      * @param id identificador único del usuario
      * @return Usuario encontrado o null si no existe
      */
@@ -21,28 +21,28 @@ public interface IUsuarioRepositorio {
 
     /**
      * Lista todos los usuarios registrados.
-     * 
+     *
      * @return Lista de usuarios
      */
     List<Usuario> listarTodos();
 
     /**
      * Guarda o actualiza un usuario.
-     * 
+     *
      * @param usuario objeto usuario a guardar
      */
     void guardar(Usuario usuario);
 
     /**
      * Elimina un usuario por su ID.
-     * 
+     *
      * @param id identificador del usuario a eliminar
      */
     void eliminar(String id);
 
     /**
      * Busca un usuario por su correo electrónico.
-     * 
+     *
      * @param email correo del usuario
      * @return Optional del usuario si se encuentra
      */
@@ -50,7 +50,7 @@ public interface IUsuarioRepositorio {
 
     /**
      * Verifica si un usuario existe por su ID.
-     * 
+     *
      * @param id identificador del usuario
      * @return true si existe, false si no
      */

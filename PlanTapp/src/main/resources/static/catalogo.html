@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo Botánico - Plantee</title>
+  <!-- Font Awesome para iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <!-- CSS principal -->
+  <link rel="stylesheet" href="/css/index.css">
+  <!-- CSS específico para catálogo -->
+  <link rel="stylesheet" href="/css/catalogo.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Lora:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<!-- Header igual que el principal -->
+<header class="app-header">
+  <div class="header-brand">
+    <strong class="brand-name">Plantee</strong>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-secondary" onclick="window.location.href='index.html'">
+      <i class="fas fa-home"></i> Inicio
+    </button>
+    <button class="btn btn-primary" onclick="window.location.href='dashboard.html'">
+      <i class="fas fa-user"></i> Mi Cuenta
+    </button>
+  </div>
+</header>
+
+<!-- Botón menú lateral -->
+<button id="menu-toggle" class="menu-toggle" aria-label="Abrir menú de navegación">☰</button>
+
+<!-- Sidebar simplificado para catálogo -->
+<nav id="sidebar" class="sidebar">
+  <a class="nav-link" href="../templates/login/index.html">
+    <i class="fas fa-home nav-icon"></i>
+    <span class="nav-text">Inicio</span>
+  </a>
+  <a class="nav-link active" href="#catalogo">
+    <i class="fas fa-leaf nav-icon"></i>
+    <span class="nav-text">Catálogo</span>
+  </a>
+  <a class="nav-link" href="#filtros">
+    <i class="fas fa-filter nav-icon"></i>
+    <span class="nav-text">Filtros</span>
+  </a>
+  <a class="nav-link" href="dashboard.html">
+    <i class="fas fa-user-circle nav-icon"></i>
+    <span class="nav-text">Mi Cuenta</span>
+  </a>
+</nav>
+
+<!-- Contenido principal -->
+<main class="main-content catalogo-main">
+  <!-- Hero section para catálogo -->
+  <section class="catalogo-hero">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <i class="fas fa-seedling"></i>
+        Catálogo Botánico
+      </h1>
+      <p class="hero-description">
+        Descubre nuestras hermosas plantas, conoce sus cuidados y encuentra la perfecta para ti
+      </p>
+    </div>
+  </section>
+
+  <!-- Sección de búsqueda y filtros -->
+  <section class="search-filters-section">
+    <div class="search-container">
+      <!-- Búsqueda principal -->
+      <div class="main-search">
+        <div class="search-input-wrapper">
+          <i class="fas fa-search search-icon"></i>
+          <input
+                  type="text"
+                  id="plant-search-input"
+                  class="plant-search-input"
+                  placeholder="Buscar plantas por nombre..."
+                  aria-label="Buscar plantas">
+          <button id="clear-search" class="clear-search-btn" style="display: none;">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div id="search-suggestions" class="search-suggestions-catalog"></div>
+      </div>
+
+      <!-- Filtros rápidos -->
+      <div class="quick-filters">
+        <button class="filter-btn active" data-filter="all">
+          <i class="fas fa-globe"></i>
+          Todas
+        </button>
+        <button class="filter-btn" data-filter="interior">
+          <i class="fas fa-home"></i>
+          Interior
+        </button>
+        <button class="filter-btn" data-filter="exterior">
+          <i class="fas fa-sun"></i>
+          Exterior
+        </button>
+        <button class="filter-btn" data-filter="suculentas">
+          <i class="fas fa-cactus"></i>
+          Suculentas
+        </button>
+        <button class="filter-btn" data-filter="flores">
+          <i class="fas fa-flower"></i>
+          Flores
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Resultados y contador -->
+  <section class="results-section">
+    <div class="results-header">
+      <div class="results-info">
+                    <span id="results-count" class="results-count">
+                        <i class="fas fa-leaf"></i>
+                        Cargando plantas...
+                    </span>
+        <span id="search-term" class="search-term"></span>
+      </div>
+
+      <!-- Controles de vista -->
+      <div class="view-controls">
+        <button id="grid-view" class="view-btn active" title="Vista de cuadrícula">
+          <i class="fas fa-th"></i>
+        </button>
+        <button id="list-view" class="view-btn" title="Vista de lista">
+          <i class="fas fa-list"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Grid de plantas -->
+  <section class="plants-grid-section">
+    <div id="plants-container" class="plants-grid">
+      <!-- Loading placeholder -->
+      <div class="loading-container">
+        <div class="loading-spinner">
+          <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <p>Cargando plantas del catálogo...</p>
+      </div>
+    </div>
+
+    <!-- Mensaje cuando no hay resultados -->
+    <div id="no-results" class="no-results" style="display: none;">
+      <div class="no-results-content">
+        <i class="fas fa-search no-results-icon"></i>
+        <h3>No se encontraron plantas</h3>
+        <p>Intenta con otros términos de búsqueda o revisa los filtros aplicados</p>
+        <button id="reset-search" class="btn btn-primary">
+          <i class="fas fa-refresh"></i>
+          Mostrar todas las plantas
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Paginación (para futuro) -->
+  <section class="pagination-section" style="display: none;">
+    <div class="pagination">
+      <button class="pagination-btn" id="prev-page">
+        <i class="fas fa-chevron-left"></i>
+        Anterior
+      </button>
+      <div class="pagination-numbers" id="pagination-numbers">
+        <!-- Se llenarán dinámicamente -->
+      </div>
+      <button class="pagination-btn" id="next-page">
+        Siguiente
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </section>
+</main>
+
+<!-- Modal de detalles de planta -->
+<div class="plant-modal-overlay" id="plant-modal-overlay">
+  <div class="plant-modal-content" id="plant-modal-content">
+    <button class="plant-modal-close" aria-label="Cerrar modal">
+      <i class="fas fa-times"></i>
+    </button>
+
+    <div class="plant-modal-body">
+      <!-- Imagen principal -->
+      <div class="plant-modal-image">
+        <img src="" alt="" id="modal-plant-image">
+      </div>
+
+      <!-- Información de la planta -->
+      <div class="plant-modal-info">
+        <div class="plant-modal-header">
+          <h2 id="modal-plant-name">Nombre de la planta</h2>
+          <em id="modal-plant-scientific" class="scientific-name">Nombre científico</em>
+        </div>
+
+        <div class="plant-modal-description">
+          <h3><i class="fas fa-info-circle"></i> Descripción</h3>
+          <p id="modal-plant-description">Descripción de la planta...</p>
+        </div>
+
+        <!-- Cuidados -->
+        <div class="plant-modal-care">
+          <h3><i class="fas fa-hand-holding-heart"></i> Cuidados</h3>
+          <div id="modal-plant-care" class="care-list">
+            <!-- Se llenarán dinámicamente -->
+          </div>
+        </div>
+
+        <!-- Etiquetas -->
+        <div class="plant-modal-tags" style="display: block;">
+          <h3><i class="fas fa-tags"></i> Etiquetas</h3>
+          <div id="modal-plant-tags" class="tags-container">
+            <!-- Se llenarán dinámicamente -->
+          </div>
+        </div>
+
+        <!-- Acciones -->
+        <div class="plant-modal-actions">
+          <button class="btn btn-primary">
+            <i class="fas fa-heart"></i>
+            Agregar a Favoritos
+          </button>
+          <button class="btn btn-secondary">
+            <i class="fas fa-share"></i>
+            Compartir
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="/js/catalogo.js"></script>
+</body>
+</html>

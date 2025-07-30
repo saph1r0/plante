@@ -52,4 +52,8 @@ public class ServicioAutenticacionImpl implements IServicioAutenticacion {
 
         throw new AuthenticationCredentialsNotFoundException("Credenciales inválidas");
     }
+<<<<<<< HEAD:PlanTapp/src/main/java/com/planta/plantapp/aplicacion/servicios/ServicioAutenticacionImpl.java
 }
+=======
+}
+>>>>>>> origin/hellen:PlanTapp/src/main/aplicacion/com/planta/plantapp/aplicacion/servicios/ServicioAutenticacionImpl.java
