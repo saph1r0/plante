@@ -70,6 +70,26 @@ Capturas de pantalla del sistema:
 ![img\_2.png](img_2.png)
 ![img\_3.png](img_3.png)
 
+
+**Dashboard Principal**
+- Vista general con estadísticas
+- Plantas que requieren atención
+  <img width="713" height="653" alt="image" src="https://github.com/user-attachments/assets/57ee229b-fb00-444f-8a28-643a0c5125ef" />
+
+**Mis Plantas**
+- Lista de plantas personales del usuario
+- Estados actuales
+- Opciones de edición y eliminación
+- <img width="721" height="578" alt="image" src="https://github.com/user-attachments/assets/fe3dc0a9-f4ed-4a91-9854-8e037ce15320" />
+
+
+**Registro de Nueva Planta**
+- Selección desde catálogo
+- Personalización con apodo y ubicación
+- Configuración de estado inicial
+  <img width="723" height="645" alt="image" src="https://github.com/user-attachments/assets/aff3b9be-1f2a-4b15-8118-e741d7eb22eb" />
+<img width="713" height="653" alt="image" src="https://github.com/user-attachments/assets/0c33adab-f8fb-4174-8652-f72b3670e491" />
+
 ---
 
 ## ✅ Módulo: Registro e Inicio de Sesión Seguro
@@ -111,6 +131,25 @@ Permitir que los usuarios se registren e inicien sesión de manera segura, imple
 | Reemplazar por variables de entorno (`DB_USER`, `DB_PASS`) | ✅ Completado |
 | Validar almacenamiento seguro de contraseñas               | ✅ Completado |
 
+---
+
+### 🟢 **Módulo: Gestión de Plantas Personales**
+
+| Funcionalidad | Estado | Descripción |
+|---------------|--------|-------------|
+| Registrar planta personal | ✅ | Agregar planta desde catálogo |
+| Listar mis plantas | ✅ | Ver plantas del usuario |
+| Editar información de planta | ✅ | Modificar apodo, ubicación, estado |
+| Eliminar planta | ✅ | Remover planta del sistema |
+| Cambiar estado de planta | ✅ | Actualizar condición actual |
+
+### 🟢 **Módulo: Dashboard y Reportes**
+
+| Funcionalidad | Estado | Descripción |
+|---------------|--------|-------------|
+| Dashboard interactivo | ✅ | Vista general del sistema |
+| Estadísticas por usuario | ✅ | Contadores y métricas |
+| API REST completa | ✅ | Endpoints para todas las operaciones |
 
 ---
 
@@ -300,6 +339,36 @@ Prácticas aplicadas:
 * Manejo de fallos inesperados con `try-catch`
 * Propagación controlada con `IllegalStateException`
 
+
+#### **Pipeline (Funcional)**
+```java
+return plantaMongoRepo.findAll()
+    .stream()
+    .filter(p -> p.getTipo().equalsIgnoreCase(tipo))
+    .map(this::convertirADominio)
+    .collect(Collectors.toList());
+```
+
+#### **Cookbook (Funciones con estado compartido)**
+```java
+@Service
+public class CatalogoService {
+    private List<Planta> catalogo; // Estado compartido
+    
+    public void inicializarCatalogo() { /* función modifica estado */ }
+    public List<Planta> obtenerCatalogo() { /* función lee estado */ }
+}
+```
+
+#### **Things (Objetos con identidad)**
+```java
+@Document(collection = "registros_plantas")
+public class RegistroPlanta {
+    @Id
+    private String id; // Identidad única
+    private String apodo;
+    private EstadoPlanta estado;
+}
 
 ## 🔍 Análisis Estático SonarLint/SonarQube
 
