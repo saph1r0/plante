@@ -1,4 +1,3 @@
-
 # 🌿 PlantApp - Sistema de Gestión de Plantas (Java + DDD)
 
 ## 📌 Descripción del Proyecto
