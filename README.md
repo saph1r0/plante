@@ -222,14 +222,17 @@ Secuencia:
 Captura controlada de excepciones para mantener robustez del sistema:
 
 ```java
-try {
-    Usuario usuario = repositorioUsuario.obtenerPorId(id);
-    if (usuario == null)
-        throw new IllegalArgumentException("Usuario no encontrado");
-    return usuario;
-} catch (Exception e) {
-    throw new IllegalStateException("Error al obtener usuario por ID", e);
-}
+@Override
+    public boolean actualizarPerfil(Usuario usuario) {
+        if (usuario == null || usuario.getId() == null) return false;
+
+        try {
+            repositorioUsuario.guardar(usuario);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
 ```
 
 ### Cookbook
