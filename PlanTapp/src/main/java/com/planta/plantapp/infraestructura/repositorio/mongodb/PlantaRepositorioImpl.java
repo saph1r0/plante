@@ -1,6 +1,7 @@
 package com.planta.plantapp.infraestructura.repositorio.mongodb;
 
 import com.planta.plantapp.dominio.modelo.planta.Planta;
+import java.util.Collections;
 import com.planta.plantapp.dominio.modelo.IPlantaRepositorio;
 import org.springframework.stereotype.Repository;
 
@@ -25,7 +26,7 @@ public class PlantaRepositorioImpl implements IPlantaRepositorio {
     @Override
     public List<Planta> listarPorUsuario(String usuarioId) {
         // TODO: Consultar MongoDB por usuarioId
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -41,7 +42,7 @@ public class PlantaRepositorioImpl implements IPlantaRepositorio {
     @Override
     public List<Planta> buscarPorNombre(String nombre, String usuarioId) {
         // TODO: Buscar plantas por nombre y usuarioId
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -52,7 +53,7 @@ public class PlantaRepositorioImpl implements IPlantaRepositorio {
     @Override
     public List<Planta> buscarPorTipo(String tipo) {
         // TODO: Buscar plantas por tipo (etiqueta o especie)
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

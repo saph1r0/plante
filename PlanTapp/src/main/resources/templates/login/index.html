@@ -54,7 +54,7 @@
     <!-- Enlace al Dashboard solo si el usuario está logueado -->
     <a th:if="${usuarioNombre != null}"
        class="nav-link"
-       th:href="@{/web/dashboard}"
+       th:href="@{/web/plantas/dashboard}"
        style="margin-top: auto; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px;">
         <i class="fas fa-user-circle nav-icon"></i>
         <span class="nav-text">Mi Cuenta</span>
@@ -91,8 +91,8 @@
         <div class="hero-actions">
             <!-- Enlaces que cambian según el estado de autenticación -->
             <div th:if="${usuarioNombre != null}">
-                <a th:href="@{/web/dashboard#eventos}" class="btn btn-primary">Ver Eventos</a>
-                <a th:href="@{/web/dashboard#foro}" class="btn btn-secondary">Unirse al Foro</a>
+                <a th:href="@{/web/plantas/dashboard#eventos}" class="btn btn-primary">Ver Eventos</a>
+                <a th:href="@{/web/plantas/dashboard#foro}" class="btn btn-secondary">Unirse al Foro</a>
             </div>
             <div th:if="${usuarioNombre == null}">
                 <a th:href="@{/web/login}" class="btn btn-primary">Iniciar Sesión para Ver Eventos</a>
@@ -138,7 +138,7 @@
             </div>
         </div>
         <div class="text-center mt-8">
-            <a th:href="@{/web/dashboard#servicios}"
+            <a th:href="@{/web/plantas/dashboard#servicios}"
                th:if="${usuarioNombre != null}"
                class="btn btn-primary">Ver Detalles de Servicios</a>
             <a th:href="@{/web/login}"

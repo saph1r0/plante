@@ -143,7 +143,7 @@ function scrollToSection(query) {
         case 'servicios': targetId = 'servicios'; break;
         case 'catálogo': targetId = 'catalogo'; break;
         case 'contáctanos': targetId = 'contactanos'; break;
-        case 'mi cuenta': window.location.href = 'dashboard.html'; return;
+        case 'mi cuenta': window.location.href = 'login/dashboard.html'; return;
         default:
             // Buscar en plantas reales primero
             let foundSection = false;
@@ -450,7 +450,7 @@ function initializeAuthButtonsHome() {
 
     if (domElementsHome.loginBtn) {
         domElementsHome.loginBtn.addEventListener('click', () => {
-            window.location.href = 'dashboard.html';
+            window.location.href = 'login/dashboard.html';
         });
     }
 }

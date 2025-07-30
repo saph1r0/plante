@@ -276,7 +276,8 @@ public class PlantaController {
     }
 
     @GetMapping("/dashboard")
-    public String dashboard() {
-        return "login/dashboard";
+    public String mostrarDashboard() {
+        logger.info("🌱 Mostrando dashboard");
+        return "login/dashboard";  // Sin .html
     }
 }
