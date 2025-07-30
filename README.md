@@ -220,7 +220,16 @@ public class Usuario {
     private List<Planta> plantas;
 }
 ```
-
+```java
+@Document(collection = "registros_plantas")
+public class RegistroPlanta {
+    @Id
+    private String id; // Identidad única
+    private String apodo;
+    private EstadoPlanta estado;
+}
+}
+```
 ---
 
 ### 3. Pipeline (Procesamiento Paso a Paso)
@@ -239,6 +248,29 @@ public void registrarUsuario(Usuario usuario) {
         throw new IllegalArgumentException("Correo ya registrado");
 
     repositorioUsuario.guardar(usuario);
+}
+```
+```java
+return plantaMongoRepo.findAll()
+    .stream()
+    .filter(p -> p.getTipo().equalsIgnoreCase(tipo))
+    .map(this::convertirADominio)
+    .collect(Collectors.toList());
+```
+
+Uso del **API Stream de Java** para construir cadenas de procesamiento donde los datos fluyen a través de filtros, mapeos y transformaciones.
+
+```java
+// Pipeline: transformaciones encadenadas sin estado compartido
+public List<PlantaResumenDTO> obtenerTodas() {
+    return plantaRepositorio.listarTodos()
+        .stream()
+        .filter(planta -> planta != null && planta.getEstado() != null)
+        .filter(planta -> !"ELIMINADA".equals(planta.getEstado()))
+        .map(this::transformarAResumen)
+        .sorted((p1, p2) -> p1.getNombre().compareTo(p2.getNombre()))
+        .limit(100)
+        .collect(Collectors.toList());
 }
 ```
 
@@ -269,7 +301,7 @@ Captura controlada de excepciones para mantener robustez del sistema:
         }
 ```
 
-### Cookbook
+### 5.Cookbook
 
 Aplicación de **procedimientos secuenciales** que modifican estado compartido.
 
@@ -297,26 +329,16 @@ public boolean registrarNuevaPlanta(String nombre, String tipo, String usuarioId
     return procesoCompletado;
 }
 ```
-
-###  Pipeline
-
-Uso del **API Stream de Java** para construir cadenas de procesamiento donde los datos fluyen a través de filtros, mapeos y transformaciones.
-
 ```java
-// Pipeline: transformaciones encadenadas sin estado compartido
-public List<PlantaResumenDTO> obtenerTodas() {
-    return plantaRepositorio.listarTodos()
-        .stream()
-        .filter(planta -> planta != null && planta.getEstado() != null)
-        .filter(planta -> !"ELIMINADA".equals(planta.getEstado()))
-        .map(this::transformarAResumen)
-        .sorted((p1, p2) -> p1.getNombre().compareTo(p2.getNombre()))
-        .limit(100)
-        .collect(Collectors.toList());
+@Service
+public class CatalogoService {
+    private List<Planta> catalogo; // Estado compartido
+    
+    public void inicializarCatalogo() { /* función modifica estado */ }
+    public List<Planta> obtenerCatalogo() { /* función lee estado */ }
 }
 ```
-
-###  Persistent Tables
+###  6.Persistent Tables
 
 Implementación de **estructura tabular** con queries declarativas, simulando el comportamiento de una base de datos relacional.
 
@@ -357,37 +379,6 @@ Prácticas aplicadas:
 * Propagación controlada con `IllegalStateException`
 
 
-#### **Pipeline (Funcional)**
-```java
-return plantaMongoRepo.findAll()
-    .stream()
-    .filter(p -> p.getTipo().equalsIgnoreCase(tipo))
-    .map(this::convertirADominio)
-    .collect(Collectors.toList());
-```
-
-#### **Cookbook (Funciones con estado compartido)**
-```java
-@Service
-public class CatalogoService {
-    private List<Planta> catalogo; // Estado compartido
-    
-    public void inicializarCatalogo() { /* función modifica estado */ }
-    public List<Planta> obtenerCatalogo() { /* función lee estado */ }
-}
-```
-
-#### **Things (Objetos con identidad)**
-```java
-@Document(collection = "registros_plantas")
-public class RegistroPlanta {
-    @Id
-    private String id; // Identidad única
-    private String apodo;
-    private EstadoPlanta estado;
-}
-}
-```
 ## 🔍 Análisis Estático SonarLint/SonarQube
 
 Durante el desarrollo, se utilizaron herramientas como **SonarLint** para realizar análisis estático y mejorar la calidad del código. A continuación, se documenta una de las recomendaciones aplicadas:
