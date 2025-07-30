@@ -69,6 +69,9 @@ Capturas de pantalla del sistema:
 ![img\_1.png](img_1.png)
 ![img\_2.png](img_2.png)
 ![img\_3.png](img_3.png)
+![Uploading imagen.png…]()
+<img width="275" height="557" alt="imagen" src="https://github.com/user-attachments/assets/ac8e08a2-8c3c-4805-a167-e5aaee86539a" />
+
 ---
 
 ## ✅ Módulo: Registro e Inicio de Sesión Seguro
@@ -110,22 +113,6 @@ Permitir que los usuarios se registren e inicien sesión de manera segura, imple
 | Reemplazar por variables de entorno (`DB_USER`, `DB_PASS`) | ✅ Completado |
 | Validar almacenamiento seguro de contraseñas               | ✅ Completado |
 
----
-
-## 🧠 Convenciones y Buenas Prácticas Java
-
-```java
-// ✔️ Clases en PascalCase
-public class UsuarioAuthService {
-    // ✔️ Métodos en camelCase
-    public boolean validarCredenciales(String email, String password) {
-        // ✔️ Variables descriptivas
-        Usuario usuario = usuarioRepositorio.buscarPorEmail(email);
-        // ✔️ Constantes en MAYÚSCULAS
-        final int MAX_INTENTOS = 3;
-    }
-}
-```
 
 ---
 
@@ -208,6 +195,107 @@ try {
 }
 ```
 
+### Cookbook
+
+Aplicación de **procedimientos secuenciales** que modifican estado compartido.
+
+```java
+// Cookbook: Estado compartido modificado por procedimientos
+private List<String> erroresValidacion = new ArrayList<>();
+private Planta plantaEnProceso;
+private boolean procesoCompletado = false;
+
+public boolean registrarNuevaPlanta(String nombre, String tipo, String usuarioId) {
+    // Paso 1: Limpiar estado previo
+    limpiarEstadoProceso();
+    
+    // Paso 2: Validar datos de entrada
+    validarDatosEntrada(nombre, tipo, usuarioId);
+    
+    // Paso 3: Normalizar y preparar datos
+    prepararDatosPlanta(nombre, tipo);
+    
+    // Paso 4: Ejecutar guardado si todo está correcto
+    if (erroresValidacion.isEmpty()) {
+        ejecutarGuardado(usuarioId);
+    }
+    
+    return procesoCompletado;
+}
+```
+
+###  Pipeline
+
+Uso del **API Stream de Java** para construir cadenas de procesamiento donde los datos fluyen a través de filtros, mapeos y transformaciones.
+
+```java
+// Pipeline: transformaciones encadenadas sin estado compartido
+public List<PlantaResumenDTO> obtenerTodas() {
+    return plantaRepositorio.listarTodos()
+        .stream()
+        .filter(planta -> planta != null && planta.getEstado() != null)
+        .filter(planta -> !"ELIMINADA".equals(planta.getEstado()))
+        .map(this::transformarAResumen)
+        .sorted((p1, p2) -> p1.getNombre().compareTo(p2.getNombre()))
+        .limit(100)
+        .collect(Collectors.toList());
+}
+```
+
+###  Persistent Tables
+
+Implementación de **estructura tabular** con queries declarativas, simulando el comportamiento de una base de datos relacional.
+
+```java
+// Persistent Tables: simulación de tablas relacionales
+private final Map<String, Usuario> tablaUsuarios;
+private final Map<String, String> indiceCorreos; // correo -> id
+
+@Override
+public Optional<Usuario> buscarPorCorreo(String correo) {
+    // Query declarativa: SELECT * FROM usuarios WHERE email = ?
+    if (correo == null || !correo.contains("@")) {
+        return Optional.empty();
+    }
+    
+    String usuarioId = indiceCorreos.get(correo.toLowerCase());
+    if (usuarioId != null) {
+        return Optional.ofNullable(tablaUsuarios.get(usuarioId));
+    }
+    
+    return Optional.empty();
+}
+```
+
+###  Error / Exception Handling
+
+**Validación rigurosa** de parámetros y captura controlada de excepciones para mantener la robustez del sistema.
+
+```java
+// Error Handling: validación defensiva y manejo controlado
+@Override
+public Planta obtenerPorId(String id) {
+    if (id == null || id.trim().isEmpty()) {
+        throw new IllegalArgumentException("ID no puede ser nulo o vacío");
+    }
+    
+    try {
+        // TODO: Implementar consulta MongoDB real
+        return null; // Temporal hasta completar implementación
+    } catch (Exception e) {
+        throw new RuntimeException("Error al consultar planta con ID: " + id, e);
+    }
+}
+```
+
+#### **Programación Declarativa (Spring Annotations)**
+```java
+@Service
+@Repository
+@Controller
+@RequestMapping("/web")
+```
+
 Prácticas aplicadas:
 
 * Validación previa con `IllegalArgumentException`
@@ -246,73 +334,10 @@ if (Boolean.TRUE.equals(activo)) {
 }
 ```
 
-**Estado en el Proyecto:**
-Todas las ocurrencias han sido revisadas y corregidas, asegurando que no se usen `Boolean` boxeados directamente en expresiones condicionales sin verificación previa.
-
----
-
-## ✅ Conclusión
-
-* ✔ Cumplimiento de principios de diseño y arquitectura limpia.
-* ✔ Aplicación de estilos de programación modernos y robustos.
-* ✔ Código validado con herramientas de análisis estático para garantizar calidad.
-
 
 # PlantApp - Análisis Técnico y Arquitectónico
 
 ## 📊 Evaluación Técnica
-
-### 1. Estilos de Programación (3/3 puntos) ✅
-
-El proyecto implementa **más de 4 estilos de programación**:
-
-#### **Programación Orientada a Objetos (OOP)**
-```java
-public class Usuario {
-    private Long id;
-    private String nombre;
-    private String correo;
-    
-    public Usuario(String nombre, String correo, String contrasena) {
-        this.nombre = nombre;
-        this.correo = correo;
-        this.contrasena = contrasena;
-    }
-}
-```
-
-#### **Programación Funcional**
-```java
-return usuarioJpaRepositorio.findAll()
-    .stream()
-    .map(e -> new Usuario(e.getNombre(), e.getCorreo(), e.getContrasena()))
-    .toList();
-```
-
-#### **Programación por Contratos (Interfaces)**
-```java
-public interface IServicioUsuario {
-    void registrarUsuario(Usuario usuario);
-    Usuario autenticarUsuario(String email, String contrasena);
-}
-```
-
-#### **Programación Reactiva (Optional)**
-```java
-Optional<Usuario> usuarioOpt = usuarioRepositorio.buscarPorCorreo(correo);
-if (usuarioOpt.isPresent()) {
-    Usuario usuario = usuarioOpt.get();
-    // lógica
-}
-```
-
-#### **Programación Declarativa (Spring Annotations)**
-```java
-@Service
-@Repository
-@Controller
-@RequestMapping("/web")
-```
 
 ---
 
@@ -606,19 +631,6 @@ public class UsuarioWebController {
     }
 }
 ```
-
----
-
-## 📋 Resumen de Puntuación
-
-| Criterio | Puntos Obtenidos | Puntos Máximos |
-|----------|------------------|----------------|
-| **Estilos de Programación** | 3 | 3 |
-| **Clean Code** | 3 | 3 |
-| **Principios SOLID** | 3 | 3 |
-| **Domain-Driven Design** | 3 | 3 |
-| **Patrones de Arquitectura** | 3 | 3 |
-| **TOTAL** | **15** | **15** |
 
 ## 🚀 Fortalezas del Proyecto
 
