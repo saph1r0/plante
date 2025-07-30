@@ -1,30 +1,22 @@
 package com.planta.plantapp.dominio.modelo.cuidado;
 
-import java.util.EnumSet;
-
 /**
- * Enumeración que representa los tipos de cuidado que se pueden aplicar a una planta.
+ * Enumeración que representa los tipos de cuidado que se pueden aplicar a una planta
  */
 public enum TipoCuidado {
-
-    RIEGO("Riego", "Suministro de agua a la planta", 3, UnidadMedida.MILILITRO),
-    FERTILIZACION("Fertilización", "Aplicación de nutrientes", 14, UnidadMedida.GRAMO),
-    PODA("Poda", "Corte de ramas o hojas", 30, UnidadMedida.UNIDAD),
-    TRASPLANTE("Trasplante", "Cambio de maceta o ubicación", 365, UnidadMedida.UNIDAD),
-    FUMIGACION("Fumigación", "Aplicación de pesticidas o fungicidas", 21, UnidadMedida.MILILITRO),
-    LIMPIEZA("Limpieza", "Limpieza de hojas y eliminación de partes muertas", 7, UnidadMedida.UNIDAD),
-    ROTACION("Rotación", "Cambio de orientación para exposición solar", 3, UnidadMedida.UNIDAD),
-    AIREACION("Aireación", "Aflojamiento del sustrato", 14, UnidadMedida.UNIDAD);
+    RIEGO("Riego", "Suministro de agua a la planta", 3, "ml"),
+    FERTILIZACION("Fertilización", "Aplicación de nutrientes", 14, "g"),
+    PODA("Poda", "Corte de ramas o hojas", 30, "unidad"),
+    TRASPLANTE("Trasplante", "Cambio de maceta o ubicación", 365, "unidad"),
+    FUMIGACION("Fumigación", "Aplicación de pesticidas o fungicidas", 21, "ml"),
+    LIMPIEZA("Limpieza", "Limpieza de hojas y eliminación de partes muertas", 7, "unidad"),
+    ROTACION("Rotación", "Cambio de orientación para exposición solar", 3, "unidad"),
+    AIREACION("Aireación", "Aflojamiento del sustrato", 14, "unidad");
 
     private final String nombre;
     private final String descripcion;
-    private final int frecuenciaRecomendada;
+    private final int frecuenciaRecomendada; // días
     private final String unidadMedidaDefault;
-
-    // Grupos para métodos auxiliares
-    private static final EnumSet<TipoCuidado> CUIDADOS_CON_CANTIDAD = EnumSet.of(RIEGO, FERTILIZACION, FUMIGACION);
-    private static final EnumSet<TipoCuidado> MANTENIMIENTO_BASICO = EnumSet.of(RIEGO, LIMPIEZA, ROTACION);
-    private static final EnumSet<TipoCuidado> MANTENIMIENTO_AVANZADO = EnumSet.of(PODA, TRASPLANTE, FUMIGACION, AIREACION);
 
     TipoCuidado(String nombre, String descripcion, int frecuenciaRecomendada, String unidadMedidaDefault) {
         this.nombre = nombre;
@@ -49,29 +41,28 @@ public enum TipoCuidado {
         return unidadMedidaDefault;
     }
 
+    public boolean esRiego() {
+        return this == RIEGO;
+    }
+
+    public boolean esFertilizacion() {
+        return this == FERTILIZACION;
+    }
+
     public boolean requiereCantidad() {
-        return CUIDADOS_CON_CANTIDAD.contains(this);
+        return this == RIEGO || this == FERTILIZACION || this == FUMIGACION;
     }
 
     public boolean esMantenimientoBasico() {
-        return MANTENIMIENTO_BASICO.contains(this);
+        return this == RIEGO || this == LIMPIEZA || this == ROTACION;
     }
 
     public boolean esMantenimientoAvanzado() {
-        return MANTENIMIENTO_AVANZADO.contains(this);
+        return this == PODA || this == TRASPLANTE || this == FUMIGACION || this == AIREACION;
     }
 
     @Override
     public String toString() {
         return nombre;
-    }
-
-    /**
-     * Sub-enum para las unidades de medida, evitando literales duplicados.
-     */
-    public static class UnidadMedida {
-        public static final String MILILITRO = "ml";
-        public static final String GRAMO = "g";
-        public static final String UNIDAD = "unidad";
     }
 }

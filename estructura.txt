@@ -1,0 +1,152 @@
+.
+├── estructura.txt
+├── PlanTapp
+│   ├── mvnw
+│   ├── mvnw.cmd
+│   ├── pom.xml
+│   ├── src
+│   │   ├── main
+│   │   │   ├── java
+│   │   │   │   └── com
+│   │   │   │       └── planta
+│   │   │   │           └── plantapp
+│   │   │   │               ├── aplicacion
+│   │   │   │               │   ├── interfaces
+│   │   │   │               │   │   ├── IServicioBitacora.java
+│   │   │   │               │   │   ├── IServicioPlanta.java
+│   │   │   │               │   │   ├── IServicioRecordatorio.java
+│   │   │   │               │   │   └── IServicioUsuario.java
+│   │   │   │               │   └── servicios
+│   │   │   │               │       ├── CatalogoService.java
+│   │   │   │               │       ├── ServicioBitacoraImpl.java
+│   │   │   │               │       ├── ServicioPlantaImpl.java
+│   │   │   │               │       ├── ServicioRecordatorioImpl.java
+│   │   │   │               │       └── ServicioUsuarioImpl.java
+│   │   │   │               ├── config
+│   │   │   │               │   └── CorsConfig.java
+│   │   │   │               ├── DemoApplication.java
+│   │   │   │               ├── dominio
+│   │   │   │               │   ├── modelo
+│   │   │   │               │   │   ├── bitacora
+│   │   │   │               │   │   │   └── Bitacora.java
+│   │   │   │               │   │   ├── cuidado
+│   │   │   │               │   │   │   ├── Cuidado.java
+│   │   │   │               │   │   │   ├── TareaCuidado.java
+│   │   │   │               │   │   │   └── TipoCuidado.java
+│   │   │   │               │   │   ├── fabrica
+│   │   │   │               │   │   │   ├── CuidadoFabrica.java
+│   │   │   │               │   │   │   ├── PlantaFabrica.java
+│   │   │   │               │   │   │   └── RecordatorioFabrica.java
+│   │   │   │               │   │   ├── IBitacoraRepositorio.java
+│   │   │   │               │   │   ├── IPlantaRepositorio.java
+│   │   │   │               │   │   ├── IRecordatorioRepositorio.java
+│   │   │   │               │   │   ├── planta
+│   │   │   │               │   │   │   ├── EstadoPlanta.java
+│   │   │   │               │   │   │   ├── Etiqueta.java
+│   │   │   │               │   │   │   ├── Planta.java
+│   │   │   │               │   │   │   └── RegistroPlanta.java
+│   │   │   │               │   │   ├── recordatorio
+│   │   │   │               │   │   │   ├── EstadoRecordatorio.java
+│   │   │   │               │   │   │   └── Recordatorio.java
+│   │   │   │               │   │   └── servicios
+│   │   │   │               │   │       ├── ServicioBitacoraDominio.java
+│   │   │   │               │   │       ├── ServicioPlantaDominio.java
+│   │   │   │               │   │       └── ServicioRecordatorioDominio.java
+│   │   │   │               │   └── usuario
+│   │   │   │               │       ├── IUsuarioRepositorio.java
+│   │   │   │               │       └── modelo
+│   │   │   │               │           └── Usuario.java
+│   │   │   │               ├── infraestructura
+│   │   │   │               │   ├── documento
+│   │   │   │               │   │   ├── BitacoraDocumento.java
+│   │   │   │               │   │   └── PlantaDocumento.java
+│   │   │   │               │   ├── entidad
+│   │   │   │               │   │   ├── RecordatorioEntidad.java
+│   │   │   │               │   │   └── UsuarioEntidad.java
+│   │   │   │               │   └── repositorio
+│   │   │   │               │       ├── mongodb
+│   │   │   │               │       │   ├── BitacoraRepositorioImpl.java
+│   │   │   │               │       │   ├── mongo
+│   │   │   │               │       │   │   ├── BitacoraMongoRepositorio.java
+│   │   │   │               │       │   │   └── PlantaMongoRepositorio.java
+│   │   │   │               │       │   ├── PlantaMongoRepository.java
+│   │   │   │               │       │   ├── PlantaRepositorioImpl.java
+│   │   │   │               │       │   └── RegistroPlantaMongoRepository.java
+│   │   │   │               │       └── mysql
+│   │   │   │               │           ├── jpa
+│   │   │   │               │           │   ├── RecordatorioJpaRepositorio.java
+│   │   │   │               │           │   └── UsuarioJpaRepositorio.java
+│   │   │   │               │           ├── RecordatorioRepositorioImpl.java
+│   │   │   │               │           └── UsuarioRepositorioImpl.java
+│   │   │   │               └── presentacion
+│   │   │   │                   └── controlador
+│   │   │   │                       ├── BitacoraController.java
+│   │   │   │                       ├── PlantaController.java
+│   │   │   │                       ├── RecordatorioController.java
+│   │   │   │                       └── UsuarioController.java
+│   │   │   └── resources
+│   │   │       ├── application.properties
+│   │   │       ├── static
+│   │   │       │   ├── css
+│   │   │       │   │   └── plantas.css
+│   │   │       │   ├── dashboard.html
+│   │   │       │   ├── editar-planta.html
+│   │   │       │   ├── js
+│   │   │       │   │   └── plantas-api.js
+│   │   │       │   ├── mis-plantas.html
+│   │   │       │   ├── registro-planta.html
+│   │   │       │   └── vista-planta.html
+│   │   │       └── templates
+│   │   │           └── proyecto
+│   │   │               ├── AA1H7uuE.jpeg
+│   │   │               ├── AA1HFmux.jpeg
+│   │   │               ├── AA1HpE4h.jpeg
+│   │   │               ├── bulbosas.jpg
+│   │   │               ├── flower-g6e77477b1_1280.jpg
+│   │   │               ├── index_final.html
+│   │   │               ├── R (1).jpeg
+│   │   │               ├── R.jpeg
+│   │   │               ├── sorta-gortenzii_643b7eb5eb1f6.jpg
+│   │   │               └── vaso-removebg-preview.png
+│   │   └── test
+│   │       └── java
+│   │           └── com
+│   │               └── planta
+│   │                   └── demo
+│   │                       └── DemoApplicationTests.java
+│   └── target
+│       ├── classes
+│       │   ├── application.properties
+│       │   ├── static
+│       │   │   ├── css
+│       │   │   │   └── plantas.css
+│       │   │   ├── dashboard.html
+│       │   │   ├── editar-planta.html
+│       │   │   ├── js
+│       │   │   │   └── plantas-api.js
+│       │   │   ├── mis-plantas.html
+│       │   │   ├── registro-planta.html
+│       │   │   └── vista-planta.html
+│       │   └── templates
+│       │       └── proyecto
+│       │           ├── AA1H7uuE.jpeg
+│       │           ├── AA1HFmux.jpeg
+│       │           ├── AA1HpE4h.jpeg
+│       │           ├── bulbosas.jpg
+│       │           ├── flower-g6e77477b1_1280.jpg
+│       │           ├── index_final.html
+│       │           ├── R (1).jpeg
+│       │           ├── R.jpeg
+│       │           ├── sorta-gortenzii_643b7eb5eb1f6.jpg
+│       │           └── vaso-removebg-preview.png
+│       ├── generated-sources
+│       │   └── annotations
+│       └── maven-status
+│           └── maven-compiler-plugin
+│               └── compile
+│                   └── default-compile
+│                       ├── createdFiles.lst
+│                       └── inputFiles.lst
+└── README.md
+
+55 directories, 94 files
