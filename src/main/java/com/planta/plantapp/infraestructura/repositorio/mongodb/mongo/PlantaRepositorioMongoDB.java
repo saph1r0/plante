@@ -22,8 +22,8 @@ import java.util.regex.Pattern;
 @Primary
 public class PlantaRepositorioMongoDB implements IPlantaRepositorio {
 
-    public final String global = "global";
-    public final String usuarioId = "usuarioId";
+    public static final String GLOBAL = "global";
+    public static final String USUARIOID = "usuarioId";
 
     private static final Logger logger = LoggerFactory.getLogger(PlantaRepositorioMongoDB.class);
 
@@ -35,68 +35,68 @@ public class PlantaRepositorioMongoDB implements IPlantaRepositorio {
 
     @Override
     public Planta obtenerPorId(String id) {
-        logger.debug("🔍 Buscando planta con ID: {}", id);
+        logger.debug("Buscando planta con ID: {}", id);
         Planta planta = mongoTemplate.findById(id, Planta.class);
         if (planta != null) {
-            logger.debug("✅ Planta encontrada: {}", planta.getNombreComun());
+            logger.debug("Planta encontrada: {}", planta.getNombreComun());
         } else {
-            logger.debug("❌ No se encontró planta con ID: {}", id);
+            logger.debug("No se encontró planta con ID: {}", id);
         }
         return planta;
     }
 
     @Override
     public List<Planta> listarPorUsuario(String usuarioId) {
-        logger.debug("🔍 Buscando plantas para usuario: {}", usuarioId);
+        logger.debug("Buscando plantas para usuario: {}", usuarioId);
 
         List<Planta> plantas;
-        if (global.equals(usuarioId)) {
+        if (GLOBAL.equals(usuarioId)) {
             // Si es "global", devolver todas las plantas de la base
             plantas = mongoTemplate.findAll(Planta.class);
-            logger.info("🌍 Obteniendo TODAS las plantas: {}", plantas.size());
+            logger.info("Obteniendo TODAS las plantas: {}", plantas.size());
         } else {
             // Buscar por usuario específico
             Query query = new Query(Criteria.where(usuarioId).is(usuarioId));
             plantas = mongoTemplate.find(query, Planta.class);
-            logger.debug("👤 Plantas del usuario {}: {}", usuarioId, plantas.size());
+            logger.debug("Plantas del usuario {}: {}", usuarioId, plantas.size());
         }
 
         // Log de las plantas encontradas para debug
-        plantas.forEach(p -> logger.debug("  🌱 {} (ID: {})", p.getNombreComun(), p.getId()));
+        plantas.forEach(p -> logger.debug(" {} (ID: {})", p.getNombreComun(), p.getId()));
 
         return plantas;
     }
 
     @Override
     public void guardar(Planta planta) {
-        logger.debug("💾 Guardando planta: {}", planta.getNombreComun());
+        logger.debug("Guardando planta: {}", planta.getNombreComun());
         try {
             mongoTemplate.save(planta);
-            logger.info("✅ Planta guardada exitosamente con ID: {}", planta.getId());
+            logger.info("Planta guardada exitosamente con ID: {}", planta.getId());
         } catch (Exception e) {
             String mensaje = String.format("Error al guardar la planta '%s': %s",
                     planta.getNombreComun(), e.getMessage());
-            logger.error("❌ {}", mensaje, e);
+            logger.error("{}", mensaje, e);
         }
     }
 
     @Override
     public void eliminar(String id) {
-        logger.debug("🗑️ Eliminando planta con ID: {}", id);
+        logger.debug("Eliminando planta con ID: {}", id);
         try {
             Query query = new Query(Criteria.where("id").is(id));
             mongoTemplate.remove(query, Planta.class);
-            logger.info("✅ Planta eliminada exitosamente");
+            logger.info("Planta eliminada exitosamente");
         } catch (Exception e) {
             String mensaje = String.format("Error al eliminar la planta con ID '%s': %s",
                     id, e.getMessage());
-            logger.error("❌ {}", mensaje, e);
+            logger.error("{}", mensaje, e);
         }
     }
 
     @Override
     public List<Planta> buscarPorNombre(String nombre, String usuarioId) {
-        logger.debug("🔍 Buscando plantas con nombre: '{}' para usuario: {}", nombre, usuarioId);
+        logger.debug("Buscando plantas con nombre: '{}' para usuario: {}", nombre, usuarioId);
 
         Criteria criteria = new Criteria();
 
@@ -105,67 +105,63 @@ public class PlantaRepositorioMongoDB implements IPlantaRepositorio {
         criteria.and("nombre").regex(pattern);
 
         // Filtrar por usuario si no es "global"
-        if (!global.equals(usuarioId)) {
-            criteria.and("usuarioId").is(usuarioId);
+        if (!GLOBAL.equals(usuarioId)) {
+            criteria.and("USUARIOID").is(usuarioId);
         }
 
         Query query = new Query(criteria);
         List<Planta> plantas = mongoTemplate.find(query, Planta.class);
 
-        logger.debug("📊 Plantas encontradas: {}", plantas.size());
+        logger.debug("Plantas encontradas: {}", plantas.size());
         return plantas;
     }
 
     @Override
     public void actualizarEstado(String plantaId, String estadoPlanta) {
-        logger.debug("🔄 Actualizando estado de planta {} a: {}", plantaId, estadoPlanta);
+        logger.debug("Actualizando estado de planta {} a: {}", plantaId, estadoPlanta);
 
         try {
             Query query = new Query(Criteria.where("id").is(plantaId));
             Update update = new Update().set("estado", estadoPlanta);
             mongoTemplate.updateFirst(query, update, Planta.class);
-            logger.info("✅ Estado actualizado exitosamente");
+            logger.info("Estado actualizado exitosamente");
         } catch (Exception e) {
-            logger.error("❌ Error al actualizar estado: {}", e.getMessage(), e);
+            logger.error("Error al actualizar estado: {}", e.getMessage(), e);
         }
     }
 
     @Override
     public List<Planta> buscarPorTipo(String tipo) {
-        logger.debug("🔍 Buscando plantas de tipo: {}", tipo);
-
+        logger.debug("Buscando plantas de tipo: {}", tipo);
         try {
             Query query = new Query(Criteria.where("tipo").is(tipo));
-            List<Planta> plantas = mongoTemplate.find(query, Planta.class);
-            logger.debug("📊 Plantas de tipo '{}' encontradas: {}", tipo, plantas.size());
-            return plantas;
+            return mongoTemplate.find(query, Planta.class);
         } catch (Exception e) {
-            String mensaje = String.format("Error al buscar plantas de tipo '%s': %s",
-                    tipo, e.getMessage());
-            logger.error("❌ {}", mensaje, e);
+            String mensaje = String.format(
+                    "Error al buscar plantas de tipo '%s': %s",
+                    tipo, e.getMessage()
+            );
             throw new IllegalArgumentException(mensaje, e);
         }
     }
 
+
     @Override
     public Long contarPorUsuario(String usuarioId) {
-        logger.debug("🔢 Contando plantas del usuario: {}", usuarioId);
+        logger.debug("Contando plantas del usuario: {}", usuarioId);
 
         try {
             Query query;
-            if (global.equals(usuarioId)) {
+            if (GLOBAL.equals(usuarioId)) {
                 query = new Query(); // Contar todas
             } else {
                 query = new Query(Criteria.where(usuarioId).is(usuarioId));
             }
 
-            long count = mongoTemplate.count(query, Planta.class);
-            logger.debug("📊 Total de plantas: {}", count);
-            return count;
+            return mongoTemplate.count(query, Planta.class);
         } catch (Exception e) {
             String mensaje = String.format("Error al contar plantas del usuario '%s': %s",
                     usuarioId, e.getMessage());
-            logger.error("❌ {}", mensaje, e);
             throw new IllegalStateException(mensaje, e);
         }
     }
