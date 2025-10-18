@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -20,7 +21,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf
+                        // Justificación: El token CSRF necesita ser leído por el frontend SPA
+                        // Medidas compensatorias: CSP estricto, SameSite=Strict, validación en backend
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                )
+                // Configuramos los endpoints públicos
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/web/login", "/web/registro","/web/index", "/web/plantas/dashboard",

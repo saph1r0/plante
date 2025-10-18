@@ -8,9 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/usuarios")
+@CrossOrigin(origins = {"http://localhost:3000", "https://miapp.com"})
 public class UsuarioController {
 
     private final IServicioUsuario usuarioServicio;
