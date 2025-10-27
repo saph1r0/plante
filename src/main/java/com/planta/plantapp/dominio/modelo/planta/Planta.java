@@ -3,6 +3,8 @@ package com.planta.plantapp.dominio.modelo.planta;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import com.planta.plantapp.dominio.modelo.cuidado.Cuidado;
@@ -17,12 +19,14 @@ public class Planta {
     private String id;
 
     private String estado;
+    @NonNull
     private String nombreComun;
+    @NonNull
     private String nombreCientifico;
     private String descripcion;
     private String imagenURL;
     private List<Etiqueta> etiquetas;
-    private List<Cuidado> cuidados;
+    private final List<Cuidado> cuidados;
 
     public Planta(String nombreComun, String nombreCientifico, String descripcion, String imagenURL) {
         if (nombreComun == null || nombreComun.isBlank())

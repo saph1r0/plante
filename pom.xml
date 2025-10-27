@@ -98,7 +98,7 @@
         <scope>provided</scope>
     </dependency>
 
-    <!-- Pruebas, Framework xUnit: JUnit 5 (incluido en spring-boot-starter-test) -->
+    <!-- Pruebas, Framework xUnit: JUnit 5  y Mockito (incluido en spring-boot-starter-test) -->
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-test</artifactId>
