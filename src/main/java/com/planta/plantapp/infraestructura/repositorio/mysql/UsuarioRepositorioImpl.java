@@ -28,7 +28,7 @@ public class UsuarioRepositorioImpl implements IUsuarioRepositorio {
     public List<Usuario> listarTodos() {
         return usuarioJpaRepositorio.findAll()
                 .stream()
-                .map(e -> new Usuario(e.getNombre(), e.getCorreo(), e.getContrasena()))
+                .map(e -> new Usuario(e.getId(),e.getNombre(), e.getCorreo(), e.getContrasena()))
                 .toList();
     }
 
