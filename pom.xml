@@ -104,7 +104,15 @@
         <artifactId>spring-boot-starter-test</artifactId>
         <scope>test</scope>
     </dependency>
-    <!-- Mockito (framework de Mocking para Java) -->
+    <!--  JUnit 5 -->
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>5.10.2</version>
+        <scope>test</scope>
+    </dependency>
+
+    <!--  Mockito -->
     <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
@@ -112,13 +120,21 @@
         <scope>test</scope>
     </dependency>
 
-    <!-- Integración con JUnit 5 (Mockito JUnit Jupiter) -->
+    <!--  Mockito con JUnit 5 -->
     <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-junit-jupiter</artifactId>
         <version>5.12.0</version>
         <scope>test</scope>
     </dependency>
+
+    <!-- Spring Security (para PasswordEncoder) -->
+    <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-crypto</artifactId>
+        <version>6.3.3</version>
+    </dependency>
+
 
 </dependencies>
 
