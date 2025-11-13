@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Planta - PlantCare</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/login/css/plantas.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <h1><i class="fas fa-seedling"></i> PlantCare</h1>
+            <div class="nav-links">
+                <a href="/web/plantas/dashboard2"><i class="fas fa-chart-pie"></i> Dashboard</a>
+                <a href="/web/plantas/mis-plantas"><i class="fas fa-leaf"></i> Mis Plantas</a>
+                <a href="/web/plantas/registro"><i class="fas fa-plus"></i> Agregar Planta</a>
+                <button onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> Salir</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <i class="fas fa-home"></i> <a href="/web/plantas/dashboard2">Dashboard</a> / 
+            <a href="/web/plantas/mis-plantas">Mis Plantas</a> / <span id="breadcrumb-nombre">Detalle</span>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading" class="loading">
+            <i class="fas fa-spinner"></i> Cargando información de la planta...
+        </div>
+
+        <!-- Contenido de la planta -->
+        <div id="contenido-planta" class="hidden">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>
+                    <i class="fas fa-leaf"></i>
+                    <span id="titulo-planta">Cargando planta...</span>
+                </h1>
+
+
+                <div>
+                    <button class="btn btn-primary" onclick="abrirModalCuidado()">
+                        <i class="fas fa-hand-holding-water"></i> Registrar Cuidado
+                    </button>
+                    <a id="btn-editar" href="#" class="btn btn-secondary">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <a href="/web/plantas/mis-plantas" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </a>
+                </div>
+            </div>
+
+            <!-- Información principal -->
+            <div class="plant-detail">
+                <div class="plant-detail-image">
+                    <img id="imagen-planta" src="" alt="">
+                    <div style="margin-top: 1rem;">
+                        <span id="estado-planta" class="plant-status"></span>
+                    </div>
+                </div>
+                <div class="plant-detail-info">
+                    <h2 id="apodo-planta">Cargando...</h2>
+                    <div class="scientific-name" id="nombre-cientifico"></div>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="ubicacion-planta"></span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-calendar-plus"></i>
+                            <span id="fecha-registro"></span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-droplet"></i>
+                            <span id="ultimo-cuidado"></span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-tag"></i>
+                            <span id="tipo-planta"></span>
+                        </div>
+                    </div>
+
+                    <div id="descripcion-planta" style="margin: 1rem 0; padding: 1rem; background: var(--color-cream-light); border-radius: 8px;">
+                    </div>
+
+                    <div id="notas-personales" class="hidden" style="margin: 1rem 0; padding: 1rem; background: var(--color-green-light); border-radius: 8px;">
+                        <h4><i class="fas fa-sticky-note"></i> Notas Personales</h4>
+                        <p id="texto-notas"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="cards-grid">
+                <div class="card stat-card">
+                    <i class="fas fa-calendar-check"></i>
+                    <span class="stat-number" id="dias-registrada">0</span>
+                    <span class="stat-label">Días Registrada</span>
+                </div>
+                <div class="card stat-card">
+                    <i class="fas fa-hand-holding-water"></i>
+                    <span class="stat-number" id="total-cuidados">0</span>
+                    <span class="stat-label">Cuidados Realizados</span>
+                </div>
+                <div class="card stat-card">
+                    <i class="fas fa-clock"></i>
+                    <span class="stat-number" id="dias-ultimo-cuidado">0</span>
+                    <span class="stat-label">Días Desde Último Cuidado</span>
+                </div>
+                <div class="card stat-card">
+                    <i class="fas fa-heart-pulse"></i>
+                    <span class="stat-number" id="estado-salud">N/A</span>
+                    <span class="stat-label">Estado de Salud</span>
+                </div>
+            </div>
+
+            <!-- Información de cuidados recomendados -->
+            <div class="form-container">
+                <h2><i class="fas fa-book"></i> Cuidados Recomendados</h2>
+                <div id="cuidados-recomendados" class="cards-grid">
+                    <!-- Se llena dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Historial de cuidados -->
+            <div class="form-container">
+                <h2><i class="fas fa-history"></i> Historial de Cuidados</h2>
+                <div id="historial-cuidados">
+                    <!-- Se llena dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Próximos cuidados -->
+            <div class="form-container">
+                <h2><i class="fas fa-calendar-alt"></i> Próximos Cuidados Sugeridos</h2>
+                <div id="proximos-cuidados" class="cards-grid">
+                    <!-- Se llena dinámicamente -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Planta no encontrada -->
+        <div id="planta-no-encontrada" class="empty-state hidden">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>Planta no encontrada</h3>
+            <p>La planta solicitada no existe o fue eliminada.</p>
+            <a href="/web/plantas/mis-plantas" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Volver a Mis Plantas
+            </a>
+        </div>
+    </div>
+
+    <!-- Modal de cuidado -->
+    <div id="modal-cuidado" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-hand-holding-water"></i> Registrar Cuidado</h3>
+            <div class="form-group">
+                <label for="tipo-cuidado">Tipo de cuidado:</label>
+                <select id="tipo-cuidado">
+                    <option value="riego">💧 Riego</option>
+                    <option value="fertilizacion">🌱 Fertilización</option>
+                    <option value="poda">✂️ Poda</option>
+                    <option value="limpieza">🧽 Limpieza de hojas</option>
+                    <option value="trasplante">🪴 Trasplante</option>
+                    <option value="fumigacion">🌿 Fumigación</option>
+                    <option value="otro">🔧 Otro</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="fecha-cuidado">Fecha del cuidado:</label>
+                <input type="datetime-local" id="fecha-cuidado">
+            </div>
+            <div class="form-group">
+                <label for="notas-cuidado">Observaciones:</label>
+                <textarea id="notas-cuidado" rows="3" placeholder="Describe el cuidado realizado, observaciones, etc."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="cambio-estado">¿Cambiar estado de la planta?</label>
+                <select id="cambio-estado">
+                    <option value="">Mantener estado actual</option>
+                    <option value="SALUDABLE">🟢 Saludable</option>
+                    <option value="NECESITA_AGUA">🟡 Necesita agua</option>
+                    <option value="ENFERMA">🔴 Enferma</option>
+                    <option value="MARCHITA">🟠 Marchita</option>
+                    <option value="FLORECIENDO">🌸 Floreciendo</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="cerrarModalCuidado()">Cancelar</button>
+                <button class="btn btn-primary" onclick="guardarCuidado()">Registrar Cuidado</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificación -->
+    <div id="notification" class="notification"></div>
+
+    <!-- AGREGAR ESTE SCRIPT -->
+    <script src="/login/js/plantas-api.js"></script>
+    
+    <script>
+        // Variables globales
+        let plantaActual = null;
+        let plantaId = null;
+
+        
+        // Función para obtener parámetros de la URL
+        function obtenerParametroURL(nombre) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(nombre);
+        }
+
+        // Función para cargar planta
+        async function cargarPlanta() {
+	    plantaId = obtenerParametroURL('id');
+	    
+	    if (!plantaId) {
+		mostrarError();
+		return;
+	    }
+
+	    console.log('🔍 Cargando planta desde MongoDB:', plantaId);
+
+	    try {
+
+		if (window.PlantasAPI) {
+		    plantaActual = await PlantasAPI.obtenerPlantaPorId(plantaId);
+		    
+		    if (!plantaActual) {
+		        console.log(' Planta no encontrada en MongoDB:', plantaId);
+		        mostrarError();
+		        return;
+		    }
+		    
+		    console.log(' Planta cargada desde MongoDB:', plantaActual.apodo);
+		    mostrarInformacionPlanta();
+		    
+		} else {
+		    throw new Error('PlantasAPI no disponible');
+		}
+		
+	    } catch (error) {
+		console.error(' Error cargando planta:', error);
+		mostrarError();
+	    }
+	}
+        // Función para mostrar error
+        function mostrarError() {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('planta-no-encontrada').classList.remove('hidden');
+        }
+
+        // Función para mostrar información de la planta
+        function mostrarInformacionPlanta() {
+	    const plantaCatalogo = plantaActual.planta; // Referencia directa de MongoDB
+	    
+	    // Ocultar loading
+	    document.getElementById('loading').classList.add('hidden');
+	    document.getElementById('contenido-planta').classList.remove('hidden');
+
+	    // Actualizar título y breadcrumb
+	    document.getElementById('titulo-planta').textContent = plantaActual.apodo;
+	    document.getElementById('breadcrumb-nombre').textContent = plantaActual.apodo;
+	    document.title = `${plantaActual.apodo} - PlantCare`;
+
+	    // Configurar botón editar
+        document.getElementById('btn-editar').href = `/web/plantas/editar?id=${plantaActual.id}`;
+
+	    // Información básica
+	    document.getElementById('apodo-planta').textContent = plantaActual.apodo;
+	    document.getElementById('nombre-cientifico').textContent = plantaCatalogo ? 
+		`${plantaCatalogo.nombreComun} (${plantaCatalogo.nombreCientifico})` : 'Información no disponible';
+
+	    // Imagen
+	    const imagen = document.getElementById('imagen-planta');
+	    imagen.src = plantaActual.fotoPersonal || 
+		`https://via.placeholder.com/400x300/81C784/FFFFFF?text=${encodeURIComponent(plantaActual.apodo)}`;
+	    imagen.alt = plantaActual.apodo;
+
+	    // Estado
+	    const estadoSpan = document.getElementById('estado-planta');
+	    estadoSpan.textContent = plantaActual.estado.replace('_', ' ');
+	    estadoSpan.className = `plant-status status-${plantaActual.estado.toLowerCase()}`;
+
+	    // Información de ubicación y fechas
+	    document.getElementById('ubicacion-planta').textContent = plantaActual.ubicacion;
+	    document.getElementById('fecha-registro').textContent = 
+		`Registrada el ${new Date(plantaActual.fechaRegistro).toLocaleDateString()}`;
+	    document.getElementById('tipo-planta').textContent = 
+		plantaCatalogo ? plantaCatalogo.tipo : 'No especificado';
+
+	    // Descripción
+	    if (plantaCatalogo && plantaCatalogo.descripcion) {
+		document.getElementById('descripcion-planta').innerHTML = 
+		    `<h4><i class="fas fa-info-circle"></i> Información de la Especie</h4><p>${plantaCatalogo.descripcion}</p>`;
+	    }
+
+	    // Notas personales
+	    if (plantaActual.notas) {
+		document.getElementById('notas-personales').classList.remove('hidden');
+		document.getElementById('texto-notas').textContent = plantaActual.notas;
+	    }
+
+	    // Estadísticas
+	    actualizarEstadisticas();
+
+	    // Resto de funciones...
+	    mostrarCuidadosRecomendados(plantaCatalogo);
+	    mostrarHistorialCuidados();
+	    mostrarProximosCuidados();
+	}
+
+        // Función para actualizar estadísticas
+        function actualizarEstadisticas() {
+            const ahora = new Date();
+            const fechaRegistro = new Date(plantaActual.fechaRegistro);
+            const ultimoCuidado = new Date(plantaActual.ultimoCuidado);
+
+            const diasRegistrada = Math.floor((ahora - fechaRegistro) / (1000 * 60 * 60 * 24));
+            const diasUltimoCuidado = Math.floor((ahora - ultimoCuidado) / (1000 * 60 * 60 * 24));
+            const totalCuidados = plantaActual.bitacoras ? plantaActual.bitacoras.length : 0;
+
+            document.getElementById('dias-registrada').textContent = diasRegistrada;
+            document.getElementById('total-cuidados').textContent = totalCuidados;
+            document.getElementById('dias-ultimo-cuidado').textContent = diasUltimoCuidado;
+            
+            // Estado de salud basado en el estado actual
+            const estadoSalud = {
+                'SALUDABLE': '🟢',
+                'NECESITA_AGUA': '🟡',
+                'ENFERMA': '🔴',
+                'MARCHITA': '🟠',
+                'FLORECIENDO': '🌸'
+            };
+            document.getElementById('estado-salud').textContent = estadoSalud[plantaActual.estado] || '❓';
+        }
+
+        // Función para mostrar cuidados recomendados
+        function mostrarCuidadosRecomendados(plantaCatalogo) {
+            const container = document.getElementById('cuidados-recomendados');
+
+            if (!plantaCatalogo || !plantaCatalogo.cuidados) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-info-circle"></i><h3>Sin información de cuidados</h3><p>No hay información específica de cuidados para esta especie</p></div>';
+                return;
+            }
+
+            container.innerHTML = plantaCatalogo.cuidados.map(cuidado => `
+                <div class="card">
+                    <h4><i class="fas fa-leaf"></i> ${cuidado.tipo}</h4>
+                    <p><strong>Frecuencia:</strong> ${cuidado.frecuencia}</p>
+                    <p>${cuidado.descripcion}</p>
+                </div>
+            `).join('');
+        }
+
+        // Función para mostrar historial de cuidados
+        function mostrarHistorialCuidados() {
+            const container = document.getElementById('historial-cuidados');
+            const bitacoras = plantaActual.bitacoras || [];
+
+            if (bitacoras.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-history"></i><h3>Sin historial</h3><p>Aún no se han registrado cuidados para esta planta</p></div>';
+                return;
+            }
+
+            const historialOrdenado = bitacoras.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+            container.innerHTML = `
+                <div class="cards-grid">
+                    ${historialOrdenado.map(cuidado => `
+                        <div class="card">
+                            <h4><i class="fas fa-droplet"></i> ${cuidado.tipo.charAt(0).toUpperCase() + cuidado.tipo.slice(1)}</h4>
+                            <p><i class="fas fa-calendar"></i> ${new Date(cuidado.fecha).toLocaleDateString()}</p>
+                            ${cuidado.notas ? `<p><i class="fas fa-sticky-note"></i> ${cuidado.notas}</p>` : ''}
+                            <span class="plant-status status-saludable">Realizado</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Función para mostrar próximos cuidados
+        function mostrarProximosCuidados() {
+            const container = document.getElementById('proximos-cuidados');
+            const ultimoCuidado = new Date(plantaActual.ultimoCuidado);
+            const ahora = new Date();
+            const diasSinCuidado = Math.floor((ahora - ultimoCuidado) / (1000 * 60 * 60 * 24));
+
+            // Cuidados sugeridos basados en el tiempo transcurrido
+            const cuidadosSugeridos = [];
+
+            if (diasSinCuidado >= 7) {
+                cuidadosSugeridos.push({
+                    tipo: 'Riego',
+                    prioridad: diasSinCuidado >= 14 ? 'alta' : 'media',
+                    descripcion: 'Es hora de revisar si necesita agua'
+                });
+            }
+
+            if (diasSinCuidado >= 30) {
+                cuidadosSugeridos.push({
+                    tipo: 'Fertilización',
+                    prioridad: 'media',
+                    descripcion: 'Considera aplicar fertilizante'
+                });
+            }
+
+            if (diasSinCuidado >= 7) {
+                cuidadosSugeridos.push({
+                    tipo: 'Inspección',
+                    prioridad: 'baja',
+                    descripcion: 'Revisar hojas y detectar problemas'
+                });
+            }
+
+            if (cuidadosSugeridos.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-check-circle"></i><h3>Al día con los cuidados</h3><p>Tu planta está bien cuidada por ahora</p></div>';
+                return;
+            }
+
+            container.innerHTML = cuidadosSugeridos.map(cuidado => {
+                const iconoPrioridad = {
+                    'alta': '🔴',
+                    'media': '🟡',
+                    'baja': '🟢'
+                };
+
+                return `
+                    <div class="card">
+                        <h4><i class="fas fa-calendar-check"></i> ${cuidado.tipo} ${iconoPrioridad[cuidado.prioridad]}</h4>
+                        <p>${cuidado.descripcion}</p>
+                        <p><strong>Prioridad:</strong> ${cuidado.prioridad.charAt(0).toUpperCase() + cuidado.prioridad.slice(1)}</p>
+                        <button class="btn btn-primary" onclick="abrirModalCuidado('${cuidado.tipo.toLowerCase()}')">
+                            <i class="fas fa-plus"></i> Registrar
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Función para abrir modal de cuidado
+        function abrirModalCuidado(tipoSugerido = '') {
+            document.getElementById('modal-cuidado').classList.add('visible');
+            
+            // Establecer fecha y hora actual
+            const ahora = new Date();
+            const fechaLocal = new Date(ahora.getTime() - ahora.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+            document.getElementById('fecha-cuidado').value = fechaLocal;
+
+            // Preseleccionar tipo si se sugiere
+            if (tipoSugerido) {
+                document.getElementById('tipo-cuidado').value = tipoSugerido;
+            }
+
+            // Limpiar campos
+            document.getElementById('notas-cuidado').value = '';
+            document.getElementById('cambio-estado').value = '';
+        }
+
+        // Función para cerrar modal de cuidado
+        function cerrarModalCuidado() {
+            document.getElementById('modal-cuidado').classList.remove('visible');
+        }
+
+        // Función para guardar cuidado
+        function guardarCuidado() {
+            const tipoCuidado = document.getElementById('tipo-cuidado').value;
+            const fechaCuidado = document.getElementById('fecha-cuidado').value;
+            const notas = document.getElementById('notas-cuidado').value.trim();
+            const nuevoEstado = document.getElementById('cambio-estado').value;
+
+            if (!fechaCuidado) {
+                mostrarNotificacion('Por favor selecciona una fecha', 'error');
+                return;
+            }
+
+            // Crear nuevo cuidado
+            const nuevoCuidado = {
+                tipo: tipoCuidado,
+                fecha: new Date(fechaCuidado).toISOString(),
+                notas: notas || null,
+                realizado: true
+            };
+
+            // Actualizar planta
+            if (!plantaActual.bitacoras) plantaActual.bitacoras = [];
+            plantaActual.bitacoras.push(nuevoCuidado);
+            plantaActual.ultimoCuidado = nuevoCuidado.fecha;
+
+            // Cambiar estado si se especifica
+            if (nuevoEstado) {
+                plantaActual.estado = nuevoEstado;
+            }
+
+            // Guardar en localStorage
+            const plantas = JSON.parse(localStorage.getItem('plantasUsuario') || '[]');
+            const indice = plantas.findIndex(p => p.id == plantaActual.id);
+            if (indice !== -1) {
+                plantas[indice] = plantaActual;
+                localStorage.setItem('plantasUsuario', JSON.stringify(plantas));
+                
+                mostrarNotificacion('¡Cuidado registrado exitosamente!', 'success');
+                
+                // Actualizar vista
+                actualizarEstadisticas();
+                mostrarHistorialCuidados();
+                mostrarProximosCuidados();
+                
+                // Actualizar estado visual si cambió
+                if (nuevoEstado) {
+                    const estadoSpan = document.getElementById('estado-planta');
+                    estadoSpan.textContent = nuevoEstado.replace('_', ' ');
+                    estadoSpan.className = `plant-status status-${nuevoEstado.toLowerCase()}`;
+                }
+                
+                cerrarModalCuidado();
+            }
+        }
+
+        // Función para mostrar notificaciones
+        function mostrarNotificacion(mensaje, tipo = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = mensaje;
+            notification.className = `notification ${tipo} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Función para cerrar sesión
+        function cerrarSesion() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                localStorage.removeItem('usuarioActual');
+                window.location.replace('/web/login');
+            }
+        }
+
+
+
+        // Event listener para cerrar modal al hacer clic fuera
+        document.getElementById('modal-cuidado').addEventListener('click', function(e) {
+            if (e.target === this) cerrarModalCuidado();
+        });
+
+        // Inicialización cuando carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarPlanta();
+        });
+    </script>
+</body>
+</html>

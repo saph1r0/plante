@@ -1,0 +1,412 @@
+.
+├── estructura.txt
+├── .gitignore
+├── .idea
+│   ├── compiler.xml
+│   ├── encodings.xml
+│   ├── .gitignore
+│   ├── jarRepositories.xml
+│   ├── misc.xml
+│   ├── modules.xml
+│   └── workspace.xml
+├── Plantapp.iml
+├── pom.xml
+├── README.md
+├── sonar-project.properties
+├── src
+│   └── main
+│       ├── java
+│       │   └── com
+│       │       └── planta
+│       │           └── plantapp
+│       │               ├── aplicacion
+│       │               │   ├── interfaces
+│       │               │   │   ├── IServicioAutenticacion.java
+│       │               │   │   ├── IServicioBitacora.java
+│       │               │   │   ├── IServicioPlanta.java
+│       │               │   │   ├── IServicioRecordatorio.java
+│       │               │   │   ├── IServicioRegistroPlanta.java
+│       │               │   │   └── IServicioUsuario.java
+│       │               │   └── servicios
+│       │               │       ├── ServicioAutenticacionImpl.java
+│       │               │       ├── ServicioBitacoraImpl.java
+│       │               │       ├── ServicioPlantaImpl.java
+│       │               │       ├── ServicioRecordatorioImpl.java
+│       │               │       ├── ServicioRegistroPlantaImpl.java
+│       │               │       └── ServicioUsuarioImpl.java
+│       │               ├── config
+│       │               │   ├── CuidadoDescripcionConstantes.java
+│       │               │   ├── EtiquetaColorConstantes.java
+│       │               │   ├── EtiquetaConstantes.java
+│       │               │   ├── FrecuenciaConstantes.java
+│       │               │   ├── PlantaDataLoader.java
+│       │               │   └── SecurityConfig.java
+│       │               ├── dominio
+│       │               │   ├── modelo
+│       │               │   │   ├── bitacora
+│       │               │   │   │   └── Bitacora.java
+│       │               │   │   ├── cuidado
+│       │               │   │   │   ├── Cuidado.java
+│       │               │   │   │   ├── TareaCuidado.java
+│       │               │   │   │   └── TipoCuidado.java
+│       │               │   │   ├── fabrica
+│       │               │   │   │   ├── CuidadoFabrica.java
+│       │               │   │   │   ├── PlantaFabrica.java
+│       │               │   │   │   └── RecordatorioFabrica.java
+│       │               │   │   ├── IBitacoraRepositorio.java
+│       │               │   │   ├── IPlantaRepositorio.java
+│       │               │   │   ├── IRecordatorioRepositorio.java
+│       │               │   │   ├── planta
+│       │               │   │   │   ├── dto
+│       │               │   │   │   │   ├── CuidadoDTO.java
+│       │               │   │   │   │   ├── EtiquetaDTO.java
+│       │               │   │   │   │   ├── PlantaRequestDTO.java
+│       │               │   │   │   │   └── PlantaResponseDTO.java
+│       │               │   │   │   ├── EstadoPlanta.java
+│       │               │   │   │   ├── Etiqueta.java
+│       │               │   │   │   ├── Planta.java
+│       │               │   │   │   └── RegistroPlanta.java
+│       │               │   │   ├── recordatorio
+│       │               │   │   │   ├── EstadoRecordatorio.java
+│       │               │   │   │   └── Recordatorio.java
+│       │               │   │   └── servicios
+│       │               │   │       ├── ServicioBitacoraDominio.java
+│       │               │   │       ├── ServicioPlantaDominio.java
+│       │               │   │       └── ServicioRecordatorioDominio.java
+│       │               │   └── usuario
+│       │               │       ├── IUsuarioRepositorio.java
+│       │               │       └── modelo
+│       │               │           ├── dto
+│       │               │           │   ├── UsuarioDTO.java
+│       │               │           │   ├── UsuarioLoginDTO.java
+│       │               │           │   └── UsuarioRegistroDTO.java
+│       │               │           └── Usuario.java
+│       │               ├── infraestructura
+│       │               │   ├── documento
+│       │               │   │   ├── BitacoraDocumento.java
+│       │               │   │   ├── CuidadoDocumento.java
+│       │               │   │   ├── PlantaDocumento.java
+│       │               │   │   └── RegistroPlantaDocumento.java
+│       │               │   ├── entidad
+│       │               │   │   ├── RecordatorioEntidad.java
+│       │               │   │   └── UsuarioEntidad.java
+│       │               │   ├── mapper
+│       │               │   │   └── PlantaMapper.java
+│       │               │   └── repositorio
+│       │               │       ├── mongodb
+│       │               │       │   ├── BitacoraRepositorioImpl.java
+│       │               │       │   └── mongo
+│       │               │       │       ├── BitacoraMongoRepositorio.java
+│       │               │       │       ├── PlantaRepositorioMongoDB.java
+│       │               │       │       └── RegistroPlantaRepositorioMongoDB.java
+│       │               │       └── mysql
+│       │               │           ├── jpa
+│       │               │           │   ├── RecordatorioJpaRepositorio.java
+│       │               │           │   └── UsuarioJpaRepositorio.java
+│       │               │           ├── RecordatorioRepositorioImpl.java
+│       │               │           └── UsuarioRepositorioImpl.java
+│       │               ├── PlantappApplication.java
+│       │               └── presentacion
+│       │                   └── controlador
+│       │                       ├── BitacoraController.java
+│       │                       ├── PlantaController.java
+│       │                       ├── RecordatorioController.java
+│       │                       ├── RegistroPlantaController.java
+│       │                       ├── UsuarioController.java
+│       │                       └── UsuarioWebController.java
+│       └── resources
+│           ├── application.properties
+│           ├── static
+│           │   ├── images
+│           │   │   ├── albahaca.jpg
+│           │   │   ├── alocasia.jpg
+│           │   │   ├── aloe_vera.jpg
+│           │   │   ├── anturio.jpg
+│           │   │   ├── ave-paraiso.jpg
+│           │   │   ├── begonia-rex.jpg
+│           │   │   ├── cactus-barrel.jpg
+│           │   │   ├── cactus.jpg
+│           │   │   ├── calathea.jpg
+│           │   │   ├── cilantro.jpg
+│           │   │   ├── corazon-maria.jpg
+│           │   │   ├── dracaena.jpg
+│           │   │   ├── ficus-lyrata.jpg
+│           │   │   ├── flor-pascua.jpg
+│           │   │   ├── geranio.jpg
+│           │   │   ├── girasol.jpg
+│           │   │   ├── helecho.jpg
+│           │   │   ├── hiedra.jpg
+│           │   │   ├── jade.jpg
+│           │   │   ├── kalanchoe.jpg
+│           │   │   ├── kentia.jpg
+│           │   │   ├── lavanda.jpg
+│           │   │   ├── manzanilla.jpg
+│           │   │   ├── margarita.jpg
+│           │   │   ├── menta.jpg
+│           │   │   ├── monstera.jpg
+│           │   │   ├── nopal.jpg
+│           │   │   ├── oregano.jpg
+│           │   │   ├── orquidea.jpg
+│           │   │   ├── palmera-areca.jpg
+│           │   │   ├── pensamiento.jpg
+│           │   │   ├── peperomia.jpg
+│           │   │   ├── perejil.jpg
+│           │   │   ├── pilea.jpg
+│           │   │   ├── pothos.jpg
+│           │   │   ├── romero.jpg
+│           │   │   ├── rosa.jpg
+│           │   │   ├── sansevieria.jpg
+│           │   │   ├── tomillo.jpg
+│           │   │   ├── vaso-removebg-preview.png
+│           │   │   └── violeta-africana.jpg
+│           │   ├── login
+│           │   │   ├── css
+│           │   │   │   ├── catalogo.css
+│           │   │   │   ├── index.css
+│           │   │   │   ├── plantas.css
+│           │   │   │   └── styles.css
+│           │   │   └── js
+│           │   │       ├── catalogo.js
+│           │   │       ├── dashboard.js
+│           │   │       ├── home.js
+│           │   │       ├── index.js
+│           │   │       ├── plantas-api.js
+│           │   │       └── script.js
+│           │   └── vista
+│           │       ├── activos
+│           │       │   ├── css
+│           │       │   │   └── css.txt
+│           │       │   └── js
+│           │       │       └── js.txt
+│           │       ├── bitacora
+│           │       │   └── css.txt
+│           │       ├── planta
+│           │       │   └── css.txt
+│           │       ├── recordatorio
+│           │       │   └── css.txt
+│           │       └── usuario
+│           │           └── css.txt
+│           └── templates
+│               ├── login
+│               │   ├── catalogo.html
+│               │   ├── dashboard2.html
+│               │   ├── dashboard.html
+│               │   ├── editar-planta.html
+│               │   ├── home.html
+│               │   ├── index.html
+│               │   ├── login.html
+│               │   ├── mis-plantas.html
+│               │   ├── registro-planta.html
+│               │   └── vista-planta.html
+│               └── proyecto
+│                   ├── AA1H7uuE.jpeg
+│                   ├── AA1HFmux.jpeg
+│                   ├── AA1HpE4h.jpeg
+│                   ├── bulbosas.jpg
+│                   ├── flower-g6e77477b1_1280.jpg
+│                   ├── index_final.html
+│                   ├── R (1).jpeg
+│                   ├── R.jpeg
+│                   ├── sorta-gortenzii_643b7eb5eb1f6.jpg
+│                   └── vaso-removebg-preview.png
+└── target
+    ├── classes
+    │   ├── application.properties
+    │   ├── com
+    │   │   └── planta
+    │   │       └── plantapp
+    │   │           ├── aplicacion
+    │   │           │   ├── interfaces
+    │   │           │   │   ├── IServicioAutenticacion.class
+    │   │           │   │   ├── IServicioBitacora.class
+    │   │           │   │   ├── IServicioPlanta.class
+    │   │           │   │   ├── IServicioRecordatorio.class
+    │   │           │   │   ├── IServicioRegistroPlanta.class
+    │   │           │   │   └── IServicioUsuario.class
+    │   │           │   └── servicios
+    │   │           │       ├── ServicioAutenticacionImpl.class
+    │   │           │       ├── ServicioBitacoraImpl.class
+    │   │           │       ├── ServicioPlantaImpl.class
+    │   │           │       └── ServicioRecordatorioImpl.class
+    │   │           ├── config
+    │   │           │   ├── CuidadoDescripcionConstantes.class
+    │   │           │   ├── EtiquetaColorConstantes.class
+    │   │           │   ├── EtiquetaConstantes.class
+    │   │           │   ├── FrecuenciaConstantes.class
+    │   │           │   └── SecurityConfig.class
+    │   │           ├── dominio
+    │   │           │   ├── modelo
+    │   │           │   │   ├── bitacora
+    │   │           │   │   │   └── Bitacora.class
+    │   │           │   │   ├── cuidado
+    │   │           │   │   │   ├── Cuidado.class
+    │   │           │   │   │   ├── TareaCuidado.class
+    │   │           │   │   │   ├── TipoCuidado$UnidadMedida.class
+    │   │           │   │   │   └── TipoCuidado.class
+    │   │           │   │   ├── fabrica
+    │   │           │   │   │   ├── CuidadoFabrica.class
+    │   │           │   │   │   ├── PlantaFabrica.class
+    │   │           │   │   │   └── RecordatorioFabrica.class
+    │   │           │   │   ├── IBitacoraRepositorio.class
+    │   │           │   │   ├── IPlantaRepositorio.class
+    │   │           │   │   ├── IRecordatorioRepositorio.class
+    │   │           │   │   ├── planta
+    │   │           │   │   │   ├── dto
+    │   │           │   │   │   │   ├── CuidadoDTO.class
+    │   │           │   │   │   │   ├── EtiquetaDTO.class
+    │   │           │   │   │   │   ├── PlantaRequestDTO.class
+    │   │           │   │   │   │   └── PlantaResponseDTO.class
+    │   │           │   │   │   ├── EstadoPlanta.class
+    │   │           │   │   │   ├── Etiqueta.class
+    │   │           │   │   │   ├── Planta.class
+    │   │           │   │   │   └── RegistroPlanta.class
+    │   │           │   │   ├── recordatorio
+    │   │           │   │   │   ├── EstadoRecordatorio.class
+    │   │           │   │   │   └── Recordatorio.class
+    │   │           │   │   └── servicios
+    │   │           │   │       ├── ServicioBitacoraDominio.class
+    │   │           │   │       ├── ServicioPlantaDominio.class
+    │   │           │   │       └── ServicioRecordatorioDominio.class
+    │   │           │   └── usuario
+    │   │           │       ├── IUsuarioRepositorio.class
+    │   │           │       └── modelo
+    │   │           │           ├── dto
+    │   │           │           │   ├── UsuarioDTO.class
+    │   │           │           │   ├── UsuarioLoginDTO.class
+    │   │           │           │   └── UsuarioRegistroDTO.class
+    │   │           │           └── Usuario.class
+    │   │           ├── infraestructura
+    │   │           │   ├── documento
+    │   │           │   │   ├── BitacoraDocumento.class
+    │   │           │   │   ├── CuidadoDocumento.class
+    │   │           │   │   ├── PlantaDocumento.class
+    │   │           │   │   └── RegistroPlantaDocumento.class
+    │   │           │   ├── entidad
+    │   │           │   │   ├── RecordatorioEntidad.class
+    │   │           │   │   └── UsuarioEntidad.class
+    │   │           │   ├── mapper
+    │   │           │   │   └── PlantaMapper.class
+    │   │           │   └── repositorio
+    │   │           │       ├── mongodb
+    │   │           │       │   ├── BitacoraRepositorioImpl.class
+    │   │           │       │   └── mongo
+    │   │           │       │       ├── BitacoraMongoRepositorio.class
+    │   │           │       │       ├── PlantaRepositorioMongoDB.class
+    │   │           │       │       └── RegistroPlantaRepositorioMongoDB.class
+    │   │           │       └── mysql
+    │   │           │           ├── jpa
+    │   │           │           │   ├── RecordatorioJpaRepositorio.class
+    │   │           │           │   └── UsuarioJpaRepositorio.class
+    │   │           │           ├── RecordatorioRepositorioImpl.class
+    │   │           │           └── UsuarioRepositorioImpl.class
+    │   │           ├── PlantappApplication.class
+    │   │           └── presentacion
+    │   │               └── controlador
+    │   │                   ├── BitacoraController.class
+    │   │                   ├── PlantaController.class
+    │   │                   ├── RegistroPlantaController.class
+    │   │                   ├── UsuarioController.class
+    │   │                   └── UsuarioWebController.class
+    │   ├── static
+    │   │   ├── images
+    │   │   │   ├── albahaca.jpg
+    │   │   │   ├── alocasia.jpg
+    │   │   │   ├── aloe_vera.jpg
+    │   │   │   ├── anturio.jpg
+    │   │   │   ├── ave-paraiso.jpg
+    │   │   │   ├── begonia-rex.jpg
+    │   │   │   ├── cactus-barrel.jpg
+    │   │   │   ├── cactus.jpg
+    │   │   │   ├── calathea.jpg
+    │   │   │   ├── cilantro.jpg
+    │   │   │   ├── corazon-maria.jpg
+    │   │   │   ├── dracaena.jpg
+    │   │   │   ├── ficus-lyrata.jpg
+    │   │   │   ├── flor-pascua.jpg
+    │   │   │   ├── geranio.jpg
+    │   │   │   ├── girasol.jpg
+    │   │   │   ├── helecho.jpg
+    │   │   │   ├── hiedra.jpg
+    │   │   │   ├── jade.jpg
+    │   │   │   ├── kalanchoe.jpg
+    │   │   │   ├── kentia.jpg
+    │   │   │   ├── lavanda.jpg
+    │   │   │   ├── manzanilla.jpg
+    │   │   │   ├── margarita.jpg
+    │   │   │   ├── menta.jpg
+    │   │   │   ├── monstera.jpg
+    │   │   │   ├── nopal.jpg
+    │   │   │   ├── oregano.jpg
+    │   │   │   ├── orquidea.jpg
+    │   │   │   ├── palmera-areca.jpg
+    │   │   │   ├── pensamiento.jpg
+    │   │   │   ├── peperomia.jpg
+    │   │   │   ├── perejil.jpg
+    │   │   │   ├── pilea.jpg
+    │   │   │   ├── pothos.jpg
+    │   │   │   ├── romero.jpg
+    │   │   │   ├── rosa.jpg
+    │   │   │   ├── sansevieria.jpg
+    │   │   │   ├── tomillo.jpg
+    │   │   │   ├── vaso-removebg-preview.png
+    │   │   │   └── violeta-africana.jpg
+    │   │   ├── login
+    │   │   │   ├── css
+    │   │   │   │   ├── catalogo.css
+    │   │   │   │   ├── index.css
+    │   │   │   │   ├── plantas.css
+    │   │   │   │   └── styles.css
+    │   │   │   └── js
+    │   │   │       ├── catalogo.js
+    │   │   │       ├── dashboard.js
+    │   │   │       ├── home.js
+    │   │   │       ├── index.js
+    │   │   │       ├── plantas-api.js
+    │   │   │       └── script.js
+    │   │   └── vista
+    │   │       ├── activos
+    │   │       │   ├── css
+    │   │       │   │   └── css.txt
+    │   │       │   └── js
+    │   │       │       └── js.txt
+    │   │       ├── bitacora
+    │   │       │   └── css.txt
+    │   │       ├── planta
+    │   │       │   └── css.txt
+    │   │       ├── recordatorio
+    │   │       │   └── css.txt
+    │   │       └── usuario
+    │   │           └── css.txt
+    │   └── templates
+    │       ├── login
+    │       │   ├── catalogo.html
+    │       │   ├── dashboard2.html
+    │       │   ├── dashboard.html
+    │       │   ├── editar-planta.html
+    │       │   ├── home.html
+    │       │   ├── index.html
+    │       │   ├── login.html
+    │       │   ├── mis-plantas.html
+    │       │   ├── registro-planta.html
+    │       │   └── vista-planta.html
+    │       └── proyecto
+    │           ├── AA1H7uuE.jpeg
+    │           ├── AA1HFmux.jpeg
+    │           ├── AA1HpE4h.jpeg
+    │           ├── bulbosas.jpg
+    │           ├── flower-g6e77477b1_1280.jpg
+    │           ├── index_final.html
+    │           ├── R (1).jpeg
+    │           ├── R.jpeg
+    │           ├── sorta-gortenzii_643b7eb5eb1f6.jpg
+    │           └── vaso-removebg-preview.png
+    ├── generated-sources
+    │   └── annotations
+    └── maven-status
+        └── maven-compiler-plugin
+            └── compile
+                └── default-compile
+                    ├── createdFiles.lst
+                    └── inputFiles.lst
+
+106 directories, 304 files
