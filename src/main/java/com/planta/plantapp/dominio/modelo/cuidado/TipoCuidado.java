@@ -16,8 +16,8 @@ public enum TipoCuidado {
     FUMIGACION("Fumigación", "Aplicación de pesticidas o fungicidas", 21, UnidadMedida.MILILITRO),
     LIMPIEZA("Limpieza", "Limpieza de hojas y eliminación de partes muertas", 7, UnidadMedida.UNIDAD),
     ROTACION("Rotación", "Cambio de orientación para exposición solar", 3, UnidadMedida.UNIDAD),
-    AIREACION("Aireación", "Aflojamiento del sustrato", 14, UnidadMedida.UNIDAD);
-
+    AIREACION("Aireación", "Aflojamiento del sustrato", 14, UnidadMedida.UNIDAD),
+    HUMEDAD("Humedad", "Mantener la humedad ambiental alta", 1, UnidadMedida.UNIDAD);
     private final String nombre;
     private final String descripcion;
     private final int frecuenciaRecomendada;
@@ -25,7 +25,7 @@ public enum TipoCuidado {
 
     // Grupos para métodos auxiliares - ACTUALIZAR TAMBIÉN
     private static final EnumSet<TipoCuidado> CUIDADOS_CON_CANTIDAD = EnumSet.of(RIEGO, FERTILIZACION, FERTILIZANTE, FUMIGACION);
-    private static final EnumSet<TipoCuidado> MANTENIMIENTO_BASICO = EnumSet.of(RIEGO, LIMPIEZA, ROTACION, LUZ); // Agregar LUZ aquí
+    private static final EnumSet<TipoCuidado> MANTENIMIENTO_BASICO = EnumSet.of(RIEGO, LIMPIEZA, ROTACION, LUZ, HUMEDAD);
     private static final EnumSet<TipoCuidado> MANTENIMIENTO_AVANZADO = EnumSet.of(PODA, TRASPLANTE, FUMIGACION, AIREACION);
 
     TipoCuidado(String nombre, String descripcion, int frecuenciaRecomendada, String unidadMedidaDefault) {
@@ -76,5 +76,8 @@ public enum TipoCuidado {
         public static final String MILILITRO = "ml";
         public static final String GRAMO = "g";
         public static final String UNIDAD = "unidad";
+        private UnidadMedida() {
+            throw new IllegalStateException("Clase de constantes, no instanciable.");
+        }
     }
 }

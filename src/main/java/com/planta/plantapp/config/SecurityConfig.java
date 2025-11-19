@@ -20,17 +20,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                //.csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/web/login", "/web/registro","/web/index", "/web/plantas/dashboard",
-                                "/usuarios/**", "/web/dashboard#eventos", "/web/plantas/catalogo", "/web/test2", "/web/plantas",
-                                "/login/**", "/css/**", "/js/**", "/images/**","/static/**"
+                                "/plantcare/**", "/api/plantas/**", "/css/**", "/js/**",
+                                "/web/login", "/web/registro", "/web/index", "/web/plantas/dashboard",
+                                "/web/plantas/dashboard2", "/web/plantas/registro", "/web/plantas/health",
+                                "/web/plantas/buscar", "/web/plantas/vista", "/web/plantas/mis-plantas",
+                                "/usuarios/**", "/web/dashboard#eventos", "/web/plantas/catalogo",
+                                "/web/test2", "/web/plantas/**", "/login/**", "/images/**", "/static/**",
+                                "/web/registros/**", "/logout",
+                                "/web/usuario-actual"
                         ).permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .formLogin(login -> login.disable())
-                .logout(logout -> logout.disable());
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/web/login")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                );
 
         return http.build();
     }

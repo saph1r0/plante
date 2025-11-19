@@ -17,4 +17,5 @@ public interface IServicioPlanta {
     void eliminar(String id);
     List<Planta> buscarPorTipo(String tipo);
     List<Planta> buscarPorUsuario(Long usuarioId);
+    List<Planta> buscarPorNombre(String nombre, String usuarioId);
 }

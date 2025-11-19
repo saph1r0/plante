@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Planta - PlantCare</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/login/css/plantas.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <h1><i class="fas fa-seedling"></i> PlantCare</h1>
+            <div class="nav-links">
+                <a href="/web/plantas/dashboard2"><i class="fas fa-chart-pie"></i> Dashboard</a>
+                <a href="/web/plantas/mis-plantas"><i class="fas fa-leaf"></i> Mis Plantas</a>
+                <a href="/web/plantas/registro"><i class="fas fa-plus"></i> Agregar Planta</a>
+                <button onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> Salir</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <i class="fas fa-home"></i> <a href="/web/index">Inicio</a> / 
+            <a href="/web/plantas/mis-plantas">Mis Plantas</a> / Agregar Planta
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-plus-circle"></i> Agregar Nueva Planta</h1>
+            <div>
+                <a href="dashboard2.html" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+        </div>
+
+        <!-- Formulario de registro -->
+        <div class="form-container">
+            <form id="form-registro" onsubmit="registrarPlanta(event)">
+                <div class="form-grid">
+                    <!-- Selección de planta del catálogo -->
+                    <div class="form-group full-width">
+                        <label for="buscar-catalogo">
+                            <i class="fas fa-search"></i> Buscar y seleccionar planta del catálogo *
+                        </label>
+                        <div class="search-container">
+                            <input type="text" id="buscar-catalogo" 
+                                   placeholder="Escribe el nombre de una planta (ej: rosa, girasol, cactus)..." 
+                                   oninput="buscarEnCatalogo()" 
+                                   autocomplete="off">
+                            <div id="catalogo-dropdown" class="search-dropdown"></div>
+                        </div>
+                        <small>Busca y haz clic en una planta para seleccionarla automáticamente</small>
+                    </div>
+
+                    <!-- Planta confirmada (aparece después de seleccionar) -->
+                    <div id="planta-confirmada" class="hidden" style="background: #d4edda; padding: 1.5rem; border-radius: 8px; border-left: 6px solid #28a745; margin: 1rem 0;">
+                        <h4><i class="fas fa-check-circle" style="color: #28a745;"></i> Planta Seleccionada</h4>
+                        <div id="info-planta-seleccionada" style="margin-top: 0.5rem;">
+                            <p><strong id="planta-nombre"></strong> (<em id="planta-cientifico"></em>)</p>
+                            <p style="margin: 0.3rem 0; color: #155724;"><strong>Tipo:</strong> <span id="planta-tipo"></span></p>
+                            <p style="margin: 0; color: #155724; font-size: 0.9em;" id="planta-descripcion"></p>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="cambiarPlanta()">
+                                <i class="fas fa-edit"></i> Cambiar Planta
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Información personal de la planta -->
+                    <div class="form-group">
+                        <label for="apodo">
+                            <i class="fas fa-heart"></i> Apodo o nombre personal *
+                        </label>
+                        <input type="text" id="apodo" required 
+                               placeholder="Ej: Mi girasol favorito, Rosa del jardín...">
+                        <small>Dale un nombre especial a tu planta</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ubicacion">
+                            <i class="fas fa-map-marker-alt"></i> Ubicación *
+                        </label>
+                        <input type="text" id="ubicacion" required 
+                               placeholder="Ej: Jardín frontal, Oficina, Balcón...">
+                        <small>¿Dónde está ubicada tu planta?</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="estado-inicial">
+                            <i class="fas fa-heart-pulse"></i> Estado actual
+                        </label>
+                        <select id="estado-inicial">
+                            <option value="SALUDABLE">🟢 Saludable</option>
+                            <option value="NECESITA_AGUA">🟡 Necesita agua</option>
+                            <option value="ENFERMA">🔴 Enferma</option>
+                            <option value="MARCHITA">🟠 Marchita</option>
+                            <option value="FLORECIENDO">🌸 Floreciendo</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fecha-obtencion">
+                            <i class="fas fa-calendar"></i> Fecha de obtención
+                        </label>
+                        <input type="date" id="fecha-obtencion">
+                        <small>¿Cuándo obtuviste esta planta? (opcional)</small>
+                    </div>
+
+                    <!-- Foto personal -->
+                    <div class="form-group full-width">
+                        <label for="foto-url">
+                            <i class="fas fa-camera"></i> URL de foto personal (opcional)
+                        </label>
+                        <input type="url" id="foto-url" 
+                               placeholder="https://ejemplo.com/mi-foto-planta.jpg"
+                               oninput="previsualizarFoto()">
+                        <small>Agrega una foto de tu planta específica</small>
+                        
+                        <!-- Previsualización de foto -->
+                        <div id="preview-foto" class="hidden" style="margin-top: 1rem;">
+                            <strong>Vista previa:</strong>
+                            <div style="margin-top: 0.5rem;">
+                                <img id="img-preview" src="" alt="Vista previa" 
+                                     style="max-width: 200px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notas personales -->
+                    <div class="form-group full-width">
+                        <label for="notas">
+                            <i class="fas fa-sticky-note"></i> Notas personales (opcional)
+                        </label>
+                        <textarea id="notas" rows="3" 
+                                  placeholder="Observaciones, cuidados especiales, historial..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Errores de validación -->
+                <div id="errores-validacion" class="hidden" style="background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 6px solid #dc3545;">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Errores de validación:</h4>
+                    <ul id="lista-errores" style="margin: 0.5rem 0 0 1.5rem;"></ul>
+                </div>
+
+                <!-- Botones -->
+                <div class="form-group full-width" style="margin-top: 2rem;">
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                        <button type="button" class="btn btn-secondary" onclick="limpiarFormulario()">
+                            <i class="fas fa-undo"></i> Limpiar Todo
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="btn-guardar">
+                            <i class="fas fa-save"></i> Registrar Mi Planta
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notificación -->
+    <div id="notification" class="notification"></div>
+
+    <!-- SCRIPTS -->
+    <script src="/login/js/plantas-api.js"></script>
+    
+    <script>
+        let plantaConfirmada = null;        
+        let ultimoTimeout = null; 
+
+        async function buscarEnCatalogo() {
+            const busqueda = document.getElementById('buscar-catalogo').value;
+            const dropdown = document.getElementById('catalogo-dropdown');
+
+            // Limpiar timeout anterior para debounce
+            if (ultimoTimeout) {
+                clearTimeout(ultimoTimeout);
+            }
+
+            if (busqueda.length < 2) {
+                dropdown.style.display = 'none';
+                return;
+            }
+            ultimoTimeout = setTimeout(async () => {
+                console.log('🔍 Buscando plantas con:', busqueda);
+                
+                try {
+                    if (!window.CatalogoAPI) {
+                        throw new Error('Backend no disponible');
+                    }
+                    
+                    const resultados = await CatalogoAPI.buscarPlantas(busqueda);
+                    console.log(' Resultados del backend:', resultados.length);
+                    
+                    mostrarResultadosBusqueda(resultados, dropdown);
+                    
+                } catch (error) {
+                    console.error(' Error en búsqueda:', error);
+                    dropdown.innerHTML = `
+                        <div class="search-option" style="color: #dc3545; padding: 1rem; text-align: center;">
+                            <i class="fas fa-exclamation-triangle"></i> 
+                            Backend no disponible. Verifique la conexión.
+                        </div>
+                    `;
+                    dropdown.style.display = 'block';
+                }
+            }, 300);
+        }
+
+        function mostrarResultadosBusqueda(resultados, dropdown) {
+            if (resultados && resultados.length > 0) {
+                dropdown.innerHTML = resultados.map(planta => `
+                    <div class="search-option" onclick="seleccionarPlanta('${planta.id}')" style="cursor: pointer;">
+                        <div class="option-name" style="font-weight: bold; color: var(--color-green-dark);">${planta.nombreComun}</div>
+                        <div class="option-scientific" style="font-style: italic; color: #666;">${planta.nombreCientifico}</div>
+                        <div class="option-info" style="font-size: 0.85em; color: #555;">
+                            <i class="fas fa-tag"></i> ${planta.tipo} | ${(planta.descripcion || '').substring(0, 60)}...
+                        </div>
+                    </div>
+                `).join('');
+                dropdown.style.display = 'block';
+            } else {
+                dropdown.innerHTML = '<div class="search-option">No se encontraron plantas con ese nombre</div>';
+                dropdown.style.display = 'block';
+            }
+        }
+
+        async function seleccionarPlanta(plantaId) {
+            console.log('🎯 Seleccionando planta:', plantaId);
+            
+            try {
+               
+                const planta = await CatalogoAPI.obtenerPorId(plantaId);
+                
+                if (!planta) {
+                    throw new Error('Planta no encontrada en el catálogo');
+                }
+
+                // Asignar a variables globales
+                plantaConfirmada = planta;
+                window.plantaConfirmada = planta;
+                window.plantaSeleccionada = planta;
+                
+                // Actualizar interfaz
+                actualizarInterfazPlantaSeleccionada(planta);
+                
+                console.log(' Planta seleccionada exitosamente:', planta.nombreComun);
+                mostrarNotificacion('Planta seleccionada correctamente. Completa los datos personales.', 'success');
+                
+                // Auto-focus al siguiente campo
+                const apodoField = document.getElementById('apodo');
+                if (apodoField) {
+                    apodoField.focus();
+                }
+                
+            } catch (error) {
+                console.error(' Error seleccionando planta:', error);
+                mostrarNotificacion('Error al seleccionar planta: ' + error.message, 'error');
+            }
+        }
+
+        function actualizarInterfazPlantaSeleccionada(planta) {
+
+            document.getElementById('buscar-catalogo').value = planta.nombreComun;
+            
+
+            document.getElementById('planta-confirmada').classList.remove('hidden');
+            
+            // Actualizar información de la planta
+            const nombreElem = document.getElementById('planta-nombre');
+            const cientificoElem = document.getElementById('planta-cientifico');
+            const tipoElem = document.getElementById('planta-tipo');
+            const descripcionElem = document.getElementById('planta-descripcion');
+            
+            if (nombreElem) nombreElem.textContent = planta.nombreComun;
+            if (cientificoElem) cientificoElem.textContent = planta.nombreCientifico;
+            if (tipoElem) tipoElem.textContent = planta.tipo;
+            if (descripcionElem) descripcionElem.textContent = planta.descripcion;
+            
+            // Ocultar dropdown
+            document.getElementById('catalogo-dropdown').style.display = 'none';
+            
+            // Sugerir un apodo personalizado
+            const apodoField = document.getElementById('apodo');
+            if (apodoField && !apodoField.value) {
+                apodoField.placeholder = 
+                    `Ej: Mi ${planta.nombreComun.toLowerCase()}, ${planta.nombreComun} del ${planta.tipo === 'interior' ? 'salón' : 'jardín'}`;
+            }
+        }
+
+        // ========================================
+        // GESTIÓN DE FORMULARIO
+        // ========================================
+        function cambiarPlanta() {
+            plantaConfirmada = null;
+            window.plantaConfirmada = null;
+            window.plantaSeleccionada = null;
+            
+            document.getElementById('buscar-catalogo').value = '';
+            document.getElementById('planta-confirmada').classList.add('hidden');
+            document.getElementById('catalogo-dropdown').style.display = 'none';
+            document.getElementById('apodo').placeholder = 'Ej: Mi rosa favorita, Cactus del escritorio...';
+            document.getElementById('buscar-catalogo').focus();
+            
+            console.log(' Planta deseleccionada, listo para nueva búsqueda');
+        }
+
+        function previsualizarFoto() {
+            const url = document.getElementById('foto-url').value;
+            const preview = document.getElementById('preview-foto');
+            const img = document.getElementById('img-preview');
+
+            if (url && url.startsWith('http')) {
+                img.src = url;
+                img.onerror = () => {
+                    preview.classList.add('hidden');
+                    mostrarNotificacion('URL de imagen inválida', 'error');
+                };
+                img.onload = () => {
+                    preview.classList.remove('hidden');
+                };
+            } else if (url) {
+                preview.classList.add('hidden');
+                if (url.length > 0) {
+                    mostrarNotificacion('La URL debe comenzar con http:// o https://', 'error');
+                }
+            } else {
+                preview.classList.add('hidden');
+            }
+        }
+
+        function validarFormulario() {
+            const errores = [];
+            
+            // Verificar planta seleccionada
+            if (!plantaConfirmada && !window.plantaConfirmada) {
+                errores.push('Debes buscar y seleccionar una planta del catálogo');
+            }
+            
+            // Validar campos obligatorios
+            const apodo = document.getElementById('apodo').value.trim();
+            if (!apodo) {
+                errores.push('El apodo o nombre personal es obligatorio');
+            } else if (apodo.length < 2) {
+                errores.push('El apodo debe tener al menos 2 caracteres');
+            }
+
+            const ubicacion = document.getElementById('ubicacion').value.trim();
+            if (!ubicacion) {
+                errores.push('La ubicación es obligatoria');
+            }
+
+            // Validar URL de foto si se proporciona
+            const fotoUrl = document.getElementById('foto-url').value.trim();
+            if (fotoUrl && !fotoUrl.startsWith('http')) {
+                errores.push('La URL de la foto debe ser válida (comenzar con http:// o https://)');
+            }
+
+            return errores;
+        }
+
+        function mostrarErrores(errores) {
+            const container = document.getElementById('errores-validacion');
+            const lista = document.getElementById('lista-errores');
+
+            if (errores.length > 0) {
+                lista.innerHTML = errores.map(error => `<li>${error}</li>`).join('');
+                container.classList.remove('hidden');
+                container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        async function registrarPlanta(event) {
+            event.preventDefault();
+
+            console.log(' Iniciando registro de planta...');
+
+            // Validar formulario
+            const errores = validarFormulario();
+            if (errores.length > 0) {
+                console.log(' Errores de validación:', errores);
+                mostrarErrores(errores);
+                return;
+            }
+
+            // Ocultar errores
+            mostrarErrores([]);
+
+            try {
+                // Mostrar indicador de carga
+                const btnGuardar = document.getElementById('btn-guardar');
+                btnGuardar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando en MongoDB...';
+                btnGuardar.disabled = true;
+
+                // Usar la planta confirmada
+                const plantaAUsar = plantaConfirmada || window.plantaConfirmada;
+                
+                if (!plantaAUsar) {
+                    throw new Error('No se ha seleccionado ninguna planta');
+                }
+
+                // Preparar datos del formulario
+                const datosPlanta = {
+                    plantaId: plantaAUsar.id,
+                    apodo: document.getElementById('apodo').value.trim(),
+                    ubicacion: document.getElementById('ubicacion').value.trim(),
+                    estado: document.getElementById('estado-inicial').value,
+                    notas: document.getElementById('notas').value.trim() || null,
+                    fotoPersonal: document.getElementById('foto-url').value.trim() || null
+                };
+
+                console.log(' Datos preparados para envío:', datosPlanta);
+
+                if (!window.PlantasAPI) {
+                    throw new Error('Backend no disponible. Verifique la conexión con el servidor.');
+                }
+                
+                const resultado = await PlantasAPI.registrarPlanta(datosPlanta);
+                
+                if (resultado.success) {
+                    console.log(' Planta registrada exitosamente en MongoDB');
+                    mostrarNotificacion('¡Planta registrada exitosamente en MongoDB!', 'success');
+                    
+                    // Limpiar formulario
+                    limpiarFormulario();
+                    
+                    // Redirigir después de un momento
+                    setTimeout(() => {
+                        window.location.href = '/web/plantas/mis-plantas';
+                    }, 1500);
+                } else {
+                    throw new Error(resultado.message || 'Error desconocido al registrar planta');
+                }
+                
+            } catch (error) {
+                console.error(' Error en registro:', error);
+                mostrarNotificacion('Error al registrar la planta: ' + error.message, 'error');
+            } finally {
+                // Restaurar botón
+                const btnGuardar = document.getElementById('btn-guardar');
+                if (btnGuardar) {
+                    btnGuardar.innerHTML = '<i class="fas fa-save"></i> Registrar Mi Planta';
+                    btnGuardar.disabled = false;
+                }
+            }
+        }
+
+        // ========================================
+        // UTILIDADES
+        // ========================================
+        function limpiarFormulario() {
+            document.getElementById('form-registro').reset();
+            cambiarPlanta(); // Limpiar selección de planta
+            document.getElementById('preview-foto').classList.add('hidden');
+            document.getElementById('errores-validacion').classList.add('hidden');
+            
+            // Restaurar fecha por defecto
+            const fechaInput = document.getElementById('fecha-obtencion');
+            const hoy = new Date().toISOString().split('T')[0];
+            fechaInput.value = hoy;
+            
+            console.log('🧹 Formulario limpiado completamente');
+        }
+
+        function mostrarNotificacion(mensaje, tipo = 'success') {
+            const notification = document.getElementById('notification');
+            if (notification) {
+                notification.textContent = mensaje;
+                notification.className = `notification ${tipo} show`;
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, tipo === 'success' ? 3000 : 5000);
+            } else {
+                console.log(`${tipo.toUpperCase()}: ${mensaje}`);
+            }
+        }
+
+        function cerrarSesion() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                localStorage.removeItem('usuarioActual');
+                window.location.replace('/web/login');
+            }
+        }
+
+
+        // ========================================
+        // EVENT LISTENERS
+        // ========================================
+        document.addEventListener('click', function(event) {
+            const searchContainer = document.querySelector('.search-container');
+            const dropdown = document.getElementById('catalogo-dropdown');
+            
+            if (searchContainer && !searchContainer.contains(event.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+
+        // ========================================
+        // INICIALIZACIÓN
+        // ========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🌱 Página de registro cargada ');
+            
+            // Configurar fecha máxima y valor por defecto
+            const fechaInput = document.getElementById('fecha-obtencion');
+            const hoy = new Date().toISOString().split('T')[0];
+            fechaInput.max = hoy;
+            fechaInput.value = hoy;
+            
+            // Auto-focus en el campo de búsqueda
+            setTimeout(() => {
+                document.getElementById('buscar-catalogo').focus();
+            }, 500);
+            
+            // Verificar disponibilidad del backend
+            if (!window.CatalogoAPI) {
+                console.warn(' CatalogoAPI no está disponible');
+                mostrarNotificacion('Conectando con el servidor...', 'info');
+            }
+        });
+    </script>
+</body>
+</html>

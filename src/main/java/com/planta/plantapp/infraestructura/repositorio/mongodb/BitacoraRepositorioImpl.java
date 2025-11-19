@@ -3,6 +3,7 @@ package com.planta.plantapp.infraestructura.repositorio.mongodb;
 import com.planta.plantapp.dominio.modelo.bitacora.Bitacora;
 import com.planta.plantapp.dominio.modelo.IBitacoraRepositorio;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -14,70 +15,70 @@ public class BitacoraRepositorioImpl implements IBitacoraRepositorio {
 
     @Override
     public void guardar(Bitacora bitacora) {
-        // TODO: guardar en MongoDB
+        // Método no implementado
     }
 
     @Override
     public Bitacora obtenerPorId(String id) {
-        // TODO: buscar por ID
+        // Método no implementado
         return null;
     }
 
     @Override
     public List<Bitacora> listarTodas() {
-        // TODO
-        return null;
+        // Método no implementado
+        return Collections.emptyList();
     }
 
     @Override
     public void eliminar(String id) {
-        // TODO
+        // Método no implementado
     }
 
     @Override
     public void actualizar(Bitacora bitacora) {
-        // TODO
+        // Método no implementado
     }
 
     @Override
     public List<Bitacora> listarPorPlanta(String plantaId) {
-        // TODO
-        return null;
+        // Método no implementado
+        return Collections.emptyList();
     }
 
     @Override
     public List<Bitacora> listarPorUsuario(String usuarioId) {
-        // TODO
-        return null;
+        // Método no implementado
+        return Collections.emptyList();
     }
 
     @Override
     public List<Bitacora> listarPorFecha(Date fechaInicio, Date fechaFin) {
-        // TODO
-        return null;
+        // Método no implementado
+        return Collections.emptyList();
     }
 
     @Override
     public List<Bitacora> listarPorTipoActividad(String tipoActividad) {
-        // TODO
-        return null;
+        // Método no implementado
+        return Collections.emptyList();
     }
 
     @Override
     public List<Bitacora> buscarPorDescripcion(String descripcion) {
-        // TODO
-        return null;
+        // Método no implementado
+        return Collections.emptyList();
     }
 
     @Override
     public Long contarRegistrosPorPlanta(String plantaId) {
-        // TODO
-        return null;
+        // Método no implementado
+        return 0L;
     }
 
     @Override
     public Bitacora obtenerUltimoRegistro(String plantaId) {
-        // TODO
+        // Método no implementado
         return null;
     }
 }

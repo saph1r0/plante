@@ -129,4 +129,9 @@ public class Planta {
     public void setEtiquetas(List<Etiqueta> etiquetas) {
         this.etiquetas=etiquetas;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
 }

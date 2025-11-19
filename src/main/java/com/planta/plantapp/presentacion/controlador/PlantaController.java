@@ -24,6 +24,16 @@ import java.util.Optional;
 public class PlantaController {
 
     private static final Logger logger = LoggerFactory.getLogger(PlantaController.class);
+
+    // Constantes para evitar duplicación de literales
+    private static final String SUCCESS = "success";
+    private static final String MESSAGE = "message";
+    private static final String UBICACION = "ubicacion";
+    private static final String APODO = "apodo";
+    private static final String TOTAL_PLANTAS = "totalPlantas";
+    private static final String STATUS = "status";
+    private static final String ESTADO_SALUDABLE = "SALUDABLE";
+
     private final IServicioPlanta servicioPlanta;
 
     public PlantaController(IServicioPlanta servicioPlanta) {
@@ -163,7 +173,7 @@ public class PlantaController {
     public ResponseEntity<List<Planta>> buscarPorTipo(@RequestParam String tipo) {
         try {
             logger.info("🔍 Controlador: Buscando plantas de tipo: {}", tipo);
-            List<Planta> plantas = servicioPlanta.buscarPorTipo(tipo);
+            List<Planta> plantas = servicioPlanta.buscarPorNombre(tipo, "global");
             return ResponseEntity.ok(plantas);
         } catch (Exception e) {
             logger.error("❌ Error al buscar por tipo: {}", e.getMessage(), e);
@@ -171,20 +181,6 @@ public class PlantaController {
         }
     }
 
-    /**
-     * Lista las plantas asociadas a un usuario.
-     */
-    @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<List<Planta>> listarPorUsuario(@PathVariable Long usuarioId) {
-        try {
-            logger.info("👤 Controlador: Buscando plantas del usuario: {}", usuarioId);
-            List<Planta> plantas = servicioPlanta.buscarPorUsuario(usuarioId);
-            return ResponseEntity.ok(plantas);
-        } catch (Exception e) {
-            logger.error("❌ Error al buscar por usuario: {}", e.getMessage(), e);
-            return ResponseEntity.status(500).body(List.of());
-        }
-    }
 
     /**
      * Endpoint de prueba para verificar conectividad con MongoDB
@@ -199,9 +195,9 @@ public class PlantaController {
 
             List<Planta> plantas = servicioPlanta.obtenerTodas();
 
-            response.put("status", "✅ Conexión MongoDB exitosa");
-            response.put("totalPlantas", plantas.size());
-            response.put("mensaje", "¡El controlador de plantas funciona! 🌱");
+            response.put(STATUS, "✅ Conexión MongoDB exitosa");
+            response.put(TOTAL_PLANTAS, plantas.size());
+            response.put(MESSAGE, "¡El controlador de plantas funciona! 🌱");
 
             if (!plantas.isEmpty()) {
                 response.put("primeraPlanta", plantas.get(0));
@@ -217,10 +213,9 @@ public class PlantaController {
 
         } catch (Exception e) {
             logger.error("❌ Test fallido: {}", e.getMessage(), e);
-            e.printStackTrace();
 
-            response.put("status", "❌ Error de conexión");
-            response.put("mensaje", "Problema al conectar con MongoDB");
+            response.put(STATUS, "❌ Error de conexión");
+            response.put(MESSAGE, "Problema al conectar con MongoDB");
             response.put("ayuda", "Verifica que MongoDB esté corriendo y la configuración sea correcta");
 
             return ResponseEntity.status(500).body(response);
@@ -242,14 +237,15 @@ public class PlantaController {
         try {
             List<Planta> plantas = servicioPlanta.obtenerTodas();
 
-            response.put("totalPlantas", plantas.size());
+            response.put(TOTAL_PLANTAS, plantas.size());
             response.put("plantas", plantas);
             response.put("configuracion", "MongoDB activo");
             response.put("timestamp", System.currentTimeMillis());
 
             return ResponseEntity.ok(response);
 
-        } catch (Exception e) {response.put("error", e.getMessage());
+        } catch (Exception e) {
+            response.put("error", e.getMessage());
             response.put("stackTrace", e.getStackTrace());
             return ResponseEntity.status(500).body(response);
         }
@@ -279,5 +275,193 @@ public class PlantaController {
     public String mostrarDashboard() {
         logger.info("🌱 Mostrando dashboard");
         return "login/dashboard";  // Sin .html
+    }
+
+    @GetMapping("/dashboard2")
+    public String mostrarDashboard2() {
+        logger.info("🌱 Mostrando segundo dashboard (dashboard2)");
+        // Asumiendo que dashboard2.html está en src/main/resources/templates/login/
+        return "login/dashboard2";
+    }
+
+    @GetMapping("/registro")
+    public String mostrarFormularioRegistro() {
+        logger.info("🌱 Mostrando formulario de registro de planta");
+        // Asegúrate de que registro-planta.html esté en templates/login/
+        return "login/registro-planta";
+    }
+
+    @GetMapping("/health")
+    public ResponseEntity<Map<String, String>> healthCheck() {
+        Map<String, String> response = new HashMap<>();
+        response.put(STATUS, "UP");
+        response.put("service", "PlantaController/Catalogo");
+        logger.info("✅ Health check solicitado por el frontend: UP");
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Registra una planta personal para un usuario específico
+     */
+    @PostMapping("/registro-personal")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> registrarPlantaPersonal(@RequestBody Map<String, Object> datos) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            logger.info("🌱 Registrando planta personal: {}", datos);
+
+            // Extraer datos del request
+            String plantaId = (String) datos.get("plantaId");
+            String apodo = (String) datos.get(APODO);
+            String ubicacion = (String) datos.get(UBICACION);
+
+            // Validaciones
+            if (plantaId == null || plantaId.isBlank()) {
+                response.put(SUCCESS, false);
+                response.put(MESSAGE, "El ID de la planta es requerido");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            if (apodo == null || apodo.isBlank()) {
+                response.put(SUCCESS, false);
+                response.put(MESSAGE, "El apodo es requerido");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            // Buscar la planta del catálogo
+            Optional<Planta> plantaCatalogoOpt = servicioPlanta.obtenerPorId(plantaId);
+
+            if (!plantaCatalogoOpt.isPresent()) {
+                response.put(SUCCESS, false);
+                response.put(MESSAGE, "Planta no encontrada en el catálogo");
+                return ResponseEntity.notFound().build();
+            }
+
+            Planta plantaCatalogo = plantaCatalogoOpt.get();
+
+            // Crear copia personalizada
+            Planta plantaPersonal = new Planta(
+                    plantaCatalogo.getNombreComun(),
+                    plantaCatalogo.getNombreCientifico(),
+                    plantaCatalogo.getDescripcion(),
+                    plantaCatalogo.getImagenURL()
+            );
+
+            // Copiar etiquetas y cuidados
+            if (plantaCatalogo.getEtiquetas() != null) {
+                plantaCatalogo.getEtiquetas().forEach(plantaPersonal::agregarEtiqueta);
+            }
+
+            if (plantaCatalogo.getCuidados() != null) {
+                plantaCatalogo.getCuidados().forEach(plantaPersonal::agregarCuidado);
+            }
+
+            // Guardar
+            Planta plantaGuardada = servicioPlanta.guardar(plantaPersonal);
+
+            response.put(SUCCESS, true);
+            response.put(MESSAGE, "Planta registrada exitosamente");
+            response.put("data", Map.of(
+                    "id", plantaGuardada.getId(),
+                    "nombreComun", plantaGuardada.getNombreComun(),
+                    APODO, apodo,
+                    UBICACION, ubicacion
+            ));
+
+            logger.info("✅ Planta personal registrada con ID: {}", plantaGuardada.getId());
+            return ResponseEntity.status(201).body(response);
+
+        } catch (Exception e) {
+            logger.error("❌ Error: {}", e.getMessage(), e);
+            response.put(SUCCESS, false);
+            response.put(MESSAGE, "Error: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+
+    /**
+     * Obtiene plantas del usuario
+     */
+    @GetMapping("/usuario/{usuarioId}")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> obtenerPlantasUsuario(@PathVariable String usuarioId) {
+        try {
+            logger.info("👤 Obteniendo plantas del usuario: {}", usuarioId);
+
+            // Por ahora, todas las plantas (luego filtrarás por usuario)
+            List<Planta> plantas = servicioPlanta.obtenerTodas();
+
+            // Convertir a formato del frontend
+            List<Map<String, Object>> plantasUsuario = plantas.stream()
+                    .map(p -> {
+                        Map<String, Object> m = new HashMap<>();
+                        m.put("id", p.getId());
+                        m.put("nombreComun", p.getNombreComun());
+                        m.put("nombreCientifico", p.getNombreCientifico());
+                        m.put("descripcion", p.getDescripcion());
+                        m.put("imagenURL", p.getImagenURL());
+                        m.put(APODO, p.getNombreComun());
+                        m.put(UBICACION, "Casa");
+                        m.put("estado", ESTADO_SALUDABLE);
+                        m.put("fechaRegistro", new java.util.Date());
+                        return m;
+                    })
+                    .toList();
+
+            return ResponseEntity.ok(plantasUsuario);
+
+        } catch (Exception e) {
+            logger.error("❌ Error: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body(List.of());
+        }
+    }
+
+    @GetMapping("/mis-plantas")
+    public String mostrarMisPlantas() {
+        logger.info("🌱 Mostrando página 'Mis Plantas' del usuario");
+        // Retorna el template mis-plantas.html desde templates/login/
+        return "login/mis-plantas";
+    }
+
+    @GetMapping("/usuario/{usuarioId}/mis-plantas")
+    @ResponseBody
+    public ResponseEntity<List<Planta>> obtenerMisPlantas(@PathVariable String usuarioId) {
+        logger.info("👤 Obteniendo plantas personales del usuario {}", usuarioId);
+        List<Planta> plantasUsuario = servicioPlanta.buscarPorUsuario(Long.valueOf(usuarioId));
+        return ResponseEntity.ok(plantasUsuario);
+    }
+
+    @GetMapping("/estadisticas/{usuarioId}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> obtenerEstadisticas(@PathVariable String usuarioId) {
+        logger.info("📊 Calculando estadísticas para el usuario {}", usuarioId);
+        List<Planta> plantas = servicioPlanta.buscarPorUsuario(Long.valueOf(usuarioId));
+
+        long total = plantas.size();
+        long saludables = plantas.stream().filter(p -> ESTADO_SALUDABLE.equalsIgnoreCase(p.getEstado())).count();
+        long necesitanAtencion = plantas.stream()
+                .filter(p -> !ESTADO_SALUDABLE.equalsIgnoreCase(p.getEstado()))
+                .count();
+
+        Map<String, Object> stats = Map.of(
+                TOTAL_PLANTAS, total,
+                "plantasSaludables", saludables,
+                "plantasNecesitanAtencion", necesitanAtencion
+        );
+
+        return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/editar")
+    public String mostrarEditarPlanta() {
+        logger.info("✏️ Mostrando página 'Editar Planta'");
+        return "login/editar-planta"; // ruta dentro de templates/login/
+    }
+
+    @GetMapping("/vista")
+    public String mostrarVistaPlanta() {
+        logger.info("🌿 Mostrando página 'Vista de Planta'");
+        return "login/vista-planta";
     }
 }

@@ -16,6 +16,11 @@
 <header class="app-header">
     <div class="header-brand">
         <strong class="brand-name">Plantee</strong>
+        <a th:href="@{/web/plantas/dashboard2}" class="btn btn-secondary header-btn" 
+           style="margin-left: 10px; padding: 5px 10px;">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+        </div>
     </div>
     <div class="header-actions">
         <i class="fas fa-search header-icon" id="search-icon" aria-label="Abrir barra de búsqueda"></i>
@@ -191,5 +196,37 @@
 
 <!-- Enlace al archivo JavaScript usando Thymeleaf -->
 <script th:src="@{/login/js/home.js}"></script>
+<!-- Script para inicializar usuario en localStorage -->
+<script>
+(async function inicializarUsuario() {
+    console.log('🔍 Verificando usuario en localStorage...');
+    
+    const usuarioGuardado = localStorage.getItem('usuarioActual');
+    if (usuarioGuardado) {
+        console.log('✅ Usuario ya existe en localStorage:', JSON.parse(usuarioGuardado));
+        return;
+    }
+    
+    console.log('⚠️ No hay usuario en localStorage, obteniendo desde servidor...');
+    
+    try {
+        const response = await fetch('/web/usuario-actual', {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' },
+            credentials: 'include'
+        });
+        
+        if (response.ok) {
+            const usuarioData = await response.json();
+            localStorage.setItem('usuarioActual', JSON.stringify(usuarioData));
+            console.log('✅ Usuario guardado en localStorage:', usuarioData);
+        } else if (response.status === 401) {
+            console.warn('⚠️ No hay sesión activa');
+        }
+    } catch (error) {
+        console.error('❌ Error al obtener usuario:', error);
+    }
+})();
+</script>
 </body>
 </html>

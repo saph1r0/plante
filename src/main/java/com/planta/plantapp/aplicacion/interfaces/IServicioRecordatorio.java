@@ -1,11 +1,7 @@
-/*package servicios;*/
 package com.planta.plantapp.aplicacion.interfaces;
 
-import java.io.*;
-import java.util.*;
-
 /**
- * 
+ * Servicio de aplicación para gestionar recordatorios de plantas.
  */
 public interface IServicioRecordatorio {
 

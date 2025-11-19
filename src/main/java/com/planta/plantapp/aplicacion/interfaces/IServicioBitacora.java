@@ -1,10 +1,7 @@
 package com.planta.plantapp.aplicacion.interfaces;
 
-import java.io.*;
-import java.util.*;
-
 /**
- * 
+ * Servicio para gestionar bitácoras.
  */
 public interface IServicioBitacora {
 

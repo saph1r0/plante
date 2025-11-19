@@ -3,23 +3,18 @@ package com.planta.plantapp.aplicacion.servicios;
 import com.planta.plantapp.dominio.modelo.IBitacoraRepositorio;
 import com.planta.plantapp.dominio.modelo.bitacora.Bitacora;
 import com.planta.plantapp.dominio.modelo.planta.Planta;
-import com.planta.plantapp.dominio.modelo.servicios.ServicioBitacoraDominio;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 /**
- * Servicio de aplicación que orquesta el uso del dominio para gestionar bitácoras.
- * Forma parte del dominio de la solución.
+ * Servicio de aplicación para gestionar bitácoras.
  */
 public class ServicioBitacoraImpl {
 
-    private final ServicioBitacoraDominio servicioDominio;
     private final IBitacoraRepositorio repositorioBitacora;
 
-    public ServicioBitacoraImpl(ServicioBitacoraDominio servicioDominio, IBitacoraRepositorio repositorioBitacora) {
-        this.servicioDominio = servicioDominio;
+    public ServicioBitacoraImpl(IBitacoraRepositorio repositorioBitacora) {
         this.repositorioBitacora = repositorioBitacora;
     }
 
@@ -64,11 +59,11 @@ public class ServicioBitacoraImpl {
     }
 
     /**
-     * Exporta el historial en bytes (ejemplo simple, podría generar PDF o CSV).
+     * Exporta el historial en bytes (ejemplo simple)
      */
     public byte[] exportarHistorial(String plantaId) {
         List<Bitacora> historial = repositorioBitacora.listarPorPlanta(plantaId);
-        return historial.toString().getBytes(); // Mejor reemplazar con lógica de exportación real
+        return historial.toString().getBytes();
     }
 
     /**
@@ -79,12 +74,13 @@ public class ServicioBitacoraImpl {
     }
 
     /**
-     * Lista todas las bitácoras pendientes de atención por usuario.
+     * Lista todas las bitácoras pendientes por usuario.
      */
     public List<Bitacora> listarPendientesPorUsuario(String usuarioId) {
         return repositorioBitacora.listarPorUsuario(usuarioId)
                 .stream()
-                .filter(bitacora -> bitacora.getDescripcion() != null && bitacora.getDescripcion().contains("pendiente"))
-                .toList(); // Filtro de ejemplo, depende de cómo se marca lo "pendiente"
+                .filter(bitacora -> bitacora.getDescripcion() != null
+                        && bitacora.getDescripcion().contains("pendiente"))
+                .toList();
     }
 }

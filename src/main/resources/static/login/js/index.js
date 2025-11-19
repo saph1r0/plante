@@ -477,8 +477,23 @@ let catalogImages = [
             myPlantsGrid.appendChild(plantCard);
         }
 
+                // 🧠 Guardar usuario logueado (solo si no está guardado aún)
+        document.addEventListener("DOMContentLoaded", () => {
+            fetch("/web/usuario-actual") // tu backend debe devolver el usuario autenticado
+                .then(res => res.json())
+                .then(usuario => {
+                    if (usuario && usuario.correo) {
+                        localStorage.setItem("usuarioActual", JSON.stringify(usuario));
+                        console.log("✅ Usuario logueado guardado:", usuario);
+                    }
+                })
+                .catch(err => console.warn("⚠️ No se pudo obtener el usuario actual:", err));
+        });
+
 
         // Inicializaciones de componentes al cargar la página
         loadCarouselImages();
         initializeSidebar(); // Cookbook: Inicialización de la barra lateral
         initializeSearchBar(); // Cookbook: Inicialización de la barra de búsqueda
+
+        
