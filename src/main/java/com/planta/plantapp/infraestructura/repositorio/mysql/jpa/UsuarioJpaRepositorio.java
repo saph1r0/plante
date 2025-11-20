@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 
-public interface UsuarioJpaRepositorio extends JpaRepository<UsuarioEntidad, String> {
+public interface UsuarioJpaRepositorio extends JpaRepository<UsuarioEntidad, Long> {
     Optional<UsuarioEntidad> findByCorreo(String correo);
 }

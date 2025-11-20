@@ -71,22 +71,22 @@ class ServicioUsuarioImplTest {
 
     @Test
     void eliminarUsuario_retornaTrueCuandoExiste() {
-        when(repositorioMock.existeUsuario("1")).thenReturn(true);
+        when(repositorioMock.existeUsuario(1L)).thenReturn(true);
 
-        boolean resultado = servicio.eliminarUsuario("1");
+        boolean resultado = servicio.eliminarUsuario(1L);
 
         assertTrue(resultado);
-        verify(repositorioMock, times(1)).eliminar("1");
+        verify(repositorioMock, times(1)).eliminar(1L);
     }
 
     @Test
     void eliminarUsuario_retornaFalseCuandoNoExiste() {
-        when(repositorioMock.existeUsuario("99")).thenReturn(false);
+        when(repositorioMock.existeUsuario(99L)).thenReturn(false);
 
-        boolean resultado = servicio.eliminarUsuario("99");
+        boolean resultado = servicio.eliminarUsuario(99L);
 
         assertFalse(resultado);
-        verify(repositorioMock, never()).eliminar("99");
+        verify(repositorioMock, never()).eliminar(99L);
     }
 
     @Test

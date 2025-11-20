@@ -19,54 +19,32 @@ public class ServicioUsuarioImpl implements IServicioUsuario {
 
     @Override
     public void registrarUsuario(Usuario usuario) {
-        if (usuario == null || usuario.getCorreo() == null) {
-            return; // Validación de flujo: datos inválidos, no se lanza excepción
-        }
+        if (usuario == null || usuario.getCorreo() == null) return;
 
         Optional<Usuario> existente = repositorioUsuario.buscarPorCorreo(usuario.getCorreo());
-        if (existente.isPresent()) {
-            return; // Usuario ya existe, no se lanza excepción
-        }
+        if (existente.isPresent()) return;
 
-        try {
-            repositorioUsuario.guardar(usuario);
-        } catch (Exception e) {
-            // Error técnico real
-            e.printStackTrace();
-        }
+        repositorioUsuario.guardar(usuario);
     }
+
     @Override
     public Usuario autenticarUsuario(String correo, String contrasena) {
-        Optional<Usuario> usuarioOpt = obtenerUsuarioPorCorreo(correo);
+        Optional<Usuario> usuarioOpt = repositorioUsuario.buscarPorCorreo(correo);
 
-        // Evitamos usar .get() directamente
-        if (usuarioOpt.isPresent() && contrasenaCorrecta(usuarioOpt.get(), contrasena)) {
+        if (usuarioOpt.isPresent() && usuarioOpt.get().getContrasena().equals(contrasena)) {
             return usuarioOpt.get();
         }
 
         return null;
     }
 
-    private Optional<Usuario> obtenerUsuarioPorCorreo(String correo) {
-        return repositorioUsuario.buscarPorCorreo(correo);
-    }
-
-    private boolean contrasenaCorrecta(Usuario usuario, String contrasena) {
-        return usuario.getContrasena().equals(contrasena);
-    }
-
-
-
     @Override
-    public Usuario obtenerUsuarioPorId(String id) {
-        if (id == null) {
-            return null;
-        }
+    public Usuario obtenerUsuarioPorId(Long id) {
+        if (id == null) return null;
 
         try {
             return repositorioUsuario.obtenerPorId(id);
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -79,21 +57,20 @@ public class ServicioUsuarioImpl implements IServicioUsuario {
             repositorioUsuario.guardar(usuario);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
 
     @Override
-    public boolean eliminarUsuario(String id) {
+    public boolean eliminarUsuario(Long id) {
         if (id == null) return false;
 
         try {
             if (!repositorioUsuario.existeUsuario(id)) return false;
+
             repositorioUsuario.eliminar(id);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
@@ -103,7 +80,6 @@ public class ServicioUsuarioImpl implements IServicioUsuario {
         try {
             return repositorioUsuario.listarTodos();
         } catch (Exception e) {
-            e.printStackTrace();
             return List.of();
         }
     }
@@ -115,20 +91,17 @@ public class ServicioUsuarioImpl implements IServicioUsuario {
         try {
             return repositorioUsuario.buscarPorCorreo(email).isPresent();
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
 
     @Override
     public void recuperarContrasena(String email) {
-        if (email == null || !existeCorreo(email)) {
-            //  enviar correo
-        }
+        // lógica real se implementaría luego
     }
 
     @Override
-    public boolean cambiarContrasena(String id, String nuevaContrasena) {
+    public boolean cambiarContrasena(Long id, String nuevaContrasena) {
         if (id == null || nuevaContrasena == null) return false;
 
         try {
@@ -138,8 +111,8 @@ public class ServicioUsuarioImpl implements IServicioUsuario {
             usuario.setContrasena(nuevaContrasena);
             repositorioUsuario.guardar(usuario);
             return true;
+
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }

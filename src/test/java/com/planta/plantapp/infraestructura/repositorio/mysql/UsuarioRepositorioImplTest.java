@@ -37,23 +37,23 @@ class UsuarioRepositorioImplTest {
     @Test
     void obtenerPorId_deberiaRetornarUsuarioSiExiste() {
         UsuarioEntidad entidad = new UsuarioEntidad(1L, "Juan", "juan@gmail.com", "pass123S");
-        when(usuarioJpaRepositorio.findById("1")).thenReturn(Optional.of(entidad));
+        when(usuarioJpaRepositorio.findById(1L)).thenReturn(Optional.of(entidad));
 
-        Usuario usuario = usuarioRepositorioImpl.obtenerPorId("1");
+        Usuario usuario = usuarioRepositorioImpl.obtenerPorId(1L);
 
         assertNotNull(usuario);
         assertEquals("Juan", usuario.getNombre());
-        verify(usuarioJpaRepositorio, times(1)).findById("1");
+        verify(usuarioJpaRepositorio, times(1)).findById(1L);
     }
 
     @Test
     void obtenerPorId_deberiaRetornarNullSiNoExiste() {
-        when(usuarioJpaRepositorio.findById("99")).thenReturn(Optional.empty());
+        when(usuarioJpaRepositorio.findById(99L)).thenReturn(Optional.empty());
 
-        Usuario usuario = usuarioRepositorioImpl.obtenerPorId("99");
+        Usuario usuario = usuarioRepositorioImpl.obtenerPorId(99L);
 
         assertNull(usuario);
-        verify(usuarioJpaRepositorio, times(1)).findById("99");
+        verify(usuarioJpaRepositorio, times(1)).findById(99L);
     }
 
     @Test
@@ -82,8 +82,8 @@ class UsuarioRepositorioImplTest {
 
     @Test
     void eliminar_deberiaLlamarDeleteByIdDelRepositorio() {
-        usuarioRepositorioImpl.eliminar("1");
-        verify(usuarioJpaRepositorio, times(1)).deleteById("1");
+        usuarioRepositorioImpl.eliminar(1L);
+        verify(usuarioJpaRepositorio, times(1)).deleteById(1L);
     }
 
     @Test
@@ -100,17 +100,17 @@ class UsuarioRepositorioImplTest {
 
     @Test
     void existeUsuario_deberiaRetornarTrueSiExiste() {
-        when(usuarioJpaRepositorio.existsById("1")).thenReturn(true);
+        when(usuarioJpaRepositorio.existsById(1L)).thenReturn(true);
 
-        assertTrue(usuarioRepositorioImpl.existeUsuario("1"));
-        verify(usuarioJpaRepositorio, times(1)).existsById("1");
+        assertTrue(usuarioRepositorioImpl.existeUsuario(1L));
+        verify(usuarioJpaRepositorio, times(1)).existsById(1L);
     }
 
     @Test
     void existeUsuario_deberiaRetornarFalseSiNoExiste() {
-        when(usuarioJpaRepositorio.existsById("2")).thenReturn(false);
+        when(usuarioJpaRepositorio.existsById(2L)).thenReturn(false);
 
-        assertFalse(usuarioRepositorioImpl.existeUsuario("2"));
-        verify(usuarioJpaRepositorio, times(1)).existsById("2");
+        assertFalse(usuarioRepositorioImpl.existeUsuario(2L));
+        verify(usuarioJpaRepositorio, times(1)).existsById(2L);
     }
 }

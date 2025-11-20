@@ -18,7 +18,7 @@ public class UsuarioRepositorioImpl implements IUsuarioRepositorio {
     }
 
     @Override
-    public Usuario obtenerPorId(String id) {
+    public Usuario obtenerPorId(Long id) {
         return usuarioJpaRepositorio.findById(id)
                 .map(e -> new Usuario(e.getId(), e.getNombre(), e.getCorreo(), e.getContrasena()))
                 .orElse(null);
@@ -28,31 +28,35 @@ public class UsuarioRepositorioImpl implements IUsuarioRepositorio {
     public List<Usuario> listarTodos() {
         return usuarioJpaRepositorio.findAll()
                 .stream()
-                .map(e -> new Usuario(e.getId(),e.getNombre(), e.getCorreo(), e.getContrasena()))
+                .map(e -> new Usuario(e.getId(), e.getNombre(), e.getCorreo(), e.getContrasena()))
                 .toList();
     }
 
     @Override
     public void guardar(Usuario usuario) {
-        UsuarioEntidad entidad = new UsuarioEntidad(null, usuario.getNombre(), usuario.getCorreo(), usuario.getContrasena());
+        UsuarioEntidad entidad = new UsuarioEntidad(
+                usuario.getId(),
+                usuario.getNombre(),
+                usuario.getCorreo(),
+                usuario.getContrasena()
+        );
         usuarioJpaRepositorio.save(entidad);
     }
 
-
-
     @Override
-    public void eliminar(String id) {
+    public void eliminar(Long id) {
         usuarioJpaRepositorio.deleteById(id);
     }
 
     @Override
     public Optional<Usuario> buscarPorCorreo(String correo) {
         return usuarioJpaRepositorio.findByCorreo(correo)
-                .map(e -> new Usuario(e.getNombre(), e.getCorreo(), e.getContrasena()));
+                .map(e -> new Usuario(e.getId(), e.getNombre(), e.getCorreo(), e.getContrasena()));
     }
 
     @Override
-    public Boolean existeUsuario(String id) {
+    public Boolean existeUsuario(Long id) {
         return usuarioJpaRepositorio.existsById(id);
     }
 }
+

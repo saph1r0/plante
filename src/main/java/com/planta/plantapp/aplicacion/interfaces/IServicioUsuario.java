@@ -6,11 +6,11 @@ import java.util.List;
 public interface IServicioUsuario {
     void registrarUsuario(Usuario usuario);
     Usuario autenticarUsuario(String email, String contrasena);
-    Usuario obtenerUsuarioPorId(String id);
+    Usuario obtenerUsuarioPorId(Long id);
     boolean actualizarPerfil(Usuario usuario);
-    boolean eliminarUsuario(String id);
+    boolean eliminarUsuario(Long id);
     List<Usuario> listarUsuarios();
     boolean existeCorreo(String email);
     void recuperarContrasena(String email);
-    boolean cambiarContrasena(String id, String nuevaContrasena);
+    boolean cambiarContrasena(Long id, String nuevaContrasena);
 }

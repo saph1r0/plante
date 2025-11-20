@@ -17,7 +17,7 @@ public interface IUsuarioRepositorio {
      * @param id identificador único del usuario
      * @return Usuario encontrado o null si no existe
      */
-    Usuario obtenerPorId(String id);
+    Usuario obtenerPorId(Long id);
 
     /**
      * Lista todos los usuarios registrados.
@@ -38,7 +38,7 @@ public interface IUsuarioRepositorio {
      * 
      * @param id identificador del usuario a eliminar
      */
-    void eliminar(String id);
+    void eliminar(Long id);
 
     /**
      * Busca un usuario por su correo electrónico.
@@ -54,5 +54,5 @@ public interface IUsuarioRepositorio {
      * @param id identificador del usuario
      * @return true si existe, false si no
      */
-    Boolean existeUsuario(String id);
+    Boolean existeUsuario(Long id);
 }
