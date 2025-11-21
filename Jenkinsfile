@@ -10,6 +10,10 @@ pipeline {
         githubPush()
     }
 
+    environment {
+        SONARQUBE_ENV = credentials('sonarqube-local') // si usas "Secret Text"
+    }
+
     stages {
 
         stage('Checkout') {
@@ -32,6 +36,20 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('sonarqube-local') {
+                    bat """
+                        mvn sonar:sonar \
+                        -Dsonar.projectKey=Plantapp \
+                        -Dsonar.projectName=Plantapp \
+                        -Dsonar.host.url=http://localhost:9000 \
+                        -Dsonar.login=%SONARQUBE_ENV%
+                    """
+                }
+            }
+        }
+
         stage('Package Jar') {
             steps {
                 bat "mvn package"
@@ -41,10 +59,10 @@ pipeline {
 
     post {
         success {
-            echo "Build completado con éxito 🌿"
+            echo "Build completado con éxito "
         }
         failure {
-            echo "El build falló ❌"
+            echo "El build falló "
         }
     }
 }
