@@ -20,19 +20,19 @@ public class ServicioRegistroPlantaImpl implements IServicioRegistroPlanta {
 
     @Override
     public RegistroPlantaDocumento guardar(RegistroPlantaDocumento registro) {
-        logger.info("🌱 Servicio: Guardando registro de planta personal...");
+        logger.info("Servicio: Guardando registro de planta personal...");
         return repositorio.guardar(registro);
     }
 
     @Override
     public List<RegistroPlantaDocumento> listarPorUsuario(String usuarioId) {
-        logger.info("👤 Servicio: Listando plantas del usuario {}", usuarioId);
+        logger.info("Servicio: Listando plantas del usuario {}", usuarioId);
         return repositorio.listarPorUsuario(usuarioId);
     }
 
     @Override
     public void eliminar(String id) {
-        logger.info("🗑️ Servicio: Eliminando registro {}", id);
+        logger.info("Servicio: Eliminando registro {}", id);
         repositorio.eliminar(id);
     }
 

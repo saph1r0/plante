@@ -134,4 +134,12 @@ public class Planta {
         this.id = id;
     }
 
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public void setNombreComun(String nombreComun) {
+        this.nombreComun = nombreComun;
+    }
+
 }

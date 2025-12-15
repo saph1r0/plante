@@ -1,6 +1,5 @@
 package com.planta.plantapp.dominio.modelo.planta.dto;
 
-
 import java.util.List;
 
 /**
@@ -31,6 +30,7 @@ public class PlantaResponseDTO {
     }
 
     // Getters y Setters
+
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 

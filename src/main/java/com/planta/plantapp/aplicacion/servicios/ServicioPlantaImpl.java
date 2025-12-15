@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Collections;
 
 @Service
 public class ServicioPlantaImpl implements IServicioPlanta {
@@ -33,8 +34,7 @@ public class ServicioPlantaImpl implements IServicioPlanta {
         try {
             return repositorioPlanta.listarPorUsuario("global");
         } catch (Exception e) {
-            logger.error("Error al obtener plantas", e);
-            throw new PlantaServiceException("Error al obtener plantas", e);
+            return Collections.emptyList();
         }
     }
 
@@ -45,7 +45,6 @@ public class ServicioPlantaImpl implements IServicioPlanta {
         try {
             return Optional.ofNullable(repositorioPlanta.obtenerPorId(id));
         } catch (Exception e) {
-            logger.error("Error al buscar planta con ID {}", id, e);
             throw new PlantaServiceException("Error al buscar planta con ID: " + id, e);
         }
     }
@@ -58,7 +57,6 @@ public class ServicioPlantaImpl implements IServicioPlanta {
             repositorioPlanta.guardar(planta);
             return planta;
         } catch (Exception e) {
-            logger.error("Error al guardar planta {}", planta.getNombreComun(), e);
             throw new PlantaServiceException("Error al guardar planta", e);
         }
     }
@@ -70,7 +68,6 @@ public class ServicioPlantaImpl implements IServicioPlanta {
         try {
             repositorioPlanta.eliminar(id);
         } catch (Exception e) {
-            logger.error("Error al eliminar planta con ID {}", id, e);
             throw new PlantaServiceException("Error al eliminar planta", e);
         }
     }
@@ -82,7 +79,6 @@ public class ServicioPlantaImpl implements IServicioPlanta {
         try {
             return repositorioPlanta.buscarPorTipo(tipo);
         } catch (Exception e) {
-            logger.error("Error al buscar plantas del tipo {}", tipo, e);
             throw new PlantaServiceException("Error al buscar plantas por tipo", e);
         }
     }
@@ -94,7 +90,6 @@ public class ServicioPlantaImpl implements IServicioPlanta {
         try {
             return repositorioPlanta.listarPorUsuario(usuarioId.toString());
         } catch (Exception e) {
-            logger.error("Error al buscar plantas del usuario {}", usuarioId, e);
             throw new PlantaServiceException("Error al buscar plantas por usuario", e);
         }
     }
@@ -109,8 +104,6 @@ public class ServicioPlantaImpl implements IServicioPlanta {
     }
 
     public void agregarCuidado(Long plantaId, TipoCuidado tipo, Integer frecuencia, String notas) {
-        logger.info("Agregando cuidado a la planta {}", plantaId);
-
         try {
             Planta planta = repositorioPlanta.obtenerPorId(plantaId.toString());
 
@@ -120,8 +113,9 @@ public class ServicioPlantaImpl implements IServicioPlanta {
 
             repositorioPlanta.guardar(planta);
 
+        } catch (PlantaNotFoundException e) {
+            throw e;
         } catch (Exception e) {
-            logger.error("Error al agregar cuidado a la planta {}", plantaId, e);
             throw new PlantaServiceException("Error al agregar cuidado", e);
         }
     }
@@ -137,8 +131,9 @@ public class ServicioPlantaImpl implements IServicioPlanta {
             return (int) obtenerTodas().stream()
                     .filter(p -> estado.equalsIgnoreCase(p.getEstado()))
                     .count();
-        } catch (Exception e) {
-            logger.error("Error al contar plantas con estado {}", estado, e);
+        } catch (PlantaNotFoundException e) {
+            throw e;
+        } catch (Exception e){
             throw new PlantaServiceException("Error al contar por estado", e);
         }
     }
@@ -150,7 +145,6 @@ public class ServicioPlantaImpl implements IServicioPlanta {
         try {
             return repositorioPlanta.buscarPorNombre(nombre, usuarioId);
         } catch (Exception e) {
-            logger.error("Error al buscar plantas por nombre {}", nombre, e);
             throw new PlantaServiceException("Error al buscar por nombre", e);
         }
     }
@@ -161,7 +155,6 @@ public class ServicioPlantaImpl implements IServicioPlanta {
         try {
             repositorioPlanta.actualizarEstado(plantaId, estado);
         } catch (Exception e) {
-            logger.error("Error al actualizar estado de planta {}", plantaId, e);
             throw new PlantaServiceException("Error al actualizar estado", e);
         }
     }

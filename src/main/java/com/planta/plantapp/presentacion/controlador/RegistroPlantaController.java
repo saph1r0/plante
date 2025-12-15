@@ -55,7 +55,7 @@ public class RegistroPlantaController {
             String estado = (String) datos.get(KEY_ESTADO);
             String fotoPersonal = (String) datos.get(KEY_FOTO_PERSONAL);
 
-            logger.info("📝 Registrando planta - Usuario: {}, PlantaId: {}, Apodo: {}", usuarioId, plantaId, apodo);
+            logger.info(" Registrando planta - Usuario: {}, PlantaId: {}, Apodo: {}", usuarioId, plantaId, apodo);
 
             RegistroPlantaDocumento registro = new RegistroPlantaDocumento(
                     usuarioId,
@@ -72,11 +72,11 @@ public class RegistroPlantaController {
             }
 
             RegistroPlantaDocumento guardado = servicio.guardar(registro);
-            logger.info("✅ Registro guardado con ID: {}", guardado.getId());
+            logger.info(" Registro guardado con ID: {}", guardado.getId());
             return ResponseEntity.status(201).body(guardado);
 
         } catch (Exception e) {
-            logger.error("❌ Error al registrar planta: {}", e.getMessage(), e);
+            logger.error(" Error al registrar planta: {}", e.getMessage(), e);
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -106,7 +106,7 @@ public class RegistroPlantaController {
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<Map<String, Object>>> listarPorUsuario(@PathVariable String usuarioId) {
         try {
-            logger.info("📋 Listando registros del usuario: {}", usuarioId);
+            logger.info("Listando registros del usuario: {}", usuarioId);
             List<RegistroPlantaDocumento> registros = servicio.listarPorUsuario(usuarioId);
 
             List<Map<String, Object>> registrosEnriquecidos = registros.stream()
@@ -123,13 +123,13 @@ public class RegistroPlantaController {
                         registroConPlanta.put(KEY_PLANTA, obtenerPlantaCatalogo(registro.getPlantaId()));
                         return registroConPlanta;
                     })
-                    .toList(); // ✅ en vez de collect(Collectors.toList())
+                    .toList(); //  en vez de collect(Collectors.toList())
 
-            logger.info("✅ Retornando {} registros enriquecidos", registrosEnriquecidos.size());
+            logger.info(" Retornando {} registros enriquecidos", registrosEnriquecidos.size());
             return ResponseEntity.ok(registrosEnriquecidos);
 
         } catch (Exception e) {
-            logger.error("❌ Error al listar registros: {}", e.getMessage(), e);
+            logger.error(" Error al listar registros: {}", e.getMessage(), e);
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -142,8 +142,8 @@ public class RegistroPlantaController {
             Optional<Planta> plantaOpt = servicioPlanta.obtenerPorId(plantaId);
 
             if (plantaOpt.isEmpty()) {
-                logger.warn("⚠️ Planta no encontrada en catálogo: {}", plantaId);
-                return Collections.emptyMap(); // ✅ en vez de null
+                logger.warn("Planta no encontrada en catálogo: {}", plantaId);
+                return Collections.emptyMap(); //  en vez de null
             }
 
             Planta planta = plantaOpt.get();
@@ -169,8 +169,8 @@ public class RegistroPlantaController {
             return plantaMap;
 
         } catch (Exception e) {
-            logger.warn("⚠️ Error al obtener planta del catálogo: {} - {}", plantaId, e.getMessage());
-            return Collections.emptyMap(); // ✅ también vacío aquí
+            logger.warn("Error al obtener planta del catálogo: {} - {}", plantaId, e.getMessage());
+            return Collections.emptyMap(); //  también vacío aquí
         }
     }
 
@@ -193,10 +193,10 @@ public class RegistroPlantaController {
                     "plantasNecesitanAtencion", necesitanAtencion
             );
 
-            logger.info("✅ Estadísticas generadas: {}", stats);
+            logger.info("Estadísticas generadas: {}", stats);
             return ResponseEntity.ok(stats);
         } catch (Exception e) {
-            logger.error("❌ Error al calcular estadísticas: {}", e.getMessage(), e);
+            logger.error("Error al calcular estadísticas: {}", e.getMessage(), e);
             return ResponseEntity.internalServerError()
                     .body(Map.of(KEY_ERROR, e.getMessage()));
         }
@@ -207,10 +207,10 @@ public class RegistroPlantaController {
             @PathVariable String id,
             @RequestBody Map<String, Object> datos) {
         try {
-            logger.info("✏️ Actualizando planta con ID: {}", id);
+            logger.info("Actualizando planta con ID: {}", id);
             RegistroPlantaDocumento existente = servicio.obtenerPorId(id);
             if (existente == null) {
-                logger.warn("⚠️ No se encontró la planta con ID: {}", id);
+                logger.warn("No se encontró la planta con ID: {}", id);
                 return ResponseEntity.notFound().build();
             }
 
@@ -235,10 +235,10 @@ public class RegistroPlantaController {
             }
 
             RegistroPlantaDocumento actualizado = servicio.guardar(existente);
-            logger.info("✅ Planta actualizada correctamente");
+            logger.info(" Planta actualizada correctamente");
             return ResponseEntity.ok(actualizado);
         } catch (Exception e) {
-            logger.error("❌ Error al actualizar planta: {}", e.getMessage(), e);
+            logger.error(" Error al actualizar planta: {}", e.getMessage(), e);
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -252,7 +252,7 @@ public class RegistroPlantaController {
             respuesta.put(KEY_MESSAGE, "Planta eliminada exitosamente");
             return ResponseEntity.ok(respuesta);
         } catch (Exception e) {
-            logger.error("❌ Error al eliminar planta: {}", e.getMessage(), e);
+            logger.error(" Error al eliminar planta: {}", e.getMessage(), e);
             Map<String, Object> error = new HashMap<>();
             error.put(KEY_SUCCESS, false);
             error.put(KEY_MESSAGE, "Error al eliminar planta: " + e.getMessage());

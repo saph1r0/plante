@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Repositorio MongoDB para los registros personales de plantas 🌱
+ * Repositorio MongoDB para los registros personales de plantas
  */
 @Repository
 public class RegistroPlantaRepositorioMongoDB {
@@ -23,18 +23,18 @@ public class RegistroPlantaRepositorioMongoDB {
     }
 
     public RegistroPlantaDocumento guardar(RegistroPlantaDocumento registro) {
-        logger.info("💾 Guardando registro de planta personal para usuario: {}", registro.getUsuarioId());
+        logger.info("Guardando registro de planta personal para usuario: {}", registro.getUsuarioId());
         return mongoTemplate.save(registro);
     }
 
     public List<RegistroPlantaDocumento> listarPorUsuario(String usuarioId) {
-        logger.info("🔍 Buscando plantas personales del usuario: {}", usuarioId);
+        logger.info("Buscando plantas personales del usuario: {}", usuarioId);
         Query query = new Query(Criteria.where("usuarioId").is(usuarioId));
         return mongoTemplate.find(query, RegistroPlantaDocumento.class);
     }
 
     public void eliminar(String id) {
-        logger.info("🗑️ Eliminando registro con ID: {}", id);
+        logger.info("Eliminando registro con ID: {}", id);
         Query query = new Query(Criteria.where("id").is(id));
         mongoTemplate.remove(query, RegistroPlantaDocumento.class);
     }

@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 /**
  * Implementación MongoDB del repositorio de plantas.
- * Conecta con la base de datos MongoDB para gestionar las plantitas 🌱
+ * Conecta con la base de datos MongoDB para gestionar las plantitas
  */
 @Repository
 @Primary
@@ -47,21 +47,21 @@ public class PlantaRepositorioMongoDB implements IPlantaRepositorio {
 
     @Override
     public List<Planta> listarPorUsuario(String usuarioId) {
-        logger.debug("🔍 Buscando plantas para usuario: {}", usuarioId);
+        logger.debug("Buscando plantas para usuario: {}", usuarioId);
 
         try {
             List<Planta> plantas;
 
             if (GLOBAL.equals(usuarioId)) {
                 plantas = mongoTemplate.findAll(Planta.class);
-                logger.info("🌍 Obteniendo TODAS las plantas: {}", plantas.size());
+                logger.info("Obteniendo TODAS las plantas: {}", plantas.size());
             } else {
                 Query query = new Query(Criteria.where(USUARIO_ID_FIELD).is(usuarioId));
                 plantas = mongoTemplate.find(query, Planta.class);
-                logger.debug("👤 Plantas del usuario {}: {}", usuarioId, plantas.size());
+                logger.debug("Plantas del usuario {}: {}", usuarioId, plantas.size());
             }
 
-            plantas.forEach(p -> logger.debug("  🌱 {} (ID: {})", p.getNombreComun(), p.getId()));
+            plantas.forEach(p -> logger.debug(" {} (ID: {})", p.getNombreComun(), p.getId()));
             return plantas;
 
         } catch (Exception e) {
@@ -73,7 +73,7 @@ public class PlantaRepositorioMongoDB implements IPlantaRepositorio {
 
     @Override
     public void guardar(Planta planta) {
-        logger.debug("💾 Guardando planta: {}", planta.getNombreComun());
+        logger.debug("Guardando planta: {}", planta.getNombreComun());
         try {
             mongoTemplate.save(planta);
             logger.info("✅ Planta guardada exitosamente con ID: {}", planta.getId());
@@ -86,7 +86,7 @@ public class PlantaRepositorioMongoDB implements IPlantaRepositorio {
 
     @Override
     public void eliminar(String id) {
-        logger.debug("🗑️ Eliminando planta con ID: {}", id);
+        logger.debug("Eliminando planta con ID: {}", id);
         try {
             Query query = new Query(Criteria.where("id").is(id));
             mongoTemplate.remove(query, Planta.class);
@@ -100,7 +100,7 @@ public class PlantaRepositorioMongoDB implements IPlantaRepositorio {
 
     @Override
     public List<Planta> buscarPorNombre(String nombre, String usuarioId) {
-        logger.debug("🔍 Buscando plantas con nombre: '{}' para usuario: {}", nombre, usuarioId);
+        logger.debug("Buscando plantas con nombre: '{}' para usuario: {}", nombre, usuarioId);
 
         try {
             if (nombre == null || nombre.isBlank()) {
@@ -125,7 +125,7 @@ public class PlantaRepositorioMongoDB implements IPlantaRepositorio {
             Query query = new Query(criteria);
             List<Planta> plantas = mongoTemplate.find(query, Planta.class);
 
-            logger.debug("📊 Plantas encontradas: {}", plantas.size());
+            logger.debug("Plantas encontradas: {}", plantas.size());
             return plantas;
 
         } catch (Exception e) {
@@ -137,7 +137,7 @@ public class PlantaRepositorioMongoDB implements IPlantaRepositorio {
 
     @Override
     public void actualizarEstado(String plantaId, String estadoPlanta) {
-        logger.debug("🔄 Actualizando estado de planta {} a: {}", plantaId, estadoPlanta);
+        logger.debug("Actualizando estado de planta {} a: {}", plantaId, estadoPlanta);
 
         try {
             Query query = new Query(Criteria.where("id").is(plantaId));
@@ -153,13 +153,13 @@ public class PlantaRepositorioMongoDB implements IPlantaRepositorio {
 
     @Override
     public List<Planta> buscarPorTipo(String tipo) {
-        logger.debug("🔍 Buscando plantas de tipo: {}", tipo);
+        logger.debug("Buscando plantas de tipo: {}", tipo);
 
         try {
             Query query = new Query(Criteria.where("tipo").is(tipo));
             List<Planta> plantas = mongoTemplate.find(query, Planta.class);
 
-            logger.debug("📊 Plantas de tipo '{}' encontradas: {}", tipo, plantas.size());
+            logger.debug("Plantas de tipo '{}' encontradas: {}", tipo, plantas.size());
             return plantas;
 
         } catch (Exception e) {
@@ -171,7 +171,7 @@ public class PlantaRepositorioMongoDB implements IPlantaRepositorio {
 
     @Override
     public Long contarPorUsuario(String usuarioId) {
-        logger.debug("🔢 Contando plantas del usuario: {}", usuarioId);
+        logger.debug("Contando plantas del usuario: {}", usuarioId);
 
         try {
             Query query;
@@ -183,7 +183,7 @@ public class PlantaRepositorioMongoDB implements IPlantaRepositorio {
             }
 
             long count = mongoTemplate.count(query, Planta.class);
-            logger.debug("📊 Total de plantas: {}", count);
+            logger.debug("Total de plantas: {}", count);
             return count;
 
         } catch (Exception e) {
