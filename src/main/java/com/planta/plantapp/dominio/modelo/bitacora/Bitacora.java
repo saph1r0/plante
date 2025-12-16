@@ -79,7 +79,7 @@ public class Bitacora {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Bitacora other)) return false;
-        return Objects.equals(id, other.id);
+        return id != null && Objects.equals(id, other.id);
     }
 
     @Override
