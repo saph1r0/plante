@@ -10,8 +10,9 @@ import java.util.regex.Pattern;
  * Modelo de dominio puro que representa un Usuario (sin lógica de negocio).
  */
 public class Usuario {
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[\\w\\.-]+@[\\w\\.-]+\\.[a-z]{2,}$");
 
+    private static final Pattern EMAIL_PATTERN =
+            Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
     private Long id;
     private String nombre;
@@ -31,23 +32,38 @@ public class Usuario {
         this.activo = false;
         this.fechaCreacion = LocalDateTime.now();
     }
+
     private void validarInvariantes(String nombre, String correo, String contrasena) {
+
         if (nombre == null || nombre.trim().isEmpty())
             throw new IllegalArgumentException("El nombre no puede ser nulo ni vacío.");
-        if (nombre.matches(".*\\d.*"))
+
+        if (contieneDigitos(nombre))
             throw new IllegalArgumentException("El nombre no puede contener números.");
 
         if (correo == null || correo.trim().isEmpty())
             throw new IllegalArgumentException("El correo no puede ser nulo ni vacío.");
+
         if (!EMAIL_PATTERN.matcher(correo).matches())
             throw new IllegalArgumentException("El correo tiene un formato inválido.");
 
         if (contrasena == null || contrasena.trim().isEmpty())
             throw new IllegalArgumentException("La contraseña no puede ser nula ni vacía.");
+
         if (contrasena.length() < 8)
             throw new IllegalArgumentException("La contraseña debe tener al menos 8 caracteres.");
-        if (!contrasena.matches(".*\\d.*"))
+
+        if (!contieneDigitos(contrasena))
             throw new IllegalArgumentException("La contraseña debe contener al menos un número.");
+    }
+
+    private boolean contieneDigitos(String texto) {
+        for (int i = 0; i < texto.length(); i++) {
+            if (Character.isDigit(texto.charAt(i))) {
+                return true;
+            }
+        }
+        return false;
     }
     public Usuario(String nombre, String correo, String contrasena) {
         this.nombre = nombre;
