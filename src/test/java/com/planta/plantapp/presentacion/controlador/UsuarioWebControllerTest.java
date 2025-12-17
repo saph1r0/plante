@@ -5,11 +5,13 @@ import com.planta.plantapp.aplicacion.interfaces.IServicioUsuario;
 import com.planta.plantapp.dominio.usuario.modelo.Usuario;
 import com.planta.plantapp.dominio.usuario.modelo.dto.UsuarioLoginDTO;
 import com.planta.plantapp.dominio.usuario.modelo.dto.UsuarioRegistroDTO;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
 import jakarta.servlet.http.HttpSession;
@@ -39,9 +41,16 @@ class UsuarioWebControllerTest {
     @InjectMocks
     private UsuarioWebController controller;
 
+    private AutoCloseable mocks;
+
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        mocks = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        mocks.close();
     }
 
     @Test
@@ -53,7 +62,7 @@ class UsuarioWebControllerTest {
     }
 
     @Test
-    void procesarLogin_exitoso_redirigeAIndex() throws Exception {
+    void procesarLogin_exitoso_redirigeAIndex() {
         UsuarioLoginDTO dto = new UsuarioLoginDTO();
         dto.setCorreo("test@correo.com");
         dto.setContrasena("1234");
@@ -73,7 +82,7 @@ class UsuarioWebControllerTest {
 
 
     @Test
-    void procesarLogin_falla_muestraError() throws Exception {
+    void procesarLogin_falla_muestraError(){
         UsuarioLoginDTO dto = new UsuarioLoginDTO();
         dto.setCorreo("fallo@correo.com");
         dto.setContrasena("wrong");
@@ -142,7 +151,8 @@ class UsuarioWebControllerTest {
         when(session.getAttribute("usuarioId")).thenReturn(null);
 
         var response = controller.obtenerUsuarioActual(session);
-        assertEquals(401, response.getStatusCodeValue());
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertNotNull(response.getBody());
         assertTrue(response.getBody().containsKey("error"));
     }
 
@@ -158,8 +168,9 @@ class UsuarioWebControllerTest {
         when(usuarioServicio.obtenerUsuarioPorId(1L)).thenReturn(usuario);
 
         var response = controller.obtenerUsuarioActual(session);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         Map<String, Object> body = response.getBody();
+        assertNotNull(body);
         assertEquals("1", body.get("id"));
         assertEquals("Test", body.get("nombre"));
         assertEquals("test@correo.com", body.get("correo"));

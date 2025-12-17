@@ -182,7 +182,6 @@
                     <id>jacoco-check</id>
                     <phase>verify</phase>
                     <goals>
-                        <!--<goal>check</goal>-->
                     </goals>
                     <configuration>
                         <rules>
