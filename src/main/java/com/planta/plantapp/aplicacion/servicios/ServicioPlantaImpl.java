@@ -4,6 +4,7 @@ import com.planta.plantapp.aplicacion.excepciones.PlantaNotFoundException;
 import com.planta.plantapp.aplicacion.excepciones.PlantaServiceException;
 import com.planta.plantapp.dominio.modelo.IPlantaRepositorio;
 import com.planta.plantapp.dominio.modelo.cuidado.TipoCuidado;
+import com.planta.plantapp.dominio.modelo.cuidado.Cuidado;
 import com.planta.plantapp.dominio.modelo.planta.Planta;
 import com.planta.plantapp.aplicacion.interfaces.IServicioPlanta;
 
@@ -110,6 +111,10 @@ public class ServicioPlantaImpl implements IServicioPlanta {
             if (planta == null) {
                 throw new PlantaNotFoundException("Planta no encontrada con ID " + plantaId);
             }
+            Cuidado cuidado = new Cuidado(tipo, tipo.getDescripcion(), frecuencia);
+            cuidado.setNotas(notas);
+
+            planta.agregarCuidado(cuidado);
 
             repositorioPlanta.guardar(planta);
 
