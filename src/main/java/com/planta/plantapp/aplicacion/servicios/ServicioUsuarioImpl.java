@@ -66,7 +66,9 @@ public class ServicioUsuarioImpl implements IServicioUsuario {
         if (id == null) return false;
 
         try {
-            if (!repositorioUsuario.existeUsuario(id)) return false;
+            if (!Boolean.TRUE.equals(repositorioUsuario.existeUsuario(id))) {
+                return false;
+            }
 
             repositorioUsuario.eliminar(id);
             return true;
