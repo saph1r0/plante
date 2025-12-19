@@ -140,6 +140,13 @@
 
 <build>
     <plugins>
+
+        <!-- Plugin de SonarQube -->
+        <plugin>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <version>4.0.0.4121</version>
+        </plugin>
         <!-- Compilador con soporte para Java 17 y Lombok -->
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
