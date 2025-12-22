@@ -1,11 +1,13 @@
 package com.planta.plantapp.infraestructura.repositorio.mysql;
 
 import com.planta.plantapp.dominio.modelo.recordatorio.Recordatorio;
+import com.planta.plantapp.dominio.modelo.recordatorio.EstadoRecordatorio;
 import com.planta.plantapp.dominio.modelo.IRecordatorioRepositorio;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Collections;
 
 /**
  * Implementación del repositorio de Recordatorios usando MySQL.
@@ -56,5 +58,17 @@ public class RecordatorioRepositorioImpl implements IRecordatorioRepositorio {
     @Override
     public List<Recordatorio> listarPorTipo(String tipo, String usuarioId) {
         throw new UnsupportedOperationException("Método no implementado");
+    }
+
+    @Override
+    public List<Recordatorio> listarTodos() {
+        // TODO: Implementar consulta a base de datos
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<Recordatorio> listarPorEstado(EstadoRecordatorio estado) {
+        // TODO: Implementar consulta a base de datos filtrando por estado
+        return Collections.emptyList();
     }
 }

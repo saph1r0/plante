@@ -1,6 +1,7 @@
 package com.planta.plantapp.dominio.modelo;
 
 import com.planta.plantapp.dominio.modelo.recordatorio.Recordatorio;
+import com.planta.plantapp.dominio.modelo.recordatorio.EstadoRecordatorio;
 
 import java.util.Date;
 import java.util.List;
@@ -66,4 +67,17 @@ public interface IRecordatorioRepositorio {
      * @return Lista filtrada por tipo
      */
     List<Recordatorio> listarPorTipo(String tipo, String usuarioId);
+
+    /**
+     * Lista todos los recordatorios del sistema.
+     * @return Lista completa de recordatorios
+     */
+    List<Recordatorio> listarTodos();
+
+    /**
+     * Lista recordatorios por estado.
+     * @param estado Estado del recordatorio
+     * @return Lista de recordatorios con el estado especificado
+     */
+    List<Recordatorio> listarPorEstado(EstadoRecordatorio estado);
 }
