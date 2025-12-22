@@ -2,5 +2,5 @@ projectKey=Plantapp
 serverUrl=http://localhost:9000
 serverVersion=25.9.0.112764
 dashboardUrl=http://localhost:9000/dashboard?id=Plantapp
-ceTaskId=6f55286f-9cdc-4edc-87ae-219df7303ab0
-ceTaskUrl=http://localhost:9000/api/ce/task?id=6f55286f-9cdc-4edc-87ae-219df7303ab0
+ceTaskId=46b66c18-57b4-486a-9eaa-23c6677f88e3
+ceTaskUrl=http://localhost:9000/api/ce/task?id=46b66c18-57b4-486a-9eaa-23c6677f88e3
