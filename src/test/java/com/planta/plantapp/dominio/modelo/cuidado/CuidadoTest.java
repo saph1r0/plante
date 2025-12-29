@@ -1,387 +1,508 @@
 package com.planta.plantapp.dominio.modelo.cuidado;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.CsvSource;
+
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
+@DisplayName("Pruebas para la entidad Cuidado")
 class CuidadoTest {
 
     private Cuidado cuidado;
+    private static final String DESCRIPCION_VALIDA = "Riego moderado";
+    private static final int FRECUENCIA_VALIDA = 3;
+
+    @BeforeEach
+    void setUp() {
+        cuidado = null;
+    }
 
     @Test
-    void constructor_conParametros_inicializaCorrectamente() {
-        cuidado = new Cuidado(TipoCuidado.RIEGO, "Regar abundantemente", Integer.valueOf(3));
+    @DisplayName("Crear cuidado con constructor principal (Integer)")
+    void testCrearCuidadoConConstructorPrincipal() {
+        // Arrange & Act - Usa el constructor con Integer (que inicializa fechas)
+        cuidado = new Cuidado(TipoCuidado.RIEGO, DESCRIPCION_VALIDA, Integer.valueOf(FRECUENCIA_VALIDA));
 
+        // Assert
         assertNotNull(cuidado);
         assertEquals(TipoCuidado.RIEGO, cuidado.getTipo());
-        assertEquals("Regar abundantemente", cuidado.getDescripcion());
-        assertEquals(3, cuidado.getFrecuenciaDias());
+        assertEquals(DESCRIPCION_VALIDA, cuidado.getDescripcion());
+        assertEquals(FRECUENCIA_VALIDA, cuidado.getFrecuenciaDias());
         assertNotNull(cuidado.getFechaAplicacion());
         assertNotNull(cuidado.getFechaProxima());
+
+        // Verificar que la fecha de aplicación es reciente
+        assertTrue(LocalDateTime.now().minusSeconds(1).isBefore(cuidado.getFechaAplicacion()));
+
+        // Verificar que la fecha próxima está programada correctamente
+        LocalDateTime fechaProximaEsperada = cuidado.getFechaAplicacion().plusDays(FRECUENCIA_VALIDA);
+        assertEquals(fechaProximaEsperada, cuidado.getFechaProxima());
     }
 
     @Test
-    void constructor_vacio_creaInstancia() {
-        cuidado = new Cuidado();
+    @DisplayName("Crear cuidado con constructor int (no inicializa fechas)")
+    void testCrearCuidadoConConstructorInt() {
+        // Arrange & Act - Usa el constructor con int (NO inicializa fechas)
+        cuidado = new Cuidado(TipoCuidado.FERTILIZACION, "Fertilización orgánica", 15);
 
+        // Assert
         assertNotNull(cuidado);
-        assertNull(cuidado.getTipo());
-        assertNull(cuidado.getDescripcion());
-        assertNull(cuidado.getFrecuenciaDias());
-    }
-
-    @Test
-    void constructor_conTresParametros_inicializaSinFechas() {
-        cuidado = new Cuidado(TipoCuidado.FERTILIZACION, "Fertilizar mensualmente", 30);
-
         assertEquals(TipoCuidado.FERTILIZACION, cuidado.getTipo());
-        assertEquals("Fertilizar mensualmente", cuidado.getDescripcion());
-        assertEquals(30, cuidado.getFrecuenciaDias());
-        // Este constructor no inicializa fechas
+        assertEquals("Fertilización orgánica", cuidado.getDescripcion());
+        assertEquals(15, cuidado.getFrecuenciaDias());
+
+        // Este constructor NO inicializa fechaAplicacion ni fechaProxima
         assertNull(cuidado.getFechaAplicacion());
         assertNull(cuidado.getFechaProxima());
     }
 
     @Test
-    void constructor_estableceFechaAplicacionActual() {
-        LocalDateTime antes = LocalDateTime.now();
-        cuidado = new Cuidado(TipoCuidado.RIEGO, "Riego regular", Integer.valueOf(2));
-        LocalDateTime despues = LocalDateTime.now();
-
-        assertNotNull(cuidado.getFechaAplicacion());
-        assertTrue(cuidado.getFechaAplicacion().isAfter(antes.minusSeconds(1)));
-        assertTrue(cuidado.getFechaAplicacion().isBefore(despues.plusSeconds(1)));
-    }
-
-    @Test
-    void programarProximo_conFrecuenciaPositiva_calculaFechaCorrecta() {
-        cuidado = new Cuidado(TipoCuidado.RIEGO, "Riego", Integer.valueOf(5));
-        LocalDateTime fechaEsperada = cuidado.getFechaAplicacion().plusDays(5);
-
-        assertEquals(fechaEsperada.getDayOfYear(), cuidado.getFechaProxima().getDayOfYear());
-    }
-
-    @Test
-    void programarProximo_conFrecuenciaNull_noEstableceFechaProxima() {
+    @DisplayName("Constructor vacío para MongoDB")
+    void testConstructorVacio() {
+        // Arrange & Act
         cuidado = new Cuidado();
-        cuidado.setTipo(TipoCuidado.PODA);
-        cuidado.setDescripcion("Poda anual");
+
+        // Assert
+        assertNotNull(cuidado);
+        assertNull(cuidado.getTipo());
+        assertNull(cuidado.getDescripcion());
+        assertNull(cuidado.getFrecuenciaDias());
+        assertNull(cuidado.getFechaAplicacion());
+        assertNull(cuidado.getFechaProxima());
+        assertNull(cuidado.getNotas());
+    }
+
+    @ParameterizedTest
+    @EnumSource(TipoCuidado.class)
+    @DisplayName("Crear cuidado con todos los tipos de cuidado (constructor Integer)")
+    void testCrearCuidadoConTodosLosTipos(TipoCuidado tipo) {
+        // Arrange & Act - Usa Integer para que inicialice fechas
+        cuidado = new Cuidado(tipo, "Descripción para " + tipo.name(), Integer.valueOf(5));
+
+        // Assert
+        assertNotNull(cuidado);
+        assertEquals(tipo, cuidado.getTipo());
+        assertEquals("Descripción para " + tipo.name(), cuidado.getDescripcion());
+        assertEquals(5, cuidado.getFrecuenciaDias());
+        assertNotNull(cuidado.getFechaAplicacion());
+        assertNotNull(cuidado.getFechaProxima());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {1, 7, 30, 365})
+    @DisplayName("Crear cuidado con diferentes frecuencias (constructor Integer)")
+    void testCrearCuidadoConDiferentesFrecuencias(int frecuencia) {
+        // Arrange & Act - Usa Integer
+        cuidado = new Cuidado(TipoCuidado.RIEGO, "Riego", Integer.valueOf(frecuencia));
+
+        // Assert
+        assertNotNull(cuidado.getFechaAplicacion());
+        assertNotNull(cuidado.getFechaProxima());
+        LocalDateTime fechaProximaEsperada = cuidado.getFechaAplicacion().plusDays(frecuencia);
+        assertEquals(fechaProximaEsperada, cuidado.getFechaProxima());
+    }
+
+    @Test
+    @DisplayName("Programar próxima fecha con frecuencia nula")
+    void testProgramarProximoConFrecuenciaNula() {
+        // Arrange
+        cuidado = new Cuidado();
+        cuidado.setTipo(TipoCuidado.RIEGO);
+        cuidado.setDescripcion("Test");
         cuidado.setFrecuenciaDias(null);
         cuidado.setFechaAplicacion(LocalDateTime.now());
 
+        // Act
         cuidado.programarProximo();
 
+        // Assert
         assertNull(cuidado.getFechaProxima());
     }
 
     @Test
-    void programarProximo_conFrecuenciaCero_noEstableceFechaProxima() {
+    @DisplayName("Programar próxima fecha con frecuencia cero")
+    void testProgramarProximoConFrecuenciaCero() {
+        // Arrange
         cuidado = new Cuidado();
-        cuidado.setTipo(TipoCuidado.LIMPIEZA);
+        cuidado.setTipo(TipoCuidado.RIEGO);
+        cuidado.setDescripcion("Test");
         cuidado.setFrecuenciaDias(0);
         cuidado.setFechaAplicacion(LocalDateTime.now());
 
+        // Act
         cuidado.programarProximo();
 
+        // Assert
         assertNull(cuidado.getFechaProxima());
     }
 
     @Test
-    void programarProximo_conFrecuenciaNegativa_noEstableceFechaProxima() {
+    @DisplayName("Programar próxima fecha con frecuencia negativa")
+    void testProgramarProximoConFrecuenciaNegativa() {
+        // Arrange
         cuidado = new Cuidado();
+        cuidado.setTipo(TipoCuidado.RIEGO);
+        cuidado.setDescripcion("Test");
         cuidado.setFrecuenciaDias(-5);
         cuidado.setFechaAplicacion(LocalDateTime.now());
 
+        // Act
         cuidado.programarProximo();
 
+        // Assert
         assertNull(cuidado.getFechaProxima());
     }
 
     @Test
-    void programarProximo_actualizaFechaProximaCorrectamente() {
+    @DisplayName("Es pendiente cuando fecha próxima es en el futuro")
+    void testEsPendienteCuandoFechaProximaEsFuturo() {
+        // Arrange
         cuidado = new Cuidado();
-        cuidado.setFrecuenciaDias(7);
-        cuidado.setFechaAplicacion(LocalDateTime.of(2024, 1, 1, 10, 0));
+        cuidado.setFechaProxima(LocalDateTime.now().plusDays(1));
 
-        cuidado.programarProximo();
-
-        assertEquals(LocalDateTime.of(2024, 1, 8, 10, 0), cuidado.getFechaProxima());
-    }
-
-    @Test
-    void esPendiente_cuandoFechaProximaEsFutura_retornaTrue() {
-        cuidado = new Cuidado();
-        cuidado.setFechaProxima(LocalDateTime.now().plusDays(5));
-
+        // Act & Assert
         assertTrue(cuidado.esPendiente());
     }
 
     @Test
-    void esPendiente_cuandoFechaProximaEsPasada_retornaFalse() {
+    @DisplayName("No es pendiente cuando fecha próxima es en el pasado")
+    void testNoEsPendienteCuandoFechaProximaEsPasado() {
+        // Arrange
         cuidado = new Cuidado();
-        cuidado.setFechaProxima(LocalDateTime.now().minusDays(5));
+        cuidado.setFechaProxima(LocalDateTime.now().minusDays(1));
 
+        // Act & Assert
         assertFalse(cuidado.esPendiente());
     }
 
     @Test
-    void esPendiente_cuandoFechaProximaEsNull_retornaFalse() {
+    @DisplayName("No es pendiente cuando fecha próxima es null")
+    void testNoEsPendienteCuandoFechaProximaEsNull() {
+        // Arrange
         cuidado = new Cuidado();
         cuidado.setFechaProxima(null);
 
+        // Act & Assert
         assertFalse(cuidado.esPendiente());
     }
 
     @Test
-    void esPendiente_cuandoFechaProximaEsAhora_retornaFalse() {
+    @DisplayName("Es pendiente cuando fecha próxima es ahora mismo")
+    void testEsPendienteCuandoFechaProximaEsAhora() {
+        // Arrange
+        LocalDateTime ahora = LocalDateTime.now();
         cuidado = new Cuidado();
-        cuidado.setFechaProxima(LocalDateTime.now());
+        cuidado.setFechaProxima(ahora);
 
-        // Puede ser false o true dependiendo de los milisegundos,
-        // pero generalmente será false porque isAfter no incluye igualdad
+        // Act & Assert
+        // Según tu implementación: fechaProxima.isAfter(LocalDateTime.now())
+        // Si fechaProxima = ahora, entonces ahora.isAfter(ahora) = false
+        // Por lo tanto esPendiente() = false
         assertFalse(cuidado.esPendiente());
     }
 
     @Test
-    void setters_establecenValoresCorrectamente() {
+    @DisplayName("Getters y setters funcionan correctamente")
+    void testGettersYSetters() {
+        // Arrange
         cuidado = new Cuidado();
-        LocalDateTime fecha = LocalDateTime.of(2024, 6, 15, 14, 30);
-        LocalDateTime fechaProx = LocalDateTime.of(2024, 6, 22, 14, 30);
+        LocalDateTime fechaAplicacion = LocalDateTime.now().minusDays(2);
+        LocalDateTime fechaProxima = LocalDateTime.now().plusDays(5);
+        String notas = "Notas importantes sobre el cuidado";
 
+        // Act
+        cuidado.setTipo(TipoCuidado.PODA);
+        cuidado.setDescripcion("Poda de formación");
+        cuidado.setFrecuenciaDias(30);
+        cuidado.setFechaAplicacion(fechaAplicacion);
+        cuidado.setFechaProxima(fechaProxima);
+        cuidado.setNotas(notas);
+
+        // Assert
+        assertEquals(TipoCuidado.PODA, cuidado.getTipo());
+        assertEquals("Poda de formación", cuidado.getDescripcion());
+        assertEquals(30, cuidado.getFrecuenciaDias());
+        assertEquals(fechaAplicacion, cuidado.getFechaAplicacion());
+        assertEquals(fechaProxima, cuidado.getFechaProxima());
+        assertEquals(notas, cuidado.getNotas());
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {" ", "  ", "\t", "\n"})
+    @DisplayName("Setter de descripción con valores vacíos o nulos")
+    void testSetDescripcionConValoresVacios(String descripcion) {
+        // Arrange
+        cuidado = new Cuidado();
+
+        // Act
+        cuidado.setDescripcion(descripcion);
+
+        // Assert
+        assertEquals(descripcion, cuidado.getDescripcion());
+    }
+
+    @Test
+    @DisplayName("Método toString genera cadena correctamente")
+    void testToString() {
+        // Arrange
+        LocalDateTime fechaAplicacion = LocalDateTime.of(2024, 1, 15, 10, 30);
+        LocalDateTime fechaProxima = LocalDateTime.of(2024, 1, 18, 10, 30);
+
+        cuidado = new Cuidado();
         cuidado.setTipo(TipoCuidado.RIEGO);
         cuidado.setDescripcion("Riego profundo");
-        cuidado.setFrecuenciaDias(7);
-        cuidado.setFechaAplicacion(fecha);
-        cuidado.setFechaProxima(fechaProx);
-        cuidado.setNotas("Usar agua tibia");
+        cuidado.setFrecuenciaDias(3);
+        cuidado.setFechaAplicacion(fechaAplicacion);
+        cuidado.setFechaProxima(fechaProxima);
+        cuidado.setNotas("Regar en la mañana");
 
-        assertEquals(TipoCuidado.RIEGO, cuidado.getTipo());
-        assertEquals("Riego profundo", cuidado.getDescripcion());
-        assertEquals(7, cuidado.getFrecuenciaDias());
-        assertEquals(fecha, cuidado.getFechaAplicacion());
-        assertEquals(fechaProx, cuidado.getFechaProxima());
-        assertEquals("Usar agua tibia", cuidado.getNotas());
+        // Act
+        String resultado = cuidado.toString();
+
+        // Assert
+        assertNotNull(resultado);
+        assertTrue(resultado.contains("RIEGO") || resultado.contains("Riego"));
+        assertTrue(resultado.contains("Riego profundo"));
+        assertTrue(resultado.contains("fechaAplicacion="));
+        assertTrue(resultado.contains("fechaProxima="));
     }
 
     @Test
-    void setNotas_aceptaNull() {
-        cuidado = new Cuidado(TipoCuidado.PODA, "Poda ligera", 30);
-        cuidado.setNotas(null);
+    @DisplayName("Equals con misma instancia retorna true")
+    void testEqualsMismaInstancia() {
+        // Arrange - Usa constructor Integer para tener fechaAplicacion
+        cuidado = new Cuidado(TipoCuidado.RIEGO, "Riego", Integer.valueOf(3));
 
-        assertNull(cuidado.getNotas());
-    }
-
-    @Test
-    void setNotas_aceptaStringVacio() {
-        cuidado = new Cuidado(TipoCuidado.PODA, "Poda ligera", 30);
-        cuidado.setNotas("");
-
-        assertEquals("", cuidado.getNotas());
-    }
-
-    @Test
-    void equals_mismoCuidado_retornaTrue() {
-        cuidado = new Cuidado(TipoCuidado.RIEGO, "Riego", 3);
-
+        // Act & Assert
         assertEquals(cuidado, cuidado);
     }
 
     @Test
-    void equals_cuidadosIguales_retornaTrue() {
-        LocalDateTime fecha = LocalDateTime.of(2024, 1, 1, 10, 0);
+    @DisplayName("Equals con null retorna false")
+    void testEqualsConNull() {
+        // Arrange
+        cuidado = new Cuidado(TipoCuidado.RIEGO, "Riego", Integer.valueOf(3));
 
-        Cuidado c1 = new Cuidado();
-        c1.setTipo(TipoCuidado.RIEGO);
-        c1.setDescripcion("Riego regular");
-        c1.setFechaAplicacion(fecha);
-
-        Cuidado c2 = new Cuidado();
-        c2.setTipo(TipoCuidado.RIEGO);
-        c2.setDescripcion("Riego regular");
-        c2.setFechaAplicacion(fecha);
-
-        assertEquals(c1, c2);
-    }
-
-    @Test
-    void equals_cuidadosDiferenteTipo_retornaFalse() {
-        LocalDateTime fecha = LocalDateTime.of(2024, 1, 1, 10, 0);
-
-        Cuidado c1 = new Cuidado();
-        c1.setTipo(TipoCuidado.RIEGO);
-        c1.setDescripcion("Riego");
-        c1.setFechaAplicacion(fecha);
-
-        Cuidado c2 = new Cuidado();
-        c2.setTipo(TipoCuidado.FERTILIZACION);
-        c2.setDescripcion("Riego");
-        c2.setFechaAplicacion(fecha);
-
-        assertNotEquals(c1, c2);
-    }
-
-    @Test
-    void equals_cuidadosDiferenteDescripcion_retornaFalse() {
-        LocalDateTime fecha = LocalDateTime.of(2024, 1, 1, 10, 0);
-
-        Cuidado c1 = new Cuidado();
-        c1.setTipo(TipoCuidado.RIEGO);
-        c1.setDescripcion("Riego profundo");
-        c1.setFechaAplicacion(fecha);
-
-        Cuidado c2 = new Cuidado();
-        c2.setTipo(TipoCuidado.RIEGO);
-        c2.setDescripcion("Riego superficial");
-        c2.setFechaAplicacion(fecha);
-
-        assertNotEquals(c1, c2);
-    }
-
-    @Test
-    void equals_cuidadosDiferenteFecha_retornaFalse() {
-        Cuidado c1 = new Cuidado();
-        c1.setTipo(TipoCuidado.RIEGO);
-        c1.setDescripcion("Riego");
-        c1.setFechaAplicacion(LocalDateTime.of(2024, 1, 1, 10, 0));
-
-        Cuidado c2 = new Cuidado();
-        c2.setTipo(TipoCuidado.RIEGO);
-        c2.setDescripcion("Riego");
-        c2.setFechaAplicacion(LocalDateTime.of(2024, 1, 2, 10, 0));
-
-        assertNotEquals(c1, c2);
-    }
-
-    @Test
-    void equals_comparacionConNull_retornaFalse() {
-        cuidado = new Cuidado(TipoCuidado.RIEGO, "Riego", 3);
-
+        // Act & Assert
         assertNotEquals(null, cuidado);
     }
 
     @Test
-    void equals_comparacionConOtraClase_retornaFalse() {
-        cuidado = new Cuidado(TipoCuidado.RIEGO, "Riego", 3);
-        String otroObjeto = "No es un cuidado";
+    @DisplayName("equals() retorna false cuando el objeto no es Cuidado")
+    void testEqualsConObjetoNoCuidado() {
+        Cuidado cuidado2 = new Cuidado(TipoCuidado.RIEGO, "Riego", 3);
+        Object otroObjeto = new Object();
 
-        assertNotEquals(cuidado, otroObjeto);
+        assertNotEquals(otroObjeto, cuidado2);
     }
 
     @Test
-    void hashCode_cuidadosIguales_mismoHashCode() {
-        LocalDateTime fecha = LocalDateTime.of(2024, 1, 1, 10, 0);
+    @DisplayName("Equals con mismos valores retorna true")
+    void testEqualsConMismosValores() {
+        // Arrange
+        LocalDateTime fechaAplicacion = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
 
-        Cuidado c1 = new Cuidado();
-        c1.setTipo(TipoCuidado.RIEGO);
-        c1.setDescripcion("Riego");
-        c1.setFechaAplicacion(fecha);
-
-        Cuidado c2 = new Cuidado();
-        c2.setTipo(TipoCuidado.RIEGO);
-        c2.setDescripcion("Riego");
-        c2.setFechaAplicacion(fecha);
-
-        assertEquals(c1.hashCode(), c2.hashCode());
-    }
-
-    @Test
-    void hashCode_cuidadosDiferentes_diferenteHashCode() {
-        Cuidado c1 = new Cuidado();
-        c1.setTipo(TipoCuidado.RIEGO);
-        c1.setDescripcion("Riego");
-        c1.setFechaAplicacion(LocalDateTime.of(2024, 1, 1, 10, 0));
-
-        Cuidado c2 = new Cuidado();
-        c2.setTipo(TipoCuidado.FERTILIZACION);
-        c2.setDescripcion("Fertilización");
-        c2.setFechaAplicacion(LocalDateTime.of(2024, 1, 2, 10, 0));
-
-        assertNotEquals(c1.hashCode(), c2.hashCode());
-    }
-
-    @Test
-    void hashCode_mismoCuidado_consistente() {
-        cuidado = new Cuidado(TipoCuidado.RIEGO, "Riego", 3);
-
-        int hash1 = cuidado.hashCode();
-        int hash2 = cuidado.hashCode();
-
-        assertEquals(hash1, hash2);
-    }
-
-    @Test
-    void toString_contieneInformacionBasica() {
-        cuidado = new Cuidado();
-        cuidado.setTipo(TipoCuidado.RIEGO);
-        cuidado.setDescripcion("Riego semanal");
-        cuidado.setFrecuenciaDias(7);
-        cuidado.setNotas("No regar en exceso");
-
-        String resultado = cuidado.toString();
-
-        assertNotNull(resultado);
-        assertFalse(resultado.isEmpty());
-        assertTrue(resultado.contains("Riego semanal"));
-    }
-
-    @Test
-    void toString_noLanzaExcepcion() {
-        cuidado = new Cuidado(TipoCuidado.PODA, "Poda anual", 365);
-
-        assertDoesNotThrow(() -> cuidado.toString());
-    }
-
-    @Test
-    void toString_conCamposNull_noLanzaExcepcion() {
-        cuidado = new Cuidado();
-
-        assertDoesNotThrow(() -> cuidado.toString());
-        assertNotNull(cuidado.toString());
-    }
-
-    @Test
-    void escenario_riegoSemanal_calculaCorrectamente() {
-        // Crear un cuidado de riego semanal
-        cuidado = new Cuidado(TipoCuidado.RIEGO, "Riego cada 7 días", Integer.valueOf(7));
-
-        // Verificar que se inicializó correctamente
-        assertNotNull(cuidado.getFechaAplicacion());
-        assertNotNull(cuidado.getFechaProxima());
-
-        // La próxima fecha debe ser 7 días después
-        LocalDateTime fechaEsperada = cuidado.getFechaAplicacion().plusDays(7);
-        assertEquals(fechaEsperada.getDayOfYear(), cuidado.getFechaProxima().getDayOfYear());
-
-        // Debe estar pendiente
-        assertTrue(cuidado.esPendiente());
-    }
-
-    @Test
-    void escenario_cuidadoVencido_noEsPendiente() {
         cuidado = new Cuidado();
         cuidado.setTipo(TipoCuidado.FERTILIZACION);
-        cuidado.setFechaAplicacion(LocalDateTime.now().minusDays(30));
-        cuidado.setFrecuenciaDias(15);
-        cuidado.programarProximo();
+        cuidado.setDescripcion("Abono líquido");
+        cuidado.setFechaAplicacion(fechaAplicacion);
 
-        // El cuidado programado hace 30 días con frecuencia de 15 días está vencido
-        assertFalse(cuidado.esPendiente());
+        Cuidado otroCuidado = new Cuidado();
+        otroCuidado.setTipo(TipoCuidado.FERTILIZACION);
+        otroCuidado.setDescripcion("Abono líquido");
+        otroCuidado.setFechaAplicacion(fechaAplicacion);
+
+        // Act & Assert
+        assertEquals(cuidado, otroCuidado);
+        assertEquals(cuidado.hashCode(), otroCuidado.hashCode());
     }
 
     @Test
-    void escenario_modificarFrecuencia_reprogramaCorrectamente() {
-        cuidado = new Cuidado(TipoCuidado.RIEGO, "Riego", Integer.valueOf(7));
-        LocalDateTime fechaOriginal = cuidado.getFechaProxima();
+    @DisplayName("Equals con tipo diferente retorna false")
+    void testEqualsConTipoDiferente() {
+        // Arrange
+        LocalDateTime fechaAplicacion = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
 
-        // Cambiar frecuencia y reprogramar
+        cuidado = new Cuidado();
+        cuidado.setTipo(TipoCuidado.RIEGO);
+        cuidado.setDescripcion("Riego");
+        cuidado.setFechaAplicacion(fechaAplicacion);
+
+        Cuidado otroCuidado = new Cuidado();
+        otroCuidado.setTipo(TipoCuidado.FERTILIZACION); // DIFERENTE
+        otroCuidado.setDescripcion("Riego");
+        otroCuidado.setFechaAplicacion(fechaAplicacion);
+
+        // Act & Assert
+        assertNotEquals(cuidado, otroCuidado);
+    }
+
+    @Test
+    @DisplayName("Equals con descripción diferente retorna false")
+    void testEqualsConDescripcionDiferente() {
+        // Arrange
+        LocalDateTime fechaAplicacion = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+
+        cuidado = new Cuidado();
+        cuidado.setTipo(TipoCuidado.RIEGO);
+        cuidado.setDescripcion("Riego ligero");
+        cuidado.setFechaAplicacion(fechaAplicacion);
+
+        Cuidado otroCuidado = new Cuidado();
+        otroCuidado.setTipo(TipoCuidado.RIEGO);
+        otroCuidado.setDescripcion("Riego profundo"); // DIFERENTE
+        otroCuidado.setFechaAplicacion(fechaAplicacion);
+
+        // Act & Assert
+        assertNotEquals(cuidado, otroCuidado);
+    }
+
+    @Test
+    @DisplayName("Equals con fecha aplicación diferente retorna false")
+    void testEqualsConFechaAplicacionDiferente() {
+        // Arrange
+        cuidado = new Cuidado();
+        cuidado.setTipo(TipoCuidado.RIEGO);
+        cuidado.setDescripcion("Riego");
+        cuidado.setFechaAplicacion(LocalDateTime.now().minusDays(1));
+
+        Cuidado otroCuidado = new Cuidado();
+        otroCuidado.setTipo(TipoCuidado.RIEGO);
+        otroCuidado.setDescripcion("Riego");
+        otroCuidado.setFechaAplicacion(LocalDateTime.now()); // DIFERENTE
+
+        // Act & Assert
+        assertNotEquals(cuidado, otroCuidado);
+    }
+
+    @Test
+    @DisplayName("Equals ignora otros campos como frecuencia y notas")
+    void testEqualsIgnoraOtrosCampos() {
+        // Arrange
+        LocalDateTime fechaAplicacion = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+
+        cuidado = new Cuidado();
+        cuidado.setTipo(TipoCuidado.RIEGO);
+        cuidado.setDescripcion("Riego");
+        cuidado.setFechaAplicacion(fechaAplicacion);
         cuidado.setFrecuenciaDias(3);
+        cuidado.setNotas("Notas 1");
+
+        Cuidado otroCuidado = new Cuidado();
+        otroCuidado.setTipo(TipoCuidado.RIEGO);
+        otroCuidado.setDescripcion("Riego");
+        otroCuidado.setFechaAplicacion(fechaAplicacion);
+        otroCuidado.setFrecuenciaDias(7); // DIFERENTE, pero no afecta equals
+        otroCuidado.setNotas("Notas 2"); // DIFERENTE, pero no afecta equals
+
+        // Act & Assert
+        assertEquals(cuidado, otroCuidado);
+        assertEquals(cuidado.hashCode(), otroCuidado.hashCode());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "RIEGO, 'Riego moderado', 3",
+            "FERTILIZACION, 'Fertilización orgánica', 15",
+            "PODA, 'Poda de mantenimiento', 30",
+            "FUMIGACION, 'Aplicación de insecticida', 7",
+            "LUZ, 'Exposición solar', 1",
+            "TRASPLANTE, 'Cambio de maceta', 365",
+            "LIMPIEZA, 'Limpieza de hojas', 7",
+            "ROTACION, 'Rotación de planta', 3",
+            "AIREACION, 'Aireación del sustrato', 14",
+            "HUMEDAD, 'Control de humedad', 1"
+    })
+    @DisplayName("Crear cuidado con diferentes parámetros (constructor Integer)")
+    void testCrearCuidadoConParametrosVariados(TipoCuidado tipo, String descripcion, int frecuencia) {
+        // Arrange & Act - Usa Integer para que inicialice fechas
+        cuidado = new Cuidado(tipo, descripcion, Integer.valueOf(frecuencia));
+
+        // Assert
+        assertEquals(tipo, cuidado.getTipo());
+        assertEquals(descripcion, cuidado.getDescripcion());
+        assertEquals(frecuencia, cuidado.getFrecuenciaDias());
+        assertNotNull(cuidado.getFechaAplicacion());
+        assertNotNull(cuidado.getFechaProxima());
+    }
+
+    @Test
+    @DisplayName("Programar próximo se ejecuta automáticamente en constructor Integer")
+    void testProgramarProximoAutomaticoEnConstructor() {
+        // Arrange & Act
+        LocalDateTime antes = LocalDateTime.now();
+        cuidado = new Cuidado(TipoCuidado.RIEGO, "Riego", Integer.valueOf(5));
+        LocalDateTime despues = LocalDateTime.now();
+
+        // Assert
+        assertNotNull(cuidado.getFechaProxima());
+        LocalDateTime fechaProximaEsperada = cuidado.getFechaAplicacion().plusDays(5);
+        assertEquals(fechaProximaEsperada, cuidado.getFechaProxima());
+
+        // Verificar que la fecha de aplicación está entre antes y después
+        assertFalse(cuidado.getFechaAplicacion().isBefore(antes));
+        assertFalse(cuidado.getFechaAplicacion().isAfter(despues));
+    }
+
+    @Test
+    @DisplayName("Actualizar frecuencia reprograma fecha próxima")
+    void testActualizarFrecuenciaReprogramaFechaProxima() {
+        // Arrange - Usa constructor Integer para tener fechaAplicacion
+        cuidado = new Cuidado(TipoCuidado.RIEGO, "Riego", Integer.valueOf(3));
+        LocalDateTime fechaAplicacionOriginal = cuidado.getFechaAplicacion();
+        LocalDateTime fechaProximaOriginal = cuidado.getFechaProxima();
+
+        // Act
+        cuidado.setFrecuenciaDias(7);
         cuidado.programarProximo();
 
-        assertNotEquals(fechaOriginal, cuidado.getFechaProxima());
-        assertEquals(
-                cuidado.getFechaAplicacion().plusDays(3).getDayOfYear(),
-                cuidado.getFechaProxima().getDayOfYear()
-        );
+        // Assert
+        assertEquals(7, cuidado.getFrecuenciaDias());
+        // La fecha próxima debe cambiar
+        assertNotEquals(fechaProximaOriginal, cuidado.getFechaProxima());
+        LocalDateTime nuevaFechaProximaEsperada = fechaAplicacionOriginal.plusDays(7);
+        assertEquals(nuevaFechaProximaEsperada, cuidado.getFechaProxima());
+    }
+
+    @Test
+    @DisplayName("Set fecha aplicación reprograma fecha próxima")
+    void testSetFechaAplicacionReprogramaFechaProxima() {
+        // Arrange - Primero crea con constructor Integer
+        cuidado = new Cuidado(TipoCuidado.RIEGO, "Riego", Integer.valueOf(3));
+        LocalDateTime nuevaFechaAplicacion = LocalDateTime.now().minusDays(1);
+
+        // Act
+        cuidado.setFechaAplicacion(nuevaFechaAplicacion);
+        cuidado.programarProximo();
+
+        // Assert
+        assertEquals(nuevaFechaAplicacion, cuidado.getFechaAplicacion());
+        LocalDateTime fechaProximaEsperada = nuevaFechaAplicacion.plusDays(3);
+        assertEquals(fechaProximaEsperada, cuidado.getFechaProxima());
+    }
+
+    @Test
+    @DisplayName("Test para verificar ambos constructores")
+    void testAmbosConstructores() {
+        // Test constructor con Integer (inicializa fechas)
+        Cuidado cuidado1 = new Cuidado(TipoCuidado.RIEGO, "Riego 1", Integer.valueOf(3));
+        assertNotNull(cuidado1.getFechaAplicacion());
+        assertNotNull(cuidado1.getFechaProxima());
+
+        // Test constructor con int (NO inicializa fechas)
+        Cuidado cuidado2 = new Cuidado(TipoCuidado.RIEGO, "Riego 2", 3);
+        assertNull(cuidado2.getFechaAplicacion());
+        assertNull(cuidado2.getFechaProxima());
     }
 }

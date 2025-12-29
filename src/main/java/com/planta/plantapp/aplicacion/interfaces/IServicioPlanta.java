@@ -18,4 +18,5 @@ public interface IServicioPlanta {
     List<Planta> buscarPorTipo(String tipo);
     List<Planta> buscarPorUsuario(Long usuarioId);
     List<Planta> buscarPorNombre(String nombre, String usuarioId);
+    Planta registrarPlantaPersonal(String plantaId, String apodo, String ubicacion);
 }

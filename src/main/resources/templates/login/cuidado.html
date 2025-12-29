@@ -167,22 +167,30 @@
             const estado = planta.estado.toLowerCase().replace('_', '-');
             const dias = daysSince(planta.ultimoCuidado || planta.fechaRegistro);
             const nombre = planta.planta?.nombreComun || 'Planta desconocida';
-            return `
-                <div class="card plant-card" onclick="verPlanta('${planta.id}')">
-                    <div class="plant-image">
-                        <img src="${planta.fotoPersonal || generarPlaceholder(planta.apodo)}" alt="${planta.apodo}">
-                        <span class="plant-status status-${estado}">${planta.estado.replace('_', ' ')}</span>
-                    </div>
-                    <div class="plant-info">
-                        <h3>${planta.apodo}</h3>
-                        <div class="scientific-name">${nombre}</div>
-                        <div class="plant-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> ${planta.ubicacion}</span>
-                            <span><i class="fas fa-clock"></i> ${dias} días sin cuidado</span>
-                        </div>
-                        <div class="plant-actions">
-                            <button class="btn btn-primary" onclick="event.stopPropagation(); cuidarRapido('${planta.id}')">
-                                <i class="fas fa-hand-holding-water"></i> Cuidar Ahora
+            // En la función mostrarPlantasAtencion():
+return `
+    <div class="card plant-card" onclick="verPlanta('${planta.id}')">
+        <div class="plant-image">
+            <img src="${planta.fotoPersonal || generarPlaceholder(planta.apodo)}" alt="${planta.apodo}">
+            <span class="plant-status status-${estado}">${planta.estado.replace('_', ' ')}</span>
+        </div>
+        <div class="plant-info">
+            <h3>${planta.apodo}</h3>
+            <div class="scientific-name">${nombre}</div>
+            <div class="plant-meta">
+                <span><i class="fas fa-map-marker-alt"></i> ${planta.ubicacion}</span>
+                <span><i class="fas fa-clock"></i> ${dias} días sin cuidado</span>
+            </div>
+            <div class="plant-actions">
+                <!-- Botón que llama a función redirigirACuidado -->
+                <button class="btn btn-primary" onclick="event.stopPropagation(); redirigirACuidado('${planta.id}')">
+                    <i class="fas fa-hand-holding-water"></i> Cuidar Ahora
+
+
+// Agrega esta función en tu script:
+function redirigirACuidado(plantaId) {
+    window.location.href = `/web/plantas/cuidado?id=${plantaId}`;
+}
                             </button>
                         </div>
                     </div>
@@ -352,13 +360,13 @@
     }
 
     function verPlanta(plantaId) {
-        globalThis.location.href = `vista-planta.html?id=${plantaId}`;
+        window.location.href = `vista-planta.html?id=${plantaId}`;
     }
 
     function cerrarSesion() {
         if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
             localStorage.removeItem('usuarioActual');
-            globalThis.location.replace('/web/login');
+            window.location.replace('/web/login');
         }
     }
 

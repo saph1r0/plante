@@ -32,7 +32,7 @@ public class ServicioBitacoraDominio {
         Objects.requireNonNull(planta, "La planta no puede ser null");
         Objects.requireNonNull(descripcion, "La descripción no puede ser null");
 
-        Bitacora bitacora = new Bitacora(descripcion, fotoUrl, planta);
+        Bitacora bitacora = Bitacora.crearNueva(descripcion, fotoUrl, planta);
         bitacora.setFecha(new Date());
 
         repositorioBitacora.guardar(bitacora);

@@ -22,7 +22,7 @@ public class ServicioBitacoraImpl {
      * Registra una nueva observación para una planta.
      */
     public void registrarObservacion(String plantaId, String descripcion) {
-        Bitacora nueva = new Bitacora(descripcion, null, new Planta(plantaId));
+        Bitacora nueva = Bitacora.crearNueva(descripcion, null, new Planta(plantaId));
         repositorioBitacora.guardar(nueva);
     }
 

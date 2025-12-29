@@ -63,6 +63,58 @@ public class ServicioPlantaImpl implements IServicioPlanta {
     }
 
     @Override
+    public Planta registrarPlantaPersonal(String plantaId, String apodo, String ubicacion) {
+        logger.info("Registrando planta personal - ID: {}, Apodo: {}", plantaId, apodo);
+
+        validarDatosRegistro(plantaId, apodo);
+        Planta plantaCatalogo = obtenerPlantaCatalogo(plantaId);
+        Planta plantaPersonal = clonarPlanta(plantaCatalogo);
+
+        return guardar(plantaPersonal);
+    }
+
+    private void validarDatosRegistro(String plantaId, String apodo) {
+        if (plantaId == null || plantaId.isBlank()) {
+            throw new PlantaServiceException("El ID de la planta es requerido", null);
+        }
+
+        if (apodo == null || apodo.isBlank()) {
+            throw new PlantaServiceException("El apodo es requerido", null);
+        }
+    }
+
+    private Planta obtenerPlantaCatalogo(String plantaId) {
+        return obtenerPorId(plantaId)
+                .orElseThrow(() -> new PlantaNotFoundException("Planta no encontrada en el catálogo"));
+    }
+
+    private Planta clonarPlanta(Planta plantaCatalogo) {
+        Planta plantaPersonal = new Planta(
+                plantaCatalogo.getNombreComun(),
+                plantaCatalogo.getNombreCientifico(),
+                plantaCatalogo.getDescripcion(),
+                plantaCatalogo.getImagenURL()
+        );
+
+        copiarEtiquetas(plantaCatalogo, plantaPersonal);
+        copiarCuidados(plantaCatalogo, plantaPersonal);
+
+        return plantaPersonal;
+    }
+
+    private void copiarEtiquetas(Planta origen, Planta destino) {
+        if (origen.getEtiquetas() != null) {
+            origen.getEtiquetas().forEach(destino::agregarEtiqueta);
+        }
+    }
+
+    private void copiarCuidados(Planta origen, Planta destino) {
+        if (origen.getCuidados() != null) {
+            origen.getCuidados().forEach(destino::agregarCuidado);
+        }
+    }
+
+    @Override
     public void eliminar(String id) {
         logger.info("Eliminando planta con ID {}", id);
 
