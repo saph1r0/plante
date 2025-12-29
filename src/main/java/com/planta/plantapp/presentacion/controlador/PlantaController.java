@@ -1,5 +1,7 @@
 package com.planta.plantapp.presentacion.controlador;
 
+import com.planta.plantapp.aplicacion.excepciones.PlantaNotFoundException;
+import com.planta.plantapp.aplicacion.excepciones.PlantaServiceException;
 import com.planta.plantapp.aplicacion.interfaces.IServicioPlanta;
 import com.planta.plantapp.dominio.modelo.planta.Planta;
 import com.planta.plantapp.dominio.modelo.planta.dto.PlantaRequestDTO;
@@ -69,7 +71,6 @@ public class PlantaController {
             if (plantaOpt.isPresent()) {
                 Planta planta = plantaOpt.get();
 
-                logger.info("Planta encontrada: {}", planta.getNombreComun());
                 logger.info("ID de la planta: {}", planta.getId());
 
                 // DEBUG ESPECÍFICO DE CUIDADOS
@@ -219,12 +220,6 @@ public class PlantaController {
             return ResponseEntity.status(500).body(response);
         }
     }
-
-    @GetMapping("/test2")
-    public String test2() {
-        return "index.html";
-    }
-
     /**
      * Endpoint adicional para debugging - muestra información detallada
      */
@@ -264,7 +259,7 @@ public class PlantaController {
 
         } catch (Exception e) {
             logger.error("Error al cargar catálogo: {}", e.getMessage(), e);
-            return "error"; // o redirect a una página de error
+            return "login/error";
         }
     }
 
@@ -306,73 +301,25 @@ public class PlantaController {
         Map<String, Object> response = new HashMap<>();
 
         try {
-            logger.info("Registrando planta personal: {}", datos);
-
-            // Extraer datos del request
             String plantaId = (String) datos.get("plantaId");
             String apodo = (String) datos.get(APODO);
             String ubicacion = (String) datos.get(UBICACION);
 
-            // Validaciones
-            if (plantaId == null || plantaId.isBlank()) {
-                response.put(SUCCESS, false);
-                response.put(MESSAGE, "El ID de la planta es requerido");
-                return ResponseEntity.badRequest().body(response);
-            }
-
-            if (apodo == null || apodo.isBlank()) {
-                response.put(SUCCESS, false);
-                response.put(MESSAGE, "El apodo es requerido");
-                return ResponseEntity.badRequest().body(response);
-            }
-
-            // Buscar la planta del catálogo
-            Optional<Planta> plantaCatalogoOpt = servicioPlanta.obtenerPorId(plantaId);
-
-            if (!plantaCatalogoOpt.isPresent()) {
-                response.put(SUCCESS, false);
-                response.put(MESSAGE, "Planta no encontrada en el catálogo");
-                return ResponseEntity.notFound().build();
-            }
-
-            Planta plantaCatalogo = plantaCatalogoOpt.get();
-
-            // Crear copia personalizada
-            Planta plantaPersonal = new Planta(
-                    plantaCatalogo.getNombreComun(),
-                    plantaCatalogo.getNombreCientifico(),
-                    plantaCatalogo.getDescripcion(),
-                    plantaCatalogo.getImagenURL()
-            );
-
-            // Copiar etiquetas y cuidados
-            if (plantaCatalogo.getEtiquetas() != null) {
-                plantaCatalogo.getEtiquetas().forEach(plantaPersonal::agregarEtiqueta);
-            }
-
-            if (plantaCatalogo.getCuidados() != null) {
-                plantaCatalogo.getCuidados().forEach(plantaPersonal::agregarCuidado);
-            }
-
-            // Guardar
-            Planta plantaGuardada = servicioPlanta.guardar(plantaPersonal);
+            Planta plantaGuardada = servicioPlanta.registrarPlantaPersonal(plantaId, apodo, ubicacion);
 
             response.put(SUCCESS, true);
-            response.put(MESSAGE, "Planta registrada exitosamente");
-            response.put("data", Map.of(
-                    "id", plantaGuardada.getId(),
-                    "nombreComun", plantaGuardada.getNombreComun(),
-                    APODO, apodo,
-                    UBICACION, ubicacion
-            ));
-
-            logger.info("Planta personal registrada con ID: {}", plantaGuardada.getId());
+            response.put("data", PlantaMapper.dominioADto(plantaGuardada));
             return ResponseEntity.status(201).body(response);
 
-        } catch (Exception e) {
-            logger.error("Error: {}", e.getMessage(), e);
+        } catch (PlantaNotFoundException | PlantaServiceException e) {
             response.put(SUCCESS, false);
-            response.put(MESSAGE, "Error: " + e.getMessage());
+            response.put(MESSAGE, e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+
+        } catch (Exception e) {
+            logger.error("Error inesperado: {}", e.getMessage(), e);
+            response.put(SUCCESS, false);
+            response.put(MESSAGE, "Error interno del servidor");
             return ResponseEntity.status(500).body(response);
         }
     }

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error 404 - Plantee</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- CSS principal -->
+    <link rel="stylesheet" th:href="@{/login/css/index.css}">
+    <link rel="stylesheet" th:href="@{/login/css/catalogo.css}">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Lora:wght@400;700&display=swap"
+          rel="stylesheet">
+</head>
+
+<body>
+
+<header class="app-header">
+    <div class="header-brand">
+        <strong class="brand-name">Plantee</strong>
+    </div>
+
+    <div class="header-actions">
+        <a th:href="@{/web/index}" class="btn btn-secondary">
+            <i class="fas fa-home"></i> Inicio
+        </a>
+
+        <a th:href="@{/web/plantas/dashboard}" class="btn btn-primary">
+            <i class="fas fa-user"></i> Mi Cuenta
+        </a>
+    </div>
+</header>
+
+<!-- Hero error -->
+<section class="catalogo-hero">
+    <div class="hero-content">
+        <h1 class="hero-title">
+            <i class="fas fa-triangle-exclamation"></i>
+            Oops… parece que esta planta no existe
+        </h1>
+        <p class="hero-description">
+            La página que intentas visitar no fue encontrada o ya no está disponible.
+        </p>
+    </div>
+</section>
+
+<!-- Contenido del error -->
+<section class="results-section">
+    <div class="no-results">
+        <div class="no-results-content">
+
+            <div class="no-results-icon">
+                <i class="fas fa-leaf"></i>
+            </div>
+
+            <h3>Error
+                <span th:text="${status}">404</span> –
+                <span th:text="${error}">Página no encontrada</span>
+            </h3>
+
+            <p th:text="${message}">
+                Pero no te preocupes, puedes regresar y seguir explorando el mundo de las plantas.
+            </p>
+
+            <p style="opacity:.8;font-size:14px" th:if="${path}">
+                Ruta solicitada: <span th:text="${path}"></span>
+            </p>
+
+            <a th:href="@{/web/index}"
+               style="
+                    display:inline-block;
+                    padding:12px 20px;
+                    border-radius:8px;
+                    background:var(--color-green-medium);
+                    color:white;
+                    font-weight:700;
+                    text-decoration:none;
+                    box-shadow:0 4px 12px rgba(0,0,0,0.15);
+                    transition:.3s;">
+                Volver al Inicio
+            </a>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>

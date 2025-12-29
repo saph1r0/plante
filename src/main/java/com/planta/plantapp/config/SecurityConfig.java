@@ -23,14 +23,15 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "/error",
                                 "/plantcare/**", "/api/plantas/**", "/css/**", "/js/**",
                                 "/web/login", "/web/registro", "/web/index", "/web/plantas/dashboard",
                                 "/web/plantas/dashboard2", "/web/plantas/registro", "/web/plantas/health",
                                 "/web/plantas/buscar", "/web/plantas/vista", "/web/plantas/mis-plantas",
-                                "/usuarios/**", "/web/dashboard#eventos", "/web/plantas/catalogo",
+                                "/usuarios/**", "/web/dashboard#eventos", "/web/plantas/catalogo", "/web/plantas/error",
                                 "/web/test2", "/web/plantas/**", "/login/**", "/images/**", "/static/**",
                                 "/web/registros/**", "/logout",
-                                "/web/usuario-actual"
+                                "/web/usuario-actual", "/web/plantas/registro-personal"
                         ).permitAll()
                         .anyRequest().permitAll()
                 )
