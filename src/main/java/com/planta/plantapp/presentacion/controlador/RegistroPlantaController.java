@@ -1,61 +1,58 @@
 package com.planta.plantapp.presentacion.controlador;
 
 import com.planta.plantapp.aplicacion.interfaces.IServicioRegistroPlanta;
-import com.planta.plantapp.aplicacion.interfaces.IServicioPlanta;
+import com.planta.plantapp.aplicacion.servicios.RegistroPlantaFacade;
+import com.planta.plantapp.dominio.modelo.planta.dto.RegistroPlantaResponseDTO;
 import com.planta.plantapp.infraestructura.documento.RegistroPlantaDocumento;
-import com.planta.plantapp.dominio.modelo.planta.Planta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/web/registros")
 @CrossOrigin(origins = "*")
 public class RegistroPlantaController {
 
-    private static final Logger logger = LoggerFactory.getLogger(RegistroPlantaController.class);
+    private static final Logger logger =
+            LoggerFactory.getLogger(RegistroPlantaController.class);
 
-    // 🔹 Claves de JSON / Map
-    private static final String KEY_ID = "id";
     private static final String KEY_USUARIO_ID = "usuarioId";
     private static final String KEY_PLANTA_ID = "plantaId";
     private static final String KEY_APODO = "apodo";
     private static final String KEY_UBICACION = "ubicacion";
     private static final String KEY_ESTADO = "estado";
-    private static final String KEY_FECHA_REGISTRO = "fechaRegistro";
     private static final String KEY_FOTO_PERSONAL = "fotoPersonal";
     private static final String KEY_NOTAS = "notas";
-    private static final String KEY_PLANTA = "planta";
-    private static final String KEY_ERROR = "error";
     private static final String KEY_SUCCESS = "success";
     private static final String KEY_MESSAGE = "message";
+    private static final String KEY_ERROR = "error";
 
-    // 🔹 Otros literales
     private static final String ESTADO_SALUDABLE = "SALUDABLE";
-    private static final String TIPO_INTERIOR = "interior";
 
     private final IServicioRegistroPlanta servicio;
-    private final IServicioPlanta servicioPlanta;
+    private final RegistroPlantaFacade facade;
 
-    public RegistroPlantaController(IServicioRegistroPlanta servicio, IServicioPlanta servicioPlanta) {
+    public RegistroPlantaController(IServicioRegistroPlanta servicio,
+                                    RegistroPlantaFacade facade) {
         this.servicio = servicio;
-        this.servicioPlanta = servicioPlanta;
+        this.facade = facade;
     }
 
     @PostMapping
-    public ResponseEntity<RegistroPlantaDocumento> registrar(@RequestBody Map<String, Object> datos) {
+    public ResponseEntity<RegistroPlantaDocumento> registrar(
+            @RequestBody Map<String, Object> datos) {
+
         try {
             String usuarioId = (String) datos.get(KEY_USUARIO_ID);
-            String plantaId = (String) datos.get(KEY_PLANTA_ID);
-            String apodo = (String) datos.get(KEY_APODO);
+            String plantaId  = (String) datos.get(KEY_PLANTA_ID);
+            String apodo     = (String) datos.get(KEY_APODO);
             String ubicacion = (String) datos.get(KEY_UBICACION);
-            String estado = (String) datos.get(KEY_ESTADO);
-            String fotoPersonal = (String) datos.get(KEY_FOTO_PERSONAL);
-
-            logger.info(" Registrando planta - Usuario: {}, PlantaId: {}, Apodo: {}", usuarioId, plantaId, apodo);
+            String estado    = (String) datos.get(KEY_ESTADO);
 
             RegistroPlantaDocumento registro = new RegistroPlantaDocumento(
                     usuarioId,
@@ -63,119 +60,50 @@ public class RegistroPlantaController {
                     apodo,
                     ubicacion,
                     estado != null
-                            ? Enum.valueOf(com.planta.plantapp.dominio.modelo.planta.EstadoPlanta.class, estado)
+                            ? Enum.valueOf(
+                            com.planta.plantapp.dominio.modelo.planta.EstadoPlanta.class,
+                            estado)
                             : null
             );
 
-            if (fotoPersonal != null && !fotoPersonal.isBlank()) {
-                registro.setFotoPersonal(fotoPersonal);
+            if (datos.containsKey(KEY_FOTO_PERSONAL)) {
+                registro.setFotoPersonal((String) datos.get(KEY_FOTO_PERSONAL));
+            }
+            if (datos.containsKey(KEY_NOTAS)) {
+                registro.setNotas((String) datos.get(KEY_NOTAS));
             }
 
             RegistroPlantaDocumento guardado = servicio.guardar(registro);
-            logger.info(" Registro guardado con ID: {}", guardado.getId());
             return ResponseEntity.status(201).body(guardado);
 
         } catch (Exception e) {
-            logger.error(" Error al registrar planta: {}", e.getMessage(), e);
+            logger.error("Error al registrar planta", e);
             return ResponseEntity.internalServerError().build();
         }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> obtenerPorId(@PathVariable String id) {
-        RegistroPlantaDocumento registro = servicio.obtenerPorId(id);
-        if (registro == null) {
+    public ResponseEntity<RegistroPlantaResponseDTO> obtenerPorId(
+            @PathVariable String id) {
+
+        RegistroPlantaResponseDTO dto = facade.obtenerPorId(id);
+
+        if (dto == null) {
             return ResponseEntity.notFound().build();
         }
-
-        Map<String, Object> registroConPlanta = new HashMap<>();
-        registroConPlanta.put(KEY_ID, registro.getId());
-        registroConPlanta.put(KEY_USUARIO_ID, registro.getUsuarioId());
-        registroConPlanta.put(KEY_PLANTA_ID, registro.getPlantaId());
-        registroConPlanta.put(KEY_APODO, registro.getApodo());
-        registroConPlanta.put(KEY_UBICACION, registro.getUbicacion());
-        registroConPlanta.put(KEY_ESTADO, registro.getEstado());
-        registroConPlanta.put(KEY_FECHA_REGISTRO, registro.getFechaRegistro());
-        registroConPlanta.put(KEY_FOTO_PERSONAL, registro.getFotoPersonal());
-        registroConPlanta.put(KEY_NOTAS, registro.getNotas());
-        registroConPlanta.put(KEY_PLANTA, obtenerPlantaCatalogo(registro.getPlantaId()));
-
-        return ResponseEntity.ok(registroConPlanta);
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<List<Map<String, Object>>> listarPorUsuario(@PathVariable String usuarioId) {
-        try {
-            logger.info("Listando registros del usuario: {}", usuarioId);
-            List<RegistroPlantaDocumento> registros = servicio.listarPorUsuario(usuarioId);
+    public ResponseEntity<List<RegistroPlantaResponseDTO>> listarPorUsuario(
+            @PathVariable String usuarioId) {
 
-            List<Map<String, Object>> registrosEnriquecidos = registros.stream()
-                    .map(registro -> {
-                        Map<String, Object> registroConPlanta = new HashMap<>();
-                        registroConPlanta.put(KEY_ID, registro.getId());
-                        registroConPlanta.put(KEY_USUARIO_ID, registro.getUsuarioId());
-                        registroConPlanta.put(KEY_PLANTA_ID, registro.getPlantaId());
-                        registroConPlanta.put(KEY_APODO, registro.getApodo());
-                        registroConPlanta.put(KEY_UBICACION, registro.getUbicacion());
-                        registroConPlanta.put(KEY_ESTADO, registro.getEstado().name());
-                        registroConPlanta.put(KEY_FECHA_REGISTRO, registro.getFechaRegistro());
-                        registroConPlanta.put(KEY_FOTO_PERSONAL, registro.getFotoPersonal());
-                        registroConPlanta.put(KEY_PLANTA, obtenerPlantaCatalogo(registro.getPlantaId()));
-                        return registroConPlanta;
-                    })
-                    .toList(); //  en vez de collect(Collectors.toList())
-
-            logger.info(" Retornando {} registros enriquecidos", registrosEnriquecidos.size());
-            return ResponseEntity.ok(registrosEnriquecidos);
-
-        } catch (Exception e) {
-            logger.error(" Error al listar registros: {}", e.getMessage(), e);
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-
-    // =======================
-    //   Helper de catálogo
-    // =======================
-    private Map<String, Object> obtenerPlantaCatalogo(String plantaId) {
-        try {
-            Optional<Planta> plantaOpt = servicioPlanta.obtenerPorId(plantaId);
-
-            if (plantaOpt.isEmpty()) {
-                logger.warn("Planta no encontrada en catálogo: {}", plantaId);
-                return Collections.emptyMap(); //  en vez de null
-            }
-
-            Planta planta = plantaOpt.get();
-            Map<String, Object> plantaMap = new HashMap<>();
-            plantaMap.put(KEY_ID, planta.getId());
-            plantaMap.put("nombreComun", planta.getNombreComun());
-            plantaMap.put("nombreCientifico", planta.getNombreCientifico());
-            plantaMap.put("descripcion", planta.getDescripcion() != null ? planta.getDescripcion() : "");
-            plantaMap.put("imagenUrl", planta.getImagenURL() != null ? planta.getImagenURL() : "");
-
-            String tipo = TIPO_INTERIOR;
-
-            if (planta.getEtiquetas() != null && !planta.getEtiquetas().isEmpty()) {
-                tipo = planta.getEtiquetas().stream()
-                        .filter(e -> e.getNombre().equalsIgnoreCase(TIPO_INTERIOR) ||
-                                e.getNombre().equalsIgnoreCase("exterior"))
-                        .map(e -> e.getNombre().toLowerCase())
-                        .findFirst()
-                        .orElse(TIPO_INTERIOR);
-            }
-            plantaMap.put("tipo", tipo);
-
-            return plantaMap;
-
-        } catch (Exception e) {
-            logger.warn("Error al obtener planta del catálogo: {} - {}", plantaId, e.getMessage());
-            return Collections.emptyMap(); //  también vacío aquí
-        }
+        return ResponseEntity.ok(facade.listarPorUsuario(usuarioId));
     }
 
     @GetMapping("/estadisticas/{usuarioId}")
-    public ResponseEntity<Map<String, Object>> obtenerEstadisticas(@PathVariable String usuarioId) {
+    public ResponseEntity<Map<String, Object>> obtenerEstadisticas(
+            @PathVariable String usuarioId) {
         try {
             logger.info("📊 Calculando estadísticas para el usuario {}", usuarioId);
             List<RegistroPlantaDocumento> registros = servicio.listarPorUsuario(usuarioId);
@@ -185,18 +113,17 @@ public class RegistroPlantaController {
                     .filter(r -> r.getEstado() != null
                             && ESTADO_SALUDABLE.equalsIgnoreCase(r.getEstado().name()))
                     .count();
-            long necesitanAtencion = total - saludables;
 
             Map<String, Object> stats = Map.of(
                     "totalPlantas", total,
                     "plantasSaludables", saludables,
-                    "plantasNecesitanAtencion", necesitanAtencion
+                    "plantasNecesitanAtencion", total - saludables
             );
 
-            logger.info("Estadísticas generadas: {}", stats);
             return ResponseEntity.ok(stats);
+
         } catch (Exception e) {
-            logger.error("Error al calcular estadísticas: {}", e.getMessage(), e);
+            logger.error("Error al calcular estadísticas", e);
             return ResponseEntity.internalServerError()
                     .body(Map.of(KEY_ERROR, e.getMessage()));
         }
@@ -221,11 +148,9 @@ public class RegistroPlantaController {
                 existente.setUbicacion((String) datos.get(KEY_UBICACION));
             }
             if (datos.containsKey(KEY_ESTADO)) {
-                String estadoStr = (String) datos.get(KEY_ESTADO);
                 existente.setEstado(Enum.valueOf(
                         com.planta.plantapp.dominio.modelo.planta.EstadoPlanta.class,
-                        estadoStr
-                ));
+                        (String) datos.get(KEY_ESTADO)));
             }
             if (datos.containsKey(KEY_FOTO_PERSONAL)) {
                 existente.setFotoPersonal((String) datos.get(KEY_FOTO_PERSONAL));
@@ -234,11 +159,10 @@ public class RegistroPlantaController {
                 existente.setNotas((String) datos.get(KEY_NOTAS));
             }
 
-            RegistroPlantaDocumento actualizado = servicio.guardar(existente);
-            logger.info(" Planta actualizada correctamente");
-            return ResponseEntity.ok(actualizado);
+            return ResponseEntity.ok(servicio.guardar(existente));
+
         } catch (Exception e) {
-            logger.error(" Error al actualizar planta: {}", e.getMessage(), e);
+            logger.error("Error al actualizar planta", e);
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -251,8 +175,9 @@ public class RegistroPlantaController {
             respuesta.put(KEY_SUCCESS, true);
             respuesta.put(KEY_MESSAGE, "Planta eliminada exitosamente");
             return ResponseEntity.ok(respuesta);
+
         } catch (Exception e) {
-            logger.error(" Error al eliminar planta: {}", e.getMessage(), e);
+            logger.error("Error al eliminar planta", e);
             Map<String, Object> error = new HashMap<>();
             error.put(KEY_SUCCESS, false);
             error.put(KEY_MESSAGE, "Error al eliminar planta: " + e.getMessage());
