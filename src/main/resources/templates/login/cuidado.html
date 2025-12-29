@@ -15,7 +15,7 @@
             <a href="/web/plantas/dashboard2"><i class="fas fa-chart-pie"></i> Dashboard</a>
             <a href="/web/plantas/mis-plantas"><i class="fas fa-leaf"></i> Mis Plantas</a>
             <a href="/web/plantas/registro"> <i class="fas fa-plus"></i> Agregar Planta</a>
-            <button onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> Salir</button>
+            <button id="btn-cerrar-sesion"><i class="fas fa-sign-out-alt"></i> Salir</button>
         </div>
     </nav>
 </header>
@@ -74,17 +74,65 @@
 <script src="/login/js/plantas-api.js"></script>
 <script>
     // Variables globales
-    let estadisticasUsuario = {};
+    let estadisticasUsuario = {
+        totalPlantas: 0,
+        plantasSaludables: 0,
+        plantasNecesitanAtencion: 0
+    };
     let plantasUsuario = [];
 
     // Inicialización
     document.addEventListener('DOMContentLoaded', () => {
         actualizarFecha();
         cargarEstadisticas();
+        inicializarEventListeners();
 
         // Recargar cada 5 minutos
         setInterval(cargarEstadisticas, 300000);
     });
+
+    // Inicializa todos los event listeners
+    function inicializarEventListeners() {
+        // Botón cerrar sesión
+        const btnCerrarSesion = document.getElementById('btn-cerrar-sesion');
+        if (btnCerrarSesion) {
+            btnCerrarSesion.addEventListener('click', cerrarSesion);
+        }
+
+        // Event delegation para botones de cuidado
+        document.addEventListener('click', (event) => {
+            // Botones "Cuidar Ahora"
+            if (event.target.closest('.btn-cuidar-ahora')) {
+                event.stopPropagation();
+                const btn = event.target.closest('.btn-cuidar-ahora');
+                const plantaId = btn.dataset.plantaId;
+                redirigirACuidado(plantaId);
+            }
+
+            // Botones "Aplicar Cuidado"
+            if (event.target.closest('.btn-aplicar-cuidado')) {
+                const btn = event.target.closest('.btn-aplicar-cuidado');
+                const plantaId = btn.dataset.plantaId;
+                cuidarRapido(plantaId);
+            }
+
+            // Botones "Ver Planta"
+            if (event.target.closest('.btn-ver-planta')) {
+                const btn = event.target.closest('.btn-ver-planta');
+                const plantaId = btn.dataset.plantaId;
+                verPlanta(plantaId);
+            }
+
+            // Cards de plantas (clickeables)
+            if (event.target.closest('.plant-card')) {
+                const card = event.target.closest('.plant-card');
+                const plantaId = card.dataset.plantaId;
+                if (plantaId) {
+                    verPlanta(plantaId);
+                }
+            }
+        });
+    }
 
     // Actualiza la fecha en el header
     function actualizarFecha() {
@@ -113,12 +161,10 @@
 
     // Actualiza los contadores con animación
     function actualizarEstadisticas() {
-        document.getElementById('total-plantas').textContent = estadisticasUsuario.totalPlantas || 0;
-        document.getElementById('plantas-saludables').textContent = estadisticasUsuario.plantasSaludables || 0;
-        document.getElementById('plantas-cuidado').textContent = estadisticasUsuario.plantasNecesitanAtencion || 0;
-        document.getElementById('cuidados-hoy').textContent = calcularCuidadosRecientes();
-
-        // Animación de pulso
+        document.getElementById('total-plantas').textContent = `${estadisticasUsuario.totalPlantas || 0}`;
+        document.getElementById('plantas-saludables').textContent = `${estadisticasUsuario.plantasSaludables || 0}`;
+        document.getElementById('plantas-cuidado').textContent = `${estadisticasUsuario.plantasNecesitanAtencion || 0}`;
+        document.getElementById('cuidados-hoy').textContent = `${calcularCuidadosRecientes()}`;
         animarContadores();
     }
 
@@ -131,7 +177,7 @@
         plantasUsuario.forEach(planta => {
             if (planta.cuidados) {
                 planta.cuidados.forEach(c => {
-                    const fecha = new Date(c.fecha);
+                    const fecha = new Date(String(c.fecha));
                     if (fecha >= limite) cuidados++;
                 });
             }
@@ -155,7 +201,7 @@
         const container = document.getElementById('plantas-atencion');
         const plantasAtencion = plantasUsuario.filter(planta => {
             return ['NECESITA_AGUA', 'ENFERMA', 'MARCHITA'].includes(planta.estado) ||
-                   (planta.ultimoCuidado && daysSince(planta.ultimoCuidado) > 7);
+                (planta.ultimoCuidado && daysSince(planta.ultimoCuidado) > 7);
         });
 
         if (plantasAtencion.length === 0) {
@@ -167,30 +213,23 @@
             const estado = planta.estado.toLowerCase().replace('_', '-');
             const dias = daysSince(planta.ultimoCuidado || planta.fechaRegistro);
             const nombre = planta.planta?.nombreComun || 'Planta desconocida';
-            // En la función mostrarPlantasAtencion():
-return `
-    <div class="card plant-card" onclick="verPlanta('${planta.id}')">
-        <div class="plant-image">
-            <img src="${planta.fotoPersonal || generarPlaceholder(planta.apodo)}" alt="${planta.apodo}">
-            <span class="plant-status status-${estado}">${planta.estado.replace('_', ' ')}</span>
-        </div>
-        <div class="plant-info">
-            <h3>${planta.apodo}</h3>
-            <div class="scientific-name">${nombre}</div>
-            <div class="plant-meta">
-                <span><i class="fas fa-map-marker-alt"></i> ${planta.ubicacion}</span>
-                <span><i class="fas fa-clock"></i> ${dias} días sin cuidado</span>
-            </div>
-            <div class="plant-actions">
-                <!-- Botón que llama a función redirigirACuidado -->
-                <button class="btn btn-primary" onclick="event.stopPropagation(); redirigirACuidado('${planta.id}')">
-                    <i class="fas fa-hand-holding-water"></i> Cuidar Ahora
 
-
-// Agrega esta función en tu script:
-function redirigirACuidado(plantaId) {
-    window.location.href = `/web/plantas/cuidado?id=${plantaId}`;
-}
+            return `
+                <div class="card plant-card" data-planta-id="${planta.id}">
+                    <div class="plant-image">
+                        <img src="${planta.fotoPersonal || generarPlaceholder(planta.apodo)}" alt="${planta.apodo}">
+                        <span class="plant-status status-${estado}">${planta.estado.replace('_', ' ')}</span>
+                    </div>
+                    <div class="plant-info">
+                        <h3>${planta.apodo}</h3>
+                        <div class="scientific-name">${nombre}</div>
+                        <div class="plant-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> ${planta.ubicacion}</span>
+                            <span><i class="fas fa-clock"></i> ${dias} días sin cuidado</span>
+                        </div>
+                        <div class="plant-actions">
+                            <button class="btn btn-primary btn-cuidar-ahora" data-planta-id="${planta.id}">
+                                <i class="fas fa-hand-holding-water"></i> Cuidar Ahora
                             </button>
                         </div>
                     </div>
@@ -209,8 +248,6 @@ function redirigirACuidado(plantaId) {
         if (ultimas.length === 0) {
             container.innerHTML = crearEstadoVacio(
                 'Sin plantas registradas',
-                // Enlace comentado si la página no está implementada
-                // '<a href="registro-planta.html" class="btn btn-primary">Agregar tu primera planta</a>'
                 'Aún no hay plantas. ¡Agrégalas pronto!'
             );
             return;
@@ -220,8 +257,9 @@ function redirigirACuidado(plantaId) {
             const estado = planta.estado.toLowerCase().replace('_', '-');
             const dias = daysSince(planta.fechaRegistro);
             const nombre = planta.planta?.nombreComun || 'Planta desconocida';
+
             return `
-                <div class="card plant-card" onclick="verPlanta('${planta.id}')">
+                <div class="card plant-card" data-planta-id="${planta.id}">
                     <div class="plant-image">
                         <img src="${planta.fotoPersonal || generarPlaceholder(planta.apodo)}" alt="${planta.apodo}">
                         <span class="plant-status status-${estado}">${planta.estado.replace('_', ' ')}</span>
@@ -285,7 +323,7 @@ function redirigirACuidado(plantaId) {
 
         sugerencias.sort((a, b) => {
             const orden = { alta: 1, media: 2, baja: 3 };
-            return orden[a.prioridad] - orden[b.prioridad] || b.dias - a.dias;
+            return orden[a.prioridad] - orden[b.prioridad];
         });
 
         if (sugerencias.length === 0) {
@@ -299,8 +337,8 @@ function redirigirACuidado(plantaId) {
         container.innerHTML = `
             <div class="cards-grid">
                 ${sugerencias.slice(0, 6).map(s => {
-                    const color = { alta: '#dc3545', media: '#ffc107', baja: '#28a745' }[s.prioridad];
-                    return `
+            const color = { alta: '#dc3545', media: '#ffc107', baja: '#28a745' }[s.prioridad];
+            return `
                         <div class="card">
                             <h4 style="color: ${color};">${s.icono} ${s.tipo}</h4>
                             <p><strong>${s.planta}</strong></p>
@@ -311,16 +349,16 @@ function redirigirACuidado(plantaId) {
                                </span>
                             </p>
                             <div class="plant-actions">
-                                <button class="btn btn-primary" onclick="cuidarRapido('${s.plantaId}')">
+                                <button class="btn btn-primary btn-aplicar-cuidado" data-planta-id="${s.plantaId}">
                                     <i class="fas fa-plus"></i> Aplicar Cuidado
                                 </button>
-                                <button class="btn btn-secondary" onclick="verPlanta('${s.plantaId}')">
+                                <button class="btn btn-secondary btn-ver-planta" data-planta-id="${s.plantaId}">
                                     <i class="fas fa-eye"></i> Ver Planta
                                 </button>
                             </div>
                         </div>
                     `;
-                }).join('')}
+        }).join('')}
             </div>
         `;
     }
@@ -359,8 +397,14 @@ function redirigirACuidado(plantaId) {
         }
     }
 
+    function redirigirACuidado(plantaId) {
+        window.location.href = `/web/plantas/cuidado?id=${plantaId}`;
+    }
+
     function verPlanta(plantaId) {
-        window.location.href = `vista-planta.html?id=${plantaId}`;
+        console.log('ID de planta:', plantaId);  // ← Agrega esto
+        console.log('URL completa:', `/web/plantas/vista-planta?id=${plantaId}`);  // ← Y esto
+        window.location.href = `/web/plantas/vista-planta?id=${plantaId}`;
     }
 
     function cerrarSesion() {
@@ -369,8 +413,6 @@ function redirigirACuidado(plantaId) {
             window.location.replace('/web/login');
         }
     }
-
-
 </script>
 </body>
 </html>

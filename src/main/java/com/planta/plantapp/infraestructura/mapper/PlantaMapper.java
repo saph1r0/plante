@@ -4,13 +4,11 @@ import com.planta.plantapp.dominio.modelo.cuidado.Cuidado;
 import com.planta.plantapp.dominio.modelo.cuidado.TipoCuidado;
 import com.planta.plantapp.dominio.modelo.planta.Etiqueta;
 import com.planta.plantapp.dominio.modelo.planta.Planta;
-import com.planta.plantapp.dominio.modelo.planta.dto.PlantaRequestDTO;
-import com.planta.plantapp.dominio.modelo.planta.dto.PlantaResponseDTO;
-import com.planta.plantapp.dominio.modelo.planta.dto.CuidadoDTO;
-import com.planta.plantapp.dominio.modelo.planta.dto.EtiquetaDTO;
+import com.planta.plantapp.dominio.modelo.planta.dto.*;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -98,6 +96,23 @@ public class PlantaMapper {
             }
             dto.setCuidados(cuidadosDto);
         }
+
+        return dto;
+    }
+
+    public static PlantaUsuarioDTO dominioAPlantaUsuarioDto(Planta planta) {
+        if (planta == null) return null;
+
+        PlantaUsuarioDTO dto = new PlantaUsuarioDTO();
+        dto.setId(planta.getId());
+        dto.setNombreComun(planta.getNombreComun());
+        dto.setNombreCientifico(planta.getNombreCientifico());
+        dto.setDescripcion(planta.getDescripcion());
+        dto.setImagenURL(planta.getImagenURL());
+        dto.setApodo(planta.getNombreComun());
+        dto.setUbicacion("Casa");
+        dto.setEstado("SALUDABLE");
+        dto.setFechaRegistro(new Date());
 
         return dto;
     }

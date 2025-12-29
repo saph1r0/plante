@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle de Planta - PlantCare</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="/login/css/plantas.css">
+  <style>
+    .plant-detail-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .plant-header {
+      background: linear-gradient(135deg, #81C784 0%, #66BB6A 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .plant-header h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 2.5rem;
+    }
+
+    .plant-header .scientific-name {
+      font-style: italic;
+      opacity: 0.9;
+      font-size: 1.2rem;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .plant-image-section {
+      position: relative;
+    }
+
+    .plant-main-image {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .plant-status-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .status-saludable { color: #28a745; }
+    .status-necesita-agua { color: #ffc107; }
+    .status-enferma { color: #dc3545; }
+
+    .plant-info-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .info-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .info-card h3 {
+      margin: 0 0 1rem 0;
+      color: #2E7D32;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .info-item:last-child {
+      border-bottom: none;
+    }
+
+    .info-item i {
+      color: #66BB6A;
+      width: 20px;
+      text-align: center;
+    }
+
+    .info-item strong {
+      min-width: 120px;
+      color: #555;
+    }
+
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .tag {
+      background: #E8F5E9;
+      color: #2E7D32;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .cuidados-section {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+
+    .cuidados-section h2 {
+      color: #2E7D32;
+      margin: 0 0 1.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .cuidados-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .cuidado-card {
+      background: #F1F8E9;
+      padding: 1.5rem;
+      border-radius: 8px;
+      border-left: 4px solid #66BB6A;
+    }
+
+    .cuidado-card h4 {
+      margin: 0 0 0.5rem 0;
+      color: #2E7D32;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .cuidado-card p {
+      margin: 0.5rem 0;
+      color: #555;
+      font-size: 0.9rem;
+    }
+
+    .historial-section {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .historial-section h2 {
+      color: #2E7D32;
+      margin: 0 0 1.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .historial-item {
+      padding: 1rem;
+      border-left: 3px solid #66BB6A;
+      background: #F9F9F9;
+      margin-bottom: 1rem;
+      border-radius: 4px;
+    }
+
+    .historial-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .historial-date {
+      color: #888;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .historial-tipo {
+      font-weight: bold;
+      color: #2E7D32;
+      margin-bottom: 0.25rem;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: #66BB6A;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #5CAF60;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 187, 106, 0.4);
+    }
+
+    .btn-secondary {
+      background: #E0E0E0;
+      color: #555;
+    }
+
+    .btn-secondary:hover {
+      background: #D0D0D0;
+    }
+
+    .btn-danger {
+      background: #dc3545;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #c82333;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: #888;
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #ddd;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 3rem;
+    }
+
+    .loading i {
+      font-size: 3rem;
+      color: #66BB6A;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+<header class="header">
+  <nav class="nav">
+    <h1><i class="fas fa-seedling"></i> PlantCare</h1>
+    <div class="nav-links">
+      <a href="/web/plantas/dashboard2"><i class="fas fa-chart-pie"></i> Dashboard</a>
+      <a href="/web/plantas/mis-plantas"><i class="fas fa-leaf"></i> Mis Plantas</a>
+      <a href="/web/plantas/registro"><i class="fas fa-plus"></i> Agregar Planta</a>
+      <button id="btn-cerrar-sesion"><i class="fas fa-sign-out-alt"></i> Salir</button>
+    </div>
+  </nav>
+</header>
+
+<div class="main-content">
+  <div class="breadcrumb">
+    <i class="fas fa-home"></i> <a href="/web/index">Inicio</a> /
+    <a href="/web/plantas/mis-plantas">Mis Plantas</a> /
+    <span id="breadcrumb-planta">Detalle</span>
+  </div>
+
+  <div id="loading" class="loading">
+    <i class="fas fa-spinner"></i>
+    <p>Cargando información de la planta...</p>
+  </div>
+
+  <div id="plant-content" class="plant-detail-container" style="display: none;">
+    <!-- Header con nombre -->
+    <div class="plant-header">
+      <h1 id="plant-name">Cargando...</h1>
+      <div class="scientific-name" id="plant-scientific"></div>
+    </div>
+
+    <!-- Grid principal -->
+    <div class="detail-grid">
+      <!-- Imagen -->
+      <div class="plant-image-section">
+        <img id="plant-image" class="plant-main-image" src="" alt="Planta">
+        <div id="plant-status" class="plant-status-badge"></div>
+      </div>
+
+      <!-- Información -->
+      <div class="plant-info-section">
+        <div class="info-card">
+          <h3><i class="fas fa-info-circle"></i> Información General</h3>
+          <div class="info-item">
+            <i class="fas fa-tag"></i>
+            <strong>Apodo:</strong>
+            <span id="plant-apodo">-</span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <strong>Ubicación:</strong>
+            <span id="plant-ubicacion">-</span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-calendar"></i>
+            <strong>Registrada:</strong>
+            <span id="plant-fecha">-</span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-heart"></i>
+            <strong>Cuidados totales:</strong>
+            <span id="plant-cuidados-count">0</span>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <h3><i class="fas fa-book"></i> Descripción</h3>
+          <p id="plant-descripcion">Sin descripción disponible.</p>
+        </div>
+
+        <div class="info-card">
+          <h3><i class="fas fa-tags"></i> Etiquetas</h3>
+          <div id="plant-tags" class="tags-container">
+            <span class="tag">Sin etiquetas</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cuidados recomendados -->
+    <div class="cuidados-section">
+      <h2><i class="fas fa-leaf"></i> Cuidados Recomendados</h2>
+      <div id="cuidados-grid" class="cuidados-grid"></div>
+    </div>
+
+    <!-- Historial -->
+    <div class="historial-section">
+      <h2><i class="fas fa-history"></i> Historial de Cuidados</h2>
+      <div id="historial-container"></div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="action-buttons">
+      <button class="btn btn-primary" id="btn-agregar-cuidado">
+        <i class="fas fa-plus"></i> Registrar Cuidado
+      </button>
+      <button class="btn btn-secondary" id="btn-editar">
+        <i class="fas fa-edit"></i> Editar Planta
+      </button>
+      <button class="btn btn-secondary" id="btn-volver">
+        <i class="fas fa-arrow-left"></i> Volver
+      </button>
+      <button class="btn btn-danger" id="btn-eliminar">
+        <i class="fas fa-trash"></i> Eliminar
+      </button>
+    </div>
+  </div>
+
+  <div id="error-message" style="display: none;" class="empty-state">
+    <i class="fas fa-exclamation-triangle"></i>
+    <h3>No se pudo cargar la planta</h3>
+    <p>La planta solicitada no existe o hubo un error al cargarla.</p>
+    <button class="btn btn-primary" onclick="window.location.href='/web/plantas/mis-plantas'">
+      Volver a Mis Plantas
+    </button>
+  </div>
+</div>
+
+<div id="notification" class="notification"></div>
+
+<script src="/login/js/plantas-api.js"></script>
+<script>
+  let plantaActual = null;
+  let plantaId = null;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Obtener ID de la planta de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    plantaId = urlParams.get('id');
+
+    if (!plantaId) {
+      mostrarError();
+      return;
+    }
+
+    cargarPlanta();
+    inicializarEventListeners();
+  });
+
+  function inicializarEventListeners() {
+    const btnCerrarSesion = document.getElementById('btn-cerrar-sesion');
+    if (btnCerrarSesion) {
+      btnCerrarSesion.addEventListener('click', cerrarSesion);
+    }
+
+    const btnVolver = document.getElementById('btn-volver');
+    if (btnVolver) {
+      btnVolver.addEventListener('click', () => {
+        window.location.href = '/web/plantas/dashboard2';
+      });
+    }
+
+    const btnAgregarCuidado = document.getElementById('btn-agregar-cuidado');
+    if (btnAgregarCuidado) {
+      btnAgregarCuidado.addEventListener('click', () => {
+        window.location.href = `/web/plantas/cuidado?id=${plantaId}`;
+      });
+    }
+
+    const btnEditar = document.getElementById('btn-editar');
+    if (btnEditar) {
+      btnEditar.addEventListener('click', () => {
+        window.location.href = `/web/plantas/editar?id=${plantaId}`;
+      });
+    }
+
+    const btnEliminar = document.getElementById('btn-eliminar');
+    if (btnEliminar) {
+      btnEliminar.addEventListener('click', eliminarPlanta);
+    }
+  }
+
+  async function cargarPlanta() {
+    try {
+      // Simular carga (reemplaza con tu API real)
+      const plantas = await PlantasAPI.obtenerMisPlantas();
+      plantaActual = plantas.find(p => p.id === plantaId);
+
+      if (!plantaActual) {
+        mostrarError();
+        return;
+      }
+
+      mostrarPlanta();
+    } catch (error) {
+      console.error('Error al cargar planta:', error);
+      mostrarError();
+    }
+  }
+
+  function mostrarPlanta() {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('plant-content').style.display = 'block';
+
+    // Header
+    document.getElementById('plant-name').textContent = plantaActual.apodo || 'Sin nombre';
+    document.getElementById('plant-scientific').textContent = plantaActual.planta?.nombreCientifico || '';
+    document.getElementById('breadcrumb-planta').textContent = plantaActual.apodo || 'Planta';
+
+    // Imagen
+    const imagen = document.getElementById('plant-image');
+    imagen.src = plantaActual.fotoPersonal || generarPlaceholder(plantaActual.apodo);
+    imagen.alt = plantaActual.apodo;
+
+    // Estado
+    const estadoBadge = document.getElementById('plant-status');
+    const estadoClase = plantaActual.estado.toLowerCase().replace('_', '-');
+    estadoBadge.textContent = plantaActual.estado.replace('_', ' ');
+    estadoBadge.className = `plant-status-badge status-${estadoClase}`;
+
+    // Información
+    document.getElementById('plant-apodo').textContent = plantaActual.apodo || '-';
+    document.getElementById('plant-ubicacion').textContent = plantaActual.ubicacion || '-';
+    document.getElementById('plant-fecha').textContent = formatearFecha(plantaActual.fechaRegistro);
+    document.getElementById('plant-cuidados-count').textContent = plantaActual.cuidados?.length || 0;
+    document.getElementById('plant-descripcion').textContent =
+            plantaActual.planta?.descripcion || 'Sin descripción disponible.';
+
+    // Etiquetas
+    mostrarEtiquetas();
+
+    // Cuidados recomendados
+    mostrarCuidadosRecomendados();
+
+    // Historial
+    mostrarHistorial();
+  }
+
+  function mostrarEtiquetas() {
+    const container = document.getElementById('plant-tags');
+    const etiquetas = plantaActual.planta?.etiquetas || [];
+
+    if (etiquetas.length === 0) {
+      container.innerHTML = '<span class="tag">Sin etiquetas</span>';
+      return;
+    }
+
+    container.innerHTML = etiquetas.map(etiqueta =>
+            `<span class="tag">${etiqueta.nombre}</span>`
+    ).join('');
+  }
+
+  function mostrarCuidadosRecomendados() {
+    const container = document.getElementById('cuidados-grid');
+    const cuidados = plantaActual.planta?.cuidados || [];
+
+    if (cuidados.length === 0) {
+      container.innerHTML = '<p>No hay cuidados recomendados registrados.</p>';
+      return;
+    }
+
+    container.innerHTML = cuidados.map(cuidado => `
+            <div class="cuidado-card">
+                <h4>
+                    <i class="fas fa-${getIconoCuidado(cuidado.tipo)}"></i>
+                    ${cuidado.tipo}
+                </h4>
+                <p><strong>Frecuencia:</strong> Cada ${cuidado.frecuencia} días</p>
+                <p>${cuidado.descripcion || ''}</p>
+            </div>
+        `).join('');
+  }
+
+  function mostrarHistorial() {
+    const container = document.getElementById('historial-container');
+    const historial = plantaActual.cuidados || [];
+
+    if (historial.length === 0) {
+      container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-clipboard-list"></i>
+                    <p>Aún no hay cuidados registrados para esta planta</p>
+                </div>
+            `;
+      return;
+    }
+
+    // Ordenar por fecha descendente
+    const historialOrdenado = [...historial].sort((a, b) =>
+            new Date(b.fecha) - new Date(a.fecha)
+    );
+
+    container.innerHTML = historialOrdenado.map(cuidado => `
+            <div class="historial-item">
+                <div class="historial-date">${formatearFecha(cuidado.fecha)}</div>
+                <div class="historial-tipo">
+                    <i class="fas fa-${getIconoCuidado(cuidado.tipo)}"></i>
+                    ${cuidado.tipo}
+                </div>
+                ${cuidado.notas ? `<p>${cuidado.notas}</p>` : ''}
+            </div>
+        `).join('');
+  }
+
+  function getIconoCuidado(tipo) {
+    const iconos = {
+      'RIEGO': 'tint',
+      'FERTILIZACION': 'seedling',
+      'PODA': 'cut',
+      'TRANSPLANTE': 'exchange-alt',
+      'LIMPIEZA': 'broom'
+    };
+    return iconos[tipo] || 'leaf';
+  }
+
+  function formatearFecha(fecha) {
+    const date = new Date(fecha);
+    const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('es-ES', opciones);
+  }
+
+  function generarPlaceholder(texto) {
+    return `https://via.placeholder.com/400x300/81C784/FFFFFF?text=${encodeURIComponent(texto)}`;
+  }
+
+  async function eliminarPlanta() {
+    if (!confirm(`¿Estás seguro de eliminar "${plantaActual.apodo}"? Esta acción no se puede deshacer.`)) {
+      return;
+    }
+
+    try {
+      await PlantasAPI.eliminarPlanta(plantaId);
+      UIUtils.mostrarNotificacion('Planta eliminada correctamente', 'success');
+      setTimeout(() => {
+        window.location.href = '/web/plantas/mis-plantas';
+      }, 1500);
+    } catch (error) {
+      UIUtils.mostrarNotificacion('Error al eliminar la planta', 'error');
+    }
+  }
+
+  function mostrarError() {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('error-message').style.display = 'block';
+  }
+
+  function cerrarSesion() {
+    if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+      localStorage.removeItem('usuarioActual');
+      window.location.replace('/web/login');
+    }
+  }
+</script>
+</body>
+</html>

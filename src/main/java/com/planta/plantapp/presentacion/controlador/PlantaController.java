@@ -6,6 +6,7 @@ import com.planta.plantapp.aplicacion.interfaces.IServicioPlanta;
 import com.planta.plantapp.dominio.modelo.planta.Planta;
 import com.planta.plantapp.dominio.modelo.planta.dto.PlantaRequestDTO;
 import com.planta.plantapp.dominio.modelo.planta.dto.PlantaResponseDTO;
+import com.planta.plantapp.dominio.modelo.planta.dto.PlantaUsuarioDTO;
 import com.planta.plantapp.infraestructura.mapper.PlantaMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -329,28 +330,14 @@ public class PlantaController {
      */
     @GetMapping("/usuario/{usuarioId}")
     @ResponseBody
-    public ResponseEntity<List<Map<String, Object>>> obtenerPlantasUsuario(@PathVariable String usuarioId) {
+    public ResponseEntity<List<PlantaUsuarioDTO>> obtenerPlantasUsuario(@PathVariable String usuarioId) {
         try {
             logger.info("Obteniendo plantas del usuario: {}", usuarioId);
 
-            // Por ahora, todas las plantas (luego filtrarás por usuario)
-            List<Planta> plantas = servicioPlanta.obtenerTodas();
+            List<Planta> plantas = servicioPlanta.buscarPorUsuario(Long.parseLong(usuarioId));
 
-            // Convertir a formato del frontend
-            List<Map<String, Object>> plantasUsuario = plantas.stream()
-                    .map(p -> {
-                        Map<String, Object> m = new HashMap<>();
-                        m.put("id", p.getId());
-                        m.put("nombreComun", p.getNombreComun());
-                        m.put("nombreCientifico", p.getNombreCientifico());
-                        m.put("descripcion", p.getDescripcion());
-                        m.put("imagenURL", p.getImagenURL());
-                        m.put(APODO, p.getNombreComun());
-                        m.put(UBICACION, "Casa");
-                        m.put("estado", ESTADO_SALUDABLE);
-                        m.put("fechaRegistro", new java.util.Date());
-                        return m;
-                    })
+            List<PlantaUsuarioDTO> plantasUsuario = plantas.stream()
+                    .map(PlantaMapper::dominioAPlantaUsuarioDto)
                     .toList();
 
             return ResponseEntity.ok(plantasUsuario);
@@ -403,9 +390,9 @@ public class PlantaController {
         return "login/editar-planta"; // ruta dentro de templates/login/
     }
 
-    @GetMapping("/vista")
+    @GetMapping("/vista-planta")
     public String mostrarVistaPlanta() {
-        logger.info(" Mostrando página 'Vista de Planta'");
-        return "login/vista-planta";
+        logger.info("Mostrando página 'Vista de Planta'");
+        return "login/vista-planta"; // Busca en templates/login/vista-planta.html
     }
 }
