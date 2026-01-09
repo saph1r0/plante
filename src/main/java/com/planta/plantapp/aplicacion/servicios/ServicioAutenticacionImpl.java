@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-@Service
+//@Service
 public class ServicioAutenticacionImpl implements IServicioAutenticacion {
 
     private static final Logger logger = LoggerFactory.getLogger(ServicioAutenticacionImpl.class);

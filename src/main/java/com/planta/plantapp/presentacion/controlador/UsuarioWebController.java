@@ -1,4 +1,5 @@
 package com.planta.plantapp.presentacion.controlador;
+import org.springframework.context.annotation.Profile;
 
 import com.planta.plantapp.aplicacion.interfaces.IServicioUsuario;
 import com.planta.plantapp.aplicacion.interfaces.IServicioAutenticacion;
@@ -17,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.HashMap;
-
+@Profile("no-usar")
 @Controller
 @RequestMapping("/web")
 public class UsuarioWebController {

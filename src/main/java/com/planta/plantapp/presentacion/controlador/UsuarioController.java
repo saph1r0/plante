@@ -1,4 +1,5 @@
 package com.planta.plantapp.presentacion.controlador;
+import org.springframework.context.annotation.Profile;
 
 import com.planta.plantapp.aplicacion.interfaces.IServicioUsuario;
 import com.planta.plantapp.aplicacion.interfaces.IServicioAutenticacion;
@@ -7,7 +8,7 @@ import com.planta.plantapp.dominio.usuario.modelo.Usuario;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+@Profile("no-usar")
 @RestController
 @RequestMapping("/usuarios")
 @CrossOrigin(origins = {"http://localhost:3000", "https://miapp.com"})

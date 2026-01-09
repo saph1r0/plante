@@ -294,38 +294,6 @@ public class PlantaController {
     }
 
     /**
-     * Registra una planta personal para un usuario específico
-     */
-    @PostMapping("/registro-personal")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> registrarPlantaPersonal(@RequestBody Map<String, Object> datos) {
-        Map<String, Object> response = new HashMap<>();
-
-        try {
-            String plantaId = (String) datos.get("plantaId");
-            String apodo = (String) datos.get(APODO);
-            String ubicacion = (String) datos.get(UBICACION);
-
-            Planta plantaGuardada = servicioPlanta.registrarPlantaPersonal(plantaId, apodo, ubicacion);
-
-            response.put(SUCCESS, true);
-            response.put("data", PlantaMapper.dominioADto(plantaGuardada));
-            return ResponseEntity.status(201).body(response);
-
-        } catch (PlantaNotFoundException | PlantaServiceException e) {
-            response.put(SUCCESS, false);
-            response.put(MESSAGE, e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-
-        } catch (Exception e) {
-            logger.error("Error inesperado: {}", e.getMessage(), e);
-            response.put(SUCCESS, false);
-            response.put(MESSAGE, "Error interno del servidor");
-            return ResponseEntity.status(500).body(response);
-        }
-    }
-
-    /**
      * Obtiene plantas del usuario
      */
     @GetMapping("/usuario/{usuarioId}")
