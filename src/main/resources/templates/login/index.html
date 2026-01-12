@@ -190,9 +190,11 @@
 </div>
 
 <!-- Enlace al archivo JavaScript usando Thymeleaf -->
+<script th:src="@{/login/js/auth.js}"></script>
 <script th:src="@{/login/js/home.js}"></script>
 <!-- Script para inicializar usuario en localStorage -->
 <script>
+    /*
 (async function inicializarUsuario() {
     console.log('🔍 Verificando usuario en localStorage...');
     
@@ -221,7 +223,7 @@
     } catch (error) {
         console.error('❌ Error al obtener usuario:', error);
     }
-})();
+})();*/
 </script>
 </body>
 </html>

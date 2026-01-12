@@ -459,18 +459,33 @@ function initializeAuthButtonsHome() {
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('🌱 Inicializando aplicación home con plantas reales...');
 
-    // Inicializar componentes básicos primero
     initializeSidebarHome();
     initializeSearchBarHome();
     initializeCarouselDragHome();
     initializePhotoModalCloseHome();
     initializeAuthButtonsHome();
 
-    // Cargar plantas estáticas como placeholder inicial
     loadCarouselImagesHome();
-
-    //Cargar plantas reales desde API
     await cargarPlantasDesdeAPI();
+
+    // 🔐 SOLO si hay token
+    if (localStorage.getItem("token")) {
+        await cargarUsuarioActual();
+    }
 
     console.log('✅ Aplicación home inicializada correctamente');
 });
+
+async function cargarUsuarioActual() {
+    const res = await fetchProtegido("/api/dashboard");
+    if (!res) return;
+
+    const data = await res.json();
+    console.log("👤 Usuario:", data.mensaje);
+
+    // Si quieres mostrarlo en pantalla:
+    const saludo = document.getElementById("usuario-nombre");
+    if (saludo) {
+        saludo.textContent = data.mensaje;
+    }
+}

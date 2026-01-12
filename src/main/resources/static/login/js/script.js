@@ -143,7 +143,7 @@ function showSuccessMessage(message) {
     }, 3000);
 }
 
-function handleFormSubmit(event, formType) {
+/*function handleFormSubmit(event, formType) {
     function handleFormSubmit(event, formType) {
         event.preventDefault();
 
@@ -181,6 +181,68 @@ function handleFormSubmit(event, formType) {
         }
     }
 
+}*/
+async function handleFormSubmit(event, formType) {
+    event.preventDefault();
+
+    if (!validateForm(formType)) return;
+
+    try {
+        let url = "";
+        let body = {};
+
+        if (formType === "login") {
+            body = {
+                correo: document.getElementById("login-correo").value,
+                contrasena: document.getElementById("login-contrasena").value
+            };
+            url = "http://localhost:8082/api/auth/login";
+        }
+
+        if (formType === "register") {
+            body = {
+                nombre: document.querySelector("#registerForm input[name='nombre']").value,
+                correo: document.getElementById("register-correo").value,
+                contrasena: document.getElementById("register-contrasena").value
+            };
+            url = "http://localhost:8082/api/auth/registro";
+        }
+
+        const res = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (!res.ok) {
+            showSuccessMessage(
+                res.status === 401
+                    ? "Credenciales inválidas"
+                    : "Error del servidor"
+            );
+            return;
+        }
+
+        if (formType === "login") {
+            const data = await res.json();
+
+            // 🔐 Guardar JWT
+            localStorage.setItem("token", data.token);
+
+            showSuccessMessage("¡Sesión iniciada!");
+
+            setTimeout(() => {
+                window.location.href = "/web/dashboard";
+            }, 1000);
+        } else {
+            showSuccessMessage("¡Registrado exitosamente!");
+        }
+
+    } catch (error) {
+        showSuccessMessage("Error de conexión con el servidor");
+    }
 }
 
 

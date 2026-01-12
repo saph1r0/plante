@@ -69,17 +69,40 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/web/registros/**").authenticated()
-                        .anyRequest().permitAll()
+
+                .sessionManagement(sess ->
+                        sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                // Esto asegura que no se creen sesiones de servidor (usa solo el token)
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // Registra el filtro JWT antes que el de usuario/password
+
+                .authorizeHttpRequests(auth -> auth
+
+                        // 🟢 VISTAS Y ESTÁTICOS (SIEMPRE LIBRES)
+                        .requestMatchers(
+                                "/",
+                                "/web/**",
+                                "login/css/**",
+                                "login/js/**",
+                                "/css/**",
+                                "/js/**",
+                                "/static/**",
+                                "/images/**",
+                                "/static/**",
+                                "/error"
+                        ).permitAll()
+
+                        // 🔐 API PROTEGIDA POR JWT
+                        .requestMatchers("/api/**").authenticated()
+
+                        .anyRequest().denyAll()
+                )
+
+                // 🔐 Filtro JWT
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
 }
