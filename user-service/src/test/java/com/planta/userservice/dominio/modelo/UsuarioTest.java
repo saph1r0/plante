@@ -1,4 +1,4 @@
-package com.planta.plantapp.dominio.usuario.modelo;
+package com.planta.userservice.dominio.modelo;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

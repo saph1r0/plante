@@ -1,4 +1,4 @@
-package com.planta.plantapp.dominio.usuario.modelo.dto;
+package com.planta.userservice.dominio.modelo.dto;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

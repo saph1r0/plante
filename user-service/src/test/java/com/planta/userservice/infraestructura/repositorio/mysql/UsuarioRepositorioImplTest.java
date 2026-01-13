@@ -1,8 +1,8 @@
-package com.planta.plantapp.infraestructura.repositorio.mysql;
+package com.planta.userservice.infraestructura.repositorio.mysql;
 
-import com.planta.plantapp.dominio.usuario.modelo.Usuario;
-import com.planta.plantapp.infraestructura.entidad.UsuarioEntidad;
-import com.planta.plantapp.infraestructura.repositorio.mysql.jpa.UsuarioJpaRepositorio;
+import com.planta.userservice.dominio.modelo.Usuario;
+import com.planta.userservice.infraestructura.entidad.UsuarioEntidad;
+import com.planta.userservice.infraestructura.repositorio.mysql.jpa.UsuarioJpaRepositorio;
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -73,12 +73,28 @@ class UsuarioRepositorioImplTest {
 
     @Test
     void guardar_deberiaLlamarSaveDelRepositorio() {
-        Usuario usuario = new Usuario(1L, "Pedro", "pedro@gmail.com", "clave12234653");
+        Usuario usuario = new Usuario(null, "Pedro", "pedro@gmail.com", "clave12234653");
 
-        usuarioRepositorioImpl.guardar(usuario);
+        UsuarioEntidad entidadGuardada = new UsuarioEntidad(
+                1L,
+                "Pedro",
+                "pedro@gmail.com",
+                "clave12234653"
+        );
 
-        verify(usuarioJpaRepositorio, times(1)).save(any(UsuarioEntidad.class));
+        when(usuarioJpaRepositorio.save(any(UsuarioEntidad.class)))
+                .thenReturn(entidadGuardada);
+
+        Usuario resultado = usuarioRepositorioImpl.guardar(usuario);
+
+        assertNotNull(resultado);
+        assertEquals(1L, resultado.getId());
+        assertEquals("Pedro", resultado.getNombre());
+
+        verify(usuarioJpaRepositorio, times(1))
+                .save(any(UsuarioEntidad.class));
     }
+
 
     @Test
     void eliminar_deberiaLlamarDeleteByIdDelRepositorio() {
