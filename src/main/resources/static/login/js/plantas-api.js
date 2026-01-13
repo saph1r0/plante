@@ -2,10 +2,10 @@
 
 // Archivo: plantas-api.js sincronizado con RegistroPlantaController y Facade
 const API_CONFIG = {
-    // URL base que incluye /api para coincidir con @RequestMapping("/api/registros")
-    BASE_URL: 'http://localhost:8080/api',
-    REGISTROS_URL: 'http://localhost:8080/api/registros',
-    CATALOGO_URL: 'http://localhost:8080/web/plantas' // Mantenemos web/plantas si ese controller no ha cambiado a /api
+    BASE_URL: 'http://localhost:8082/api',
+    REGISTROS_URL: 'http://localhost:8081/api/registros',
+    CATALOGO_URL: 'http://localhost:8080/web/plantas'
+
 };
 
 // Usuario dinámico desde localStorage (conectado a user-service)

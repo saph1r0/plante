@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Planta - PlantCare</title>
-    
+
     <!-- Iconos (Font Awesome) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+
     <!-- Estilos principales -->
     <link rel="stylesheet" href="/login/css/plantas.css">
-    
+
     <!-- Estilos específicos para esta página -->
     <style>
         .readonly-info {
@@ -67,7 +67,7 @@
          CONTENIDO PRINCIPAL
          ======================================== -->
     <div class="main-content">
-        
+
         <!-- Estado: Cargando -->
         <div id="loading" class="text-center" style="padding: 3rem;">
             <i class="fas fa-spinner fa-spin fa-3x" style="color: var(--color-green-medium);"></i>
@@ -88,12 +88,12 @@
 
         <!-- Formulario de edición (visible cuando carga) -->
         <div id="contenido-edicion" class="hidden">
-            
+
             <!-- Breadcrumb -->
             <div class="breadcrumb">
-                <i class="fas fa-home"></i> 
-                <a href="/web/index">Inicio</a> / 
-                <a href="/web/plantas/mis-plantas">Mis Plantas</a> / 
+                <i class="fas fa-home"></i>
+                <a href="/web/index">Inicio</a> /
+                <a href="/web/plantas/mis-plantas">Mis Plantas</a> /
                 <span id="breadcrumb-planta">Editar Planta</span>
             </div>
 
@@ -167,7 +167,7 @@
 
                     <div class="info-automatica">
                         <small>
-                            <i class="fas fa-info-circle"></i> 
+                            <i class="fas fa-info-circle"></i>
                             <span id="info-registro"></span>
                         </small>
                     </div>
@@ -196,7 +196,16 @@
     </div>
 
     <!-- MODALES -->
-    <div id="modal-eliminar" class="modal"> ... </div>
+    <div id="modal-eliminar" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-exclamation-triangle"></i> Confirmar eliminación</h3>
+            <p>¿Estás seguro de que quieres eliminar a <strong id="nombre-eliminar"></strong>? Esta acción es irreversible.</p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="cerrarModalEliminar()">Cancelar</button>
+                <button class="btn btn-danger" onclick="eliminarPlanta()">Eliminar Definitivamente</button>
+            </div>
+        </div>
+    </div>
     <div id="modal-cancelar" class="modal"> ... </div>
     <div id="notification" class="notification"></div>
 
@@ -394,8 +403,13 @@
         // ELIMINAR PLANTA
         // ========================================
         function confirmarEliminar() {
-            document.getElementById('nombre-eliminar').textContent = plantaActual.apodo;
-            document.getElementById('modal-eliminar').classList.add('visible');
+            const modal = document.getElementById('modal-eliminar');
+            const nombreTxt = document.getElementById('nombre-eliminar');
+
+            if (plantaActual && modal) {
+                nombreTxt.textContent = plantaActual.apodo;
+                modal.classList.add('visible');
+            }
         }
 
         async function eliminarPlanta() {
