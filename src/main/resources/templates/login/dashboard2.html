@@ -148,13 +148,26 @@
     async function cargarEstadisticas() {
         try {
             estadisticasUsuario = await PlantasAPI.obtenerEstadisticas();
-            plantasUsuario = await PlantasAPI.obtenerMisPlantas();
 
+            const registrosRaw = await PlantasAPI.obtenerMisPlantas();
+
+            plantasUsuario = await Promise.all(registrosRaw.map(async (reg) => {
+                try {
+                    const detalleCatalogo = await CatalogoAPI.obtenerPorId(reg.plantaId);
+                    return { ...reg, planta: detalleCatalogo };
+                } catch (err) {
+                    console.error(`Error al traer catálogo para ID: ${reg.plantaId}`);
+                    return { ...reg, planta: { nombreComun: 'Desconocida', tipo: 'N/A' } };
+                }
+            }));
+
+            // 4. Actualizar la interfaz con los datos ya enriquecidos
             actualizarEstadisticas();
             mostrarPlantasAtencion();
             mostrarUltimasPlantas();
             mostrarProximosCuidados();
         } catch (error) {
+            console.error("Error cargando dashboard:", error);
             UIUtils.mostrarNotificacion('Error al cargar el dashboard.', 'error');
         }
     }
@@ -199,10 +212,9 @@
     // Muestra plantas que necesitan atención
     function mostrarPlantasAtencion() {
         const container = document.getElementById('plantas-atencion');
-        const plantasAtencion = plantasUsuario.filter(planta => {
-            return ['NECESITA_AGUA', 'ENFERMA', 'MARCHITA'].includes(planta.estado) ||
-                (planta.ultimoCuidado && daysSince(planta.ultimoCuidado) > 7);
-        });
+        const plantasAtencion = plantasUsuario.filter(planta =>
+            ['NECESITA_AGUA', 'ENFERMA', 'MARCHITA'].includes(planta.estado)
+        );
 
         if (plantasAtencion.length === 0) {
             container.innerHTML = crearEstadoVacio('¡Excelente!', 'Todas tus plantas están bien cuidadas');
@@ -212,17 +224,20 @@
         container.innerHTML = plantasAtencion.map(planta => {
             const estado = planta.estado.toLowerCase().replace('_', '-');
             const dias = daysSince(planta.ultimoCuidado || planta.fechaRegistro);
-            const nombre = planta.planta?.nombreComun || 'Planta desconocida';
+
+            // Datos del catálogo enriquecidos
+            const nombreCatalogo = planta.planta?.nombreComun || 'Planta';
+            const imagenSrc = planta.fotoPersonal || (planta.planta && planta.planta.imagenURL) || generarPlaceholder(planta.apodo);
 
             return `
                 <div class="card plant-card" data-planta-id="${planta.id}">
                     <div class="plant-image">
-                        <img src="${planta.fotoPersonal || generarPlaceholder(planta.apodo)}" alt="${planta.apodo}">
+                        <img src="${imagenSrc}" alt="${planta.apodo}" onerror="this.src='${generarPlaceholder(planta.apodo)}'">
                         <span class="plant-status status-${estado}">${planta.estado.replace('_', ' ')}</span>
                     </div>
                     <div class="plant-info">
                         <h3>${planta.apodo}</h3>
-                        <div class="scientific-name">${nombre}</div>
+                        <div class="scientific-name">${nombreCatalogo}</div>
                         <div class="plant-meta">
                             <span><i class="fas fa-map-marker-alt"></i> ${planta.ubicacion}</span>
                             <span><i class="fas fa-clock"></i> ${dias} días sin cuidado</span>
@@ -246,31 +261,30 @@
             .slice(0, 3);
 
         if (ultimas.length === 0) {
-            container.innerHTML = crearEstadoVacio(
-                'Sin plantas registradas',
-                'Aún no hay plantas. ¡Agrégalas pronto!'
-            );
+            container.innerHTML = crearEstadoVacio('Sin plantas registradas', 'Aún no hay plantas. ¡Agrégalas pronto!');
             return;
         }
 
         container.innerHTML = ultimas.map(planta => {
             const estado = planta.estado.toLowerCase().replace('_', '-');
             const dias = daysSince(planta.fechaRegistro);
-            const nombre = planta.planta?.nombreComun || 'Planta desconocida';
+
+            // --- LÓGICA REUTILIZADA DE MIS-PLANTAS ---
+            const nombreComun = planta.planta?.nombreComun || 'Planta desconocida';
+            const imagenSrc = planta.fotoPersonal || (planta.planta && planta.planta.imagenURL) || generarPlaceholder(planta.apodo);
 
             return `
                 <div class="card plant-card" data-planta-id="${planta.id}">
                     <div class="plant-image">
-                        <img src="${planta.fotoPersonal || generarPlaceholder(planta.apodo)}" alt="${planta.apodo}">
+                        <img src="${imagenSrc}" alt="${planta.apodo}" onerror="this.src='${generarPlaceholder(planta.apodo)}'">
                         <span class="plant-status status-${estado}">${planta.estado.replace('_', ' ')}</span>
                     </div>
                     <div class="plant-info">
                         <h3>${planta.apodo}</h3>
-                        <div class="scientific-name">${nombre}</div>
+                        <div class="scientific-name">${nombreComun}</div>
                         <div class="plant-meta">
                             <span><i class="fas fa-map-marker-alt"></i> ${planta.ubicacion}</span>
                             <span><i class="fas fa-calendar"></i> ${dias} días registrada</span>
-                            <span><i class="fas fa-heart"></i> ${planta.cuidados?.length || 0} cuidados</span>
                         </div>
                     </div>
                 </div>
@@ -388,23 +402,15 @@
 
     // Acciones rápidas
     async function cuidarRapido(plantaId, tipo = 'riego') {
-        try {
-            await PlantasAPI.registrarCuidado(plantaId, tipo, 'Cuidado rápido desde dashboard');
-            UIUtils.mostrarNotificacion(`${tipo.charAt(0).toUpperCase() + tipo.slice(1)} aplicado.`, 'success');
-            setTimeout(cargarEstadisticas, 1000);
-        } catch (error) {
-            UIUtils.mostrarNotificacion('Error al aplicar cuidado.', 'error');
-        }
+    UIUtils.mostrarNotificacion('El servicio de cuidados rápidos está siendo migrado.', 'info');
+}
+
+    function verPlanta(plantaId) {
+        window.location.href = `/web/plantas/vista-planta?id=${plantaId}`;
     }
 
     function redirigirACuidado(plantaId) {
         window.location.href = `/web/plantas/cuidado?id=${plantaId}`;
-    }
-
-    function verPlanta(plantaId) {
-        console.log('ID de planta:', plantaId);  // ← Agrega esto
-        console.log('URL completa:', `/web/plantas/vista-planta?id=${plantaId}`);  // ← Y esto
-        window.location.href = `/web/plantas/vista-planta?id=${plantaId}`;
     }
 
     function cerrarSesion() {

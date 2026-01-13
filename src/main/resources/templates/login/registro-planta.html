@@ -33,7 +33,7 @@
         <div class="page-header">
             <h1><i class="fas fa-plus-circle"></i> Agregar Nueva Planta</h1>
             <div>
-                <a href="dashboard2.html" class="btn btn-secondary">
+                <a href="/web/plantas/dashboard2" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Volver
                 </a>
             </div>
@@ -220,7 +220,12 @@
                         <div class="option-name" style="font-weight: bold; color: var(--color-green-dark);">${planta.nombreComun}</div>
                         <div class="option-scientific" style="font-style: italic; color: #666;">${planta.nombreCientifico}</div>
                         <div class="option-info" style="font-size: 0.85em; color: #555;">
-                            <i class="fas fa-tag"></i> ${planta.tipo} | ${(planta.descripcion || '').substring(0, 60)}...
+                            <i class="fas fa-tag"></i>
+                            ${planta.etiquetas && planta.etiquetas.length > 0
+                                ? planta.etiquetas.map(e => e.nombre).join(', ')
+                                : 'Sin etiquetas'
+                            }
+                            | ${(planta.descripcion || '').substring(0, 60)}...
                         </div>
                     </div>
                 `).join('');
@@ -280,7 +285,12 @@
             
             if (nombreElem) nombreElem.textContent = planta.nombreComun;
             if (cientificoElem) cientificoElem.textContent = planta.nombreCientifico;
-            if (tipoElem) tipoElem.textContent = planta.tipo;
+            if (tipoElem) {
+                tipoElem.textContent =
+                    planta.etiquetas && planta.etiquetas.length > 0
+                        ? planta.etiquetas.map(e => e.nombre).join(', ')
+                        : 'Sin etiquetas';
+            }
             if (descripcionElem) descripcionElem.textContent = planta.descripcion;
             
             // Ocultar dropdown
@@ -413,8 +423,8 @@
                     apodo: document.getElementById('apodo').value.trim(),
                     ubicacion: document.getElementById('ubicacion').value.trim(),
                     estado: document.getElementById('estado-inicial').value,
-                    notas: document.getElementById('notas').value.trim() || null,
-                    fotoPersonal: document.getElementById('foto-url').value.trim() || null
+                    fotoPersonal: document.getElementById('foto-url').value.trim() || null,
+                    notas: document.getElementById('notas').value.trim() || null
                 };
 
                 console.log(' Datos preparados para envío:', datosPlanta);
@@ -424,20 +434,16 @@
                 }
                 
                 const resultado = await PlantasAPI.registrarPlanta(datosPlanta);
-                
-                if (resultado.success) {
-                    console.log(' Planta registrada exitosamente en MongoDB');
-                    mostrarNotificacion('¡Planta registrada exitosamente en MongoDB!', 'success');
-                    
-                    // Limpiar formulario
+
+                if (resultado && (resultado.id || resultado.success)) {
+                    console.log('✅ Planta registrada exitosamente');
+                    mostrarNotificacion('¡Planta registrada con éxito!', 'success');
+
                     limpiarFormulario();
-                    
-                    // Redirigir después de un momento
+
                     setTimeout(() => {
                         window.location.href = '/web/plantas/mis-plantas';
                     }, 1500);
-                } else {
-                    throw new Error(resultado.message || 'Error desconocido al registrar planta');
                 }
                 
             } catch (error) {

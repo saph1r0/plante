@@ -1,6 +1,6 @@
 package com.planta.plantapp.aplicacion.servicios;
 
-import com.planta.plantapp.aplicacion.interfaces.IServicioPlanta;
+import com.planta.plantapp.aplicacion.excepciones.RegistroPlantaNoFoundException;
 import com.planta.plantapp.aplicacion.interfaces.IServicioRegistroPlanta;
 import com.planta.plantapp.dominio.modelo.planta.EstadoPlanta;
 import com.planta.plantapp.dominio.modelo.planta.dto.RegistroPlantaRequestDTO;
@@ -15,19 +15,16 @@ import static org.mockito.Mockito.*;
 class RegistroPlantaFacadeTest {
 
     private IServicioRegistroPlanta servicioRegistro;
-    private IServicioPlanta servicioPlanta;
     private RegistroPlantaFacade facade;
 
     @BeforeEach
     void setUp() {
         servicioRegistro = mock(IServicioRegistroPlanta.class);
-        servicioPlanta = mock(IServicioPlanta.class);
-        facade = new RegistroPlantaFacade(servicioRegistro, servicioPlanta);
+        facade = new RegistroPlantaFacade(servicioRegistro);
     }
 
     @Test
     void actualizar_actualizaCamposCorrectamente() {
-        // Arrange
         RegistroPlantaDocumento existente = new RegistroPlantaDocumento();
         existente.setId("1");
         existente.setApodo("Viejo");
@@ -44,10 +41,8 @@ class RegistroPlantaFacadeTest {
         request.setEstado("ENFERMA");
         request.setNotas("Notas nuevas");
 
-        // Act
         RegistroPlantaResponseDTO response = facade.actualizar("1", request);
 
-        // Assert
         assertEquals("Nuevo", response.getApodo());
         assertEquals("Cocina", response.getUbicacion());
         assertEquals("ENFERMA", response.getEstado());
@@ -58,18 +53,16 @@ class RegistroPlantaFacadeTest {
 
     @Test
     void actualizar_lanzaExcepcion_siNoExisteRegistro() {
-        // Arrange
         when(servicioRegistro.obtenerPorId("no-existe")).thenReturn(null);
 
         RegistroPlantaRequestDTO request = new RegistroPlantaRequestDTO();
 
-        // Act + Assert
-        RuntimeException ex = assertThrows(
-                RuntimeException.class,
+        RegistroPlantaNoFoundException ex = assertThrows(
+                RegistroPlantaNoFoundException.class,
                 () -> facade.actualizar("no-existe", request)
         );
 
-        assertEquals("Registro de planta no encontrado", ex.getMessage());
+        assertTrue(ex.getMessage().contains("no-existe"));
         verify(servicioRegistro, never()).guardar(any());
     }
 }

@@ -1,7 +1,6 @@
 package com.planta.plantapp.dominio.modelo.planta.dto;
 
 import java.util.Date;
-import java.util.Map;
 
 public class RegistroPlantaResponseDTO {
 
@@ -15,10 +14,6 @@ public class RegistroPlantaResponseDTO {
     private String fotoPersonal;
     private String notas;
 
-    // planta del catálogo 
-    private Map<String, Object> planta;
-
-    // getters y setters
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -45,7 +40,4 @@ public class RegistroPlantaResponseDTO {
 
     public String getNotas() { return notas; }
     public void setNotas(String notas) { this.notas = notas; }
-
-    public Map<String, Object> getPlanta() { return planta; }
-    public void setPlanta(Map<String, Object> planta) { this.planta = planta; }
 }

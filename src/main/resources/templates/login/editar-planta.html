@@ -215,17 +215,27 @@
         // CARGAR PLANTA DESDE EL BACKEND
         // ========================================
         async function cargarPlanta() {
-            plantaId = obtenerParametroURL('id');
-            if (!plantaId) return mostrarError();
-
             try {
-                plantaActual = await PlantasAPI.obtenerPlantaPorId(plantaId);
-                if (!plantaActual) return mostrarError();
+                const urlParams = new URLSearchParams(window.location.search);
+                plantaId = urlParams.get('id');
 
-                datosOriginales = JSON.parse(JSON.stringify(plantaActual));
+                if (!plantaId) throw new Error('ID no proporcionado');
+
+                // 1. Obtener registro del microservicio de registros (8080) [cite: 19, 42]
+                const registro = await PlantasAPI.obtenerPlantaPorId(plantaId);
+
+                // 2. Orquestación: Obtener info del catálogo para mostrarla (solo lectura)
+                const infoCatalogo = await CatalogoAPI.obtenerPorId(registro.plantaId);
+
+                // Unimos los datos para la vista
+                plantaActual = { ...registro, planta: infoCatalogo };
+                plantaOriginal = plantaActual;
+
+                // 3. Pintar los datos en el formulario
                 mostrarFormulario();
+
             } catch (error) {
-                console.error('Error cargando planta:', error);
+                console.error('Error al cargar datos:', error);
                 mostrarError();
             }
         }
@@ -235,7 +245,6 @@
         // ========================================
         function mostrarFormulario() {
             const { planta: plantaCatalogo } = plantaActual;
-
             document.getElementById('loading').classList.add('hidden');
             document.getElementById('contenido-edicion').classList.remove('hidden');
 
@@ -243,38 +252,37 @@
             document.getElementById('breadcrumb-planta').textContent = `Editar ${plantaActual.apodo}`;
             document.title = `Editar ${plantaActual.apodo} - PlantCare`;
 
-            // Datos del catálogo
             if (plantaCatalogo) {
-                document.getElementById('nombre-catalogo').textContent = plantaCatalogo.nombreComun || 'N/A';
-                document.getElementById('cientifico-catalogo').textContent = plantaCatalogo.nombreCientifico || 'N/A';
+                document.getElementById('nombre-catalogo').textContent = plantaCatalogo.nombreComun || 'No disponible';
+                document.getElementById('cientifico-catalogo').textContent = plantaCatalogo.nombreCientifico || 'No disponible';
                 document.getElementById('tipo-catalogo').textContent = plantaCatalogo.tipo || 'N/A';
-                document.getElementById('descripcion-catalogo').textContent = plantaCatalogo.descripcion || 'N/A';
+                document.getElementById('descripcion-catalogo').textContent = plantaCatalogo.descripcion || 'Sin descripción';
             }
 
-            // Datos editables
             document.getElementById('apodo').value = plantaActual.apodo || '';
             document.getElementById('ubicacion').value = plantaActual.ubicacion || '';
-            document.getElementById('estado').value = plantaActual.estado || 'SALUDABLE';
 
-            if (plantaActual.fechaObtencion) {
-                const fecha = new Date(plantaActual.fechaObtencion);
+            if (plantaActual.estado) {
+                document.getElementById('estado').value = plantaActual.estado;
+            }
+
+            if (plantaActual.fechaRegistro) {
+                const fecha = new Date(plantaActual.fechaRegistro);
                 document.getElementById('fecha-obtencion').value = fecha.toISOString().split('T')[0];
             }
 
             document.getElementById('foto-url').value = plantaActual.fotoPersonal || '';
             document.getElementById('notas').value = plantaActual.notas || '';
 
-            // Foto actual
             const imgActual = document.getElementById('img-actual');
-            imgActual.src = plantaActual.fotoPersonal || 
-                `https://via.placeholder.com/200x150/C8E6C9/388E3C?text=${encodeURIComponent(plantaActual.apodo)}`;
+            imgActual.src = plantaActual.fotoPersonal ||
+                           (plantaCatalogo ? plantaCatalogo.imagenURL : '') ||
+                           'https://via.placeholder.com/200';
 
-            // Info de registro
-            const fechaRegistro = new Date(plantaActual.fechaRegistro);
-            const dias = Math.floor((new Date() - fechaRegistro) / (1000 * 60 * 60 * 24));
-            const totalCuidados = plantaActual.bitacoras?.length || 0;
-            document.getElementById('info-registro').textContent = 
-                `Registrada el ${fechaRegistro.toLocaleDateString()} (${dias} días) • ${totalCuidados} cuidados`;
+            const fechaReg = new Date(plantaActual.fechaRegistro);
+            const dias = Math.floor((new Date() - fechaReg) / (1000 * 60 * 60 * 24));
+            document.getElementById('info-registro').textContent =
+                `Registrada el ${fechaReg.toLocaleDateString()} (hace ${dias} días)`;
 
             configurarDeteccionCambios();
         }
@@ -344,32 +352,39 @@
         // GUARDAR CAMBIOS
         // ========================================
         async function guardarCambios(event) {
-            event.preventDefault();
-            const errores = validarFormulario();
-            if (errores.length > 0) return mostrarErrores(errores);
+            if (event) event.preventDefault();
 
-            mostrarErrores([]);
             const btn = document.getElementById('btn-guardar');
+
+            if (!btn) {
+                console.error("No se encontró el botón con ID 'btn-guardar'");
+                return;
+            }
+
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
 
-            try {
-                const datos = {
-                    apodo: document.getElementById('apodo').value.trim(),
-                    ubicacion: document.getElementById('ubicacion').value.trim(),
-                    estado: document.getElementById('estado').value,
-                    fechaObtencion: document.getElementById('fecha-obtencion').value || null,
-                    fotoPersonal: document.getElementById('foto-url').value.trim() || null,
-                    notas: document.getElementById('notas').value.trim() || null
-                };
+            const datosActualizados = {
+                plantaId: plantaOriginal.plantaId,
+                apodo: document.getElementById('apodo').value.trim(),
+                ubicacion: document.getElementById('ubicacion').value.trim(),
+                estado: document.getElementById('estado').value,
+                fotoPersonal: document.getElementById('foto-url').value.trim() || null,
+                notas: document.getElementById('notas').value.trim() || null
+            };
 
-                await PlantasAPI.actualizarPlanta(plantaId, datos);
-                mostrarNotificacion('¡Cambios guardados exitosamente!', 'success');
+            try {
+                await PlantasAPI.actualizarPlanta(plantaId, datosActualizados);
+
                 hayCambios = false;
-                setTimeout(() => window.location.href = `/web/plantas/vista?id=${plantaId}`, 1500);
+                UIUtils.mostrarNotificacion('¡Cambios guardados con éxito!', 'success');
+
+                setTimeout(() => {
+                    window.location.href = `/web/plantas/vista-planta?id=${plantaId}`;
+                }, 1500);
             } catch (error) {
-                mostrarNotificacion('Error al guardar: ' + error.message, 'error');
-            } finally {
+                console.error('Error al actualizar:', error);
+                UIUtils.mostrarNotificacion('Error al guardar los cambios', 'error');
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-save"></i> Guardar Cambios';
             }
@@ -398,11 +413,13 @@
         // CANCELAR EDICIÓN
         // ========================================
         function cancelarEdicion() {
-            hayCambios
-                ? document.getElementById('modal-cancelar').classList.add('visible')
-                : window.location.href = '/web/plantas/mis-plantas';
+            if (hayCambios) {
+                if (!confirm('Tienes cambios sin guardar. ¿Deseas salir de todas formas?')) {
+                    return;
+                }
+            }
+            window.location.href = '/web/plantas/mis-plantas';
         }
-
         function confirmarCancelacion() {
             window.location.href = '/web/plantas/mis-plantas';
         }

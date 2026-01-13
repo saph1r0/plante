@@ -469,35 +469,44 @@
 
   async function cargarPlanta() {
     try {
-      // Simular carga (reemplaza con tu API real)
-      const plantas = await PlantasAPI.obtenerMisPlantas();
-      plantaActual = plantas.find(p => p.id === plantaId);
+        const registro = await PlantasAPI.obtenerPlantaPorId(plantaId);
 
-      if (!plantaActual) {
-        mostrarError();
-        return;
-      }
+        if (!registro) {
+            mostrarError();
+            return;
+        }
 
-      mostrarPlanta();
+        try {
+            const detalleCatalogo = await CatalogoAPI.obtenerPorId(registro.plantaId);
+            plantaActual = { ...registro, planta: detalleCatalogo };
+        } catch (catError) {
+            console.warn('⚠️ No se pudo obtener la información del catálogo:', catError);
+            plantaActual = registro;
+        }
+
+        mostrarPlanta();
     } catch (error) {
-      console.error('Error al cargar planta:', error);
-      mostrarError();
+        console.error('❌ Error al cargar planta:', error);
+        mostrarError();
     }
-  }
+}
 
-  function mostrarPlanta() {
+function mostrarPlanta() {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('plant-content').style.display = 'block';
 
-    // Header
     document.getElementById('plant-name').textContent = plantaActual.apodo || 'Sin nombre';
-    document.getElementById('plant-scientific').textContent = plantaActual.planta?.nombreCientifico || '';
     document.getElementById('breadcrumb-planta').textContent = plantaActual.apodo || 'Planta';
 
-    // Imagen
+    document.getElementById('plant-scientific').textContent =
+        plantaActual.planta?.nombreCientifico || 'Especie no identificada';
+    document.getElementById('plant-descripcion').textContent =
+        plantaActual.planta?.descripcion || 'Sin descripción disponible.';
+
     const imagen = document.getElementById('plant-image');
-    imagen.src = plantaActual.fotoPersonal || generarPlaceholder(plantaActual.apodo);
-    imagen.alt = plantaActual.apodo;
+    imagen.src = plantaActual.fotoPersonal ||
+                 (plantaActual.planta?.imagenURL) ||
+                 generarPlaceholder(plantaActual.apodo);
 
     // Estado
     const estadoBadge = document.getElementById('plant-status');
@@ -505,24 +514,15 @@
     estadoBadge.textContent = plantaActual.estado.replace('_', ' ');
     estadoBadge.className = `plant-status-badge status-${estadoClase}`;
 
-    // Información
     document.getElementById('plant-apodo').textContent = plantaActual.apodo || '-';
     document.getElementById('plant-ubicacion').textContent = plantaActual.ubicacion || '-';
     document.getElementById('plant-fecha').textContent = formatearFecha(plantaActual.fechaRegistro);
     document.getElementById('plant-cuidados-count').textContent = plantaActual.cuidados?.length || 0;
-    document.getElementById('plant-descripcion').textContent =
-            plantaActual.planta?.descripcion || 'Sin descripción disponible.';
 
-    // Etiquetas
     mostrarEtiquetas();
-
-    // Cuidados recomendados
     mostrarCuidadosRecomendados();
-
-    // Historial
     mostrarHistorial();
-  }
-
+}
   function mostrarEtiquetas() {
     const container = document.getElementById('plant-tags');
     const etiquetas = plantaActual.planta?.etiquetas || [];

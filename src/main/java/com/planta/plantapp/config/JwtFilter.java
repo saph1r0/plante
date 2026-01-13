@@ -74,13 +74,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -98,18 +96,16 @@ public class JwtFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
             try {
-                // Usamos el JwtService para obtener los claims
                 Claims claims = jwtService.obtenerClaims(token);
 
-                // CAMBIO CLAVE: Usar getSubject() en lugar de get("id") [cite: 98]
-                String username = String.valueOf(claims.get("id"));
-                if (username != null) {
+                String userId = String.valueOf(claims.get("id"));
+
+                if (userId != null) {
                     UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                            username, null, java.util.Collections.emptyList());
+                            userId, null, java.util.Collections.emptyList());
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
             } catch (Exception e) {
-                // Si hay error de firma o expiración, imprimimos para saber por qué falla
                 System.out.println("Error validando token: " + e.getMessage());
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
