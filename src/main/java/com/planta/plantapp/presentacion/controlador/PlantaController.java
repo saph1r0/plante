@@ -29,10 +29,7 @@ public class PlantaController {
     private static final Logger logger = LoggerFactory.getLogger(PlantaController.class);
 
     // Constantes para evitar duplicación de literales
-    private static final String SUCCESS = "success";
     private static final String MESSAGE = "message";
-    private static final String UBICACION = "ubicacion";
-    private static final String APODO = "apodo";
     private static final String TOTAL_PLANTAS = "totalPlantas";
     private static final String STATUS = "status";
     private static final String ESTADO_SALUDABLE = "SALUDABLE";

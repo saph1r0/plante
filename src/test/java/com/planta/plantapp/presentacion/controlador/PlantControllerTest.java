@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.planta.plantapp.aplicacion.interfaces.IServicioPlanta;
 import com.planta.plantapp.dominio.modelo.planta.Planta;
 import com.planta.plantapp.dominio.modelo.planta.dto.PlantaRequestDTO;
-import com.planta.plantapp.dominio.modelo.planta.dto.PlantaResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -66,9 +65,6 @@ class PlantaControllerTest {
                 .andExpect(status().isInternalServerError());
     }
 
-    // ========================================
-    // GET /web/plantas/{id}
-    // ========================================
     @Test
     void obtenerPorId_cuandoExiste_retorna200() throws Exception {
         Planta planta = new Planta("Tulipán", "Tulipa gesneriana", "Flor colorida", "https://tulipan.com/img.jpg");
@@ -135,9 +131,6 @@ class PlantaControllerTest {
                 .andExpect(status().isInternalServerError());
     }
 
-    // ========================================
-    // DELETE /web/plantas/{id}
-    // ========================================
     @Test
     void eliminar_plantaExistente_retorna200() throws Exception {
         doNothing().when(servicioPlanta).eliminar("1");
@@ -212,9 +205,6 @@ class PlantaControllerTest {
                 .andExpect(jsonPath("$[0].nombreComun").value("Cactus"));
     }
 
-    // ========================================
-    // GET /web/plantas/estadisticas/{usuarioId}
-    // ========================================
     @Test
     void obtenerEstadisticas_calculaCorrectamente() throws Exception {
         Planta p1 = new Planta("Rosa", "Rosa sp.", "Bonita", "url");

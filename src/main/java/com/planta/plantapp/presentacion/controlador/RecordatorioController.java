@@ -2,7 +2,6 @@ package com.planta.plantapp.presentacion.controlador;
 
 import com.planta.plantapp.dominio.modelo.planta.Planta;
 import com.planta.plantapp.dominio.modelo.recordatorio.Recordatorio;
-import com.planta.plantapp.aplicacion.interfaces.IServicioRecordatorio;
 
 import java.util.List;
 
@@ -11,7 +10,6 @@ import java.util.List;
  */
 public class RecordatorioController {
 
-    private IServicioRecordatorio servicioRecordatorio;
 
     public RecordatorioController() {
         // Constructor vacío permitido
