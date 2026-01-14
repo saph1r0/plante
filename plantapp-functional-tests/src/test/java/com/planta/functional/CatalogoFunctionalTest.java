@@ -1,8 +1,10 @@
 package com.planta.functional;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.*;
 
 import java.time.Duration;
@@ -17,9 +19,24 @@ class CatalogoFunctionalTest {
 
     @BeforeEach
     void setUp() {
-        driver = new ChromeDriver();
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverManager.chromedriver().setup();
+
+        ChromeOptions options = new ChromeOptions();
+
+        // Si estamos en Jenkins o CI/CD
+        if (System.getenv("CI") != null) {
+            options.addArguments("--headless=new");
+            options.addArguments("--no-sandbox");
+            options.addArguments("--disable-dev-shm-usage");
+            options.addArguments("--disable-gpu");
+            options.addArguments("--window-size=1920,1080");
+            options.addArguments("--disable-extensions");
+            options.addArguments("--remote-allow-origins=*");
+        }
+
+        driver = new ChromeDriver(options);
         driver.manage().window().maximize();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 
     @Test
@@ -110,12 +127,16 @@ class CatalogoFunctionalTest {
         driver.get("http://localhost:8080/web/plantas/catalogo");
 
         WebElement filtroInterior = wait.until(
-                ExpectedConditions.elementToBeClickable(
+                ExpectedConditions.presenceOfElementLocated(
                         By.cssSelector("button[data-filter='interior']")
                 )
         );
 
-        filtroInterior.click();
+        // Usa JavaScript para evitar StaleElement
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", filtroInterior);
+
+        // Espera a que se carguen las plantas
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.className("plant-card")));
 
         List<WebElement> plantas = driver.findElements(By.className("plant-card"));
         assertFalse(plantas.isEmpty());
