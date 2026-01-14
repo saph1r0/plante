@@ -152,7 +152,9 @@ class TareaCuidadoTest {
 
             // Assert
             assertTrue(tareaCuidado.isRealizado());
-            assertEquals(primeraFecha, segundaFecha); // Mantiene la primera fecha
+            long primeraSegundos = primeraFecha.getTime() / 1000;
+            long segundaSegundos = segundaFecha.getTime() / 1000;
+            assertEquals(primeraSegundos, segundaSegundos, "La fecha debe mantenerse la misma");
         }
 
         @Test

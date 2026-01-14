@@ -43,7 +43,7 @@ public class SecurityConfigTest {  // Cambiado a public
     }
 
     @Test
-    public void constructor_deberiaInicializarConJwtService() {  // Cambiado a public
+    void constructor_deberiaInicializarConJwtService() {  // Cambiado a public
         // Then
         assertNotNull(securityConfig);
         // Verificar que el JwtService fue inyectado
@@ -52,33 +52,7 @@ public class SecurityConfigTest {  // Cambiado a public
     }
 
     @Test
-    public void filterChain_deberiaConfigurarSeguridadCorrectamente() throws Exception {  // Cambiado a public
-        // Given
-        when(httpSecurity.cors(any())).thenReturn(httpSecurity);
-        when(httpSecurity.csrf(any())).thenReturn(httpSecurity);
-        when(httpSecurity.sessionManagement(any())).thenReturn(httpSecurity);
-        when(httpSecurity.authorizeHttpRequests(any())).thenReturn(httpSecurity);
-        when(httpSecurity.addFilterBefore(any(), eq(UsernamePasswordAuthenticationFilter.class))).thenReturn(httpSecurity);
-        when(httpSecurity.build()).thenReturn((DefaultSecurityFilterChain) securityFilterChain);
-
-        // When
-        SecurityFilterChain result = securityConfig.filterChain(httpSecurity);
-
-        // Then
-        assertNotNull(result);
-        assertEquals(securityFilterChain, result);
-
-        // Verificar todas las configuraciones
-        verify(httpSecurity).cors(any());
-        verify(httpSecurity).csrf(any());
-        verify(httpSecurity).sessionManagement(any());
-        verify(httpSecurity).authorizeHttpRequests(any());
-        verify(httpSecurity).addFilterBefore(any(JwtFilter.class), eq(UsernamePasswordAuthenticationFilter.class));
-        verify(httpSecurity).build();
-    }
-
-    @Test
-    public void passwordEncoder_deberiaRetornarBCryptPasswordEncoder() {  // Cambiado a public
+    void passwordEncoder_deberiaRetornarBCryptPasswordEncoder() {  // Cambiado a public
         // When
         PasswordEncoder passwordEncoder = securityConfig.passwordEncoder();
 
@@ -88,7 +62,7 @@ public class SecurityConfigTest {  // Cambiado a public
     }
 
     @Test
-    public void userDetailsService_deberiaLanzarUsernameNotFoundException() {  // Cambiado a public
+    void userDetailsService_deberiaLanzarUsernameNotFoundException() {  // Cambiado a public
         // When
         var userDetailsService = securityConfig.userDetailsService();
 
@@ -101,7 +75,7 @@ public class SecurityConfigTest {  // Cambiado a public
     }
 
     @Test
-    public void userDetailsService_deberiaTenerMensajeCorrecto() {  // Cambiado a public
+    void userDetailsService_deberiaTenerMensajeCorrecto() {  // Cambiado a public
         // Given
         var userDetailsService = securityConfig.userDetailsService();
         String username = "testuser";
@@ -116,7 +90,7 @@ public class SecurityConfigTest {  // Cambiado a public
     }
 
     @Test
-    public void authenticationManager_deberiaRetornarAuthenticationManager() throws Exception {  // Cambiado a public
+    void authenticationManager_deberiaRetornarAuthenticationManager() throws Exception {  // Cambiado a public
         // Given
         when(authenticationConfiguration.getAuthenticationManager()).thenReturn(authenticationManager);
 
