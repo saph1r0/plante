@@ -1,16 +1,26 @@
 
 # 🌿 PlantApp - Sistema de Gestión de Plantas (Java + DDD)
 
+## Integrantes
+- Alcázar Medina, Diogo
+- Esteba Feria, Sophia Alejandra
+- Soto Huerta, Ángela Shirlet
+- Juan de Dios Delgado, Hellen
+- Velásquez Montoya, Juan José
+- Ticona Pereyra, Erika Daysi
+
 ## 📌 Descripción del Proyecto
+PlantApp es un sistema de gestión de plantas que permite a los usuarios:
+- Registrarse y autenticarse de forma segura
+- Administrar sus plantas personales
+- Consultar un catálogo botánico
+- Gestionar cuidados y recordatorios
 
-PlantApp es un sistema de gestión de usuarios, plantas y recordatorios implementado en Java siguiendo los principios de **Domain-Driven Design (DDD)** y una arquitectura por capas.
-
-Este proyecto incluye:
-
-- Modelado de entidades centrales: `Usuario`, `Planta`, `Cuidado`, `Recordatorio`.
-- Fábricas especializadas para instanciar objetos del dominio.
-- Repositorios con contratos definidos para persistencia.
-- Validaciones de reglas de negocio en la capa de aplicación.
+El sistema fue desarrollado usando Java + Spring Boot, aplicando:
+- Domain-Driven Design (DDD)
+- Arquitectura Limpia
+- Microservicios
+- Pipeline CI/CD automatizado
 
 El desarrollo se realizó en **IntelliJ IDEA**, siguiendo principios de arquitectura limpia.
 
@@ -87,52 +97,411 @@ PlanTapp/
 │                   └── login.html
 
 ````
+## Funcionalidades (Alto Nivel)
+**🧩 Casos de Uso Principales**
+
+- Registro e inicio de sesión
+- Gestión de plantas personales
+- Visualización de catálogo botánico
+- Dashboard con información relevante
+---
+## Modelo de Dominio
+📐 Entidades Principales
+
+- Usuario
+- Planta
+- Cuidado
+- Recordatorio
+- Bitácora
+
+## Diagrama UML de Clases
+![diagrama](https://github.com/user-attachments/assets/4321524d-24e0-4a54-8735-31661deedc93)
+
+## Prototipo
+<img width="1374" height="832" alt="Captura desde 2026-01-14 09-31-40" src="https://github.com/user-attachments/assets/481daca6-5e3d-49fa-950e-29e2963211bf" />
 
 ---
 
-## 🎨 Interfaz de Usuario
+## Visión General de Arquitectura
 
-Capturas de pantalla del sistema:
+### 🧱 Enfoque Arquitectónico
 
-* Pantalla de inicio de sesión
-* Pantalla de registro de usuario
-* Registro e inicio de sesion conectado a base de datos.
-* Encriptacion de contraseña.
+El sistema **PlantApp** está diseñado siguiendo principios de **arquitectura limpia** y **Domain-Driven Design (DDD)**, asegurando una separación clara de responsabilidades y alta mantenibilidad.
 
-![img.png](img.png)
-![img\_1.png](img_1.png)
-![img\_2.png](img_2.png)
-![img\_3.png](img_3.png)
+**Enfoques aplicados:**
+- Domain-Driven Design (DDD)
+- Arquitectura Limpia
+- Separación por capas
+- Inversión de dependencias
 
+| Capa            | Responsabilidad               |
+| --------------- | ----------------------------- |
+| Presentación    | Controladores MVC y REST      |
+| Aplicación      | Casos de uso y servicios      |
+| Dominio         | Entidades, reglas de negocio  |
+| Infraestructura | Persistencia y acceso a datos |
 
-**Dashboard Principal**
-- Vista general con estadísticas
-- Plantas que requieren atención
-  <img width="713" height="653" alt="image" src="https://github.com/user-attachments/assets/57ee229b-fb00-444f-8a28-643a0c5125ef" />
+### 🧠 Principios y Buenas Prácticas Aplicadas
+- SOLID
+- Clean Code
+- Dependency Inversion
+- DTOs y Repositorios
+- Separación de intereses (SoC)
 
-**Mis Plantas**
-- Lista de plantas personales del usuario
-- Estados actuales
-- Opciones de edición y eliminación
-- <img width="721" height="578" alt="image" src="https://github.com/user-attachments/assets/fe3dc0a9-f4ed-4a91-9854-8e037ce15320" />
+### 🔍 Análisis Técnico y Arquitectónico
+**Evaluación Técnica**
+## 📊 Evaluación Técnica
 
+---
+### 1. Prácticas de Codificación Limpia
 
-**Registro de Nueva Planta**
-- Selección desde catálogo
-- Personalización con apodo y ubicación
-- Configuración de estado inicial
-  <img width="723" height="645" alt="image" src="https://github.com/user-attachments/assets/aff3b9be-1f2a-4b15-8118-e741d7eb22eb" />
-<img width="713" height="653" alt="image" src="https://github.com/user-attachments/assets/0c33adab-f8fb-4174-8652-f72b3670e491" />
+Implementa **más de 5 prácticas de Clean Code**:
+
+#### **Nombres Descriptivos**
+```java
+private static final String ATTR_LOGIN_DTO = "loginDTO";
+private static final String ATTR_REGISTRO_DTO = "registroDTO";
+private static final String LOGIN_VIEW = "login/login";
+```
+
+#### **Funciones Pequeñas y con Una Responsabilidad**
+```java
+@GetMapping("/login")
+public String mostrarLogin(Model model) {
+    logger.debug("Cargando formulario de login");
+    model.addAttribute(ATTR_LOGIN_DTO, new UsuarioLoginDTO());
+    model.addAttribute(ATTR_REGISTRO_DTO, new UsuarioRegistroDTO());
+    return LOGIN_VIEW;
+}
+```
+
+#### **Manejo de Errores con Logging**
+```java
+} catch (Exception e) {
+    logger.error("Error al registrar usuario: {}", e.getMessage());
+    model.addAttribute("error", "Error al registrar usuario");
+    return LOGIN_VIEW;
+}
+```
+
+#### **Eliminación de Código Duplicado (DRY)**
+```java
+private void agregarDTOsAlModelo(Model model) {
+    model.addAttribute(ATTR_LOGIN_DTO, new UsuarioLoginDTO());
+    model.addAttribute(ATTR_REGISTRO_DTO, new UsuarioRegistroDTO());
+}
+```
+
+#### **Constantes en lugar de Magic Numbers/Strings**
+```java
+private static final Logger logger = LoggerFactory.getLogger(UsuarioWebController.class);
+private static final String ATTR_USUARIO_NOMBRE = "usuarioNombre";
+```
+
+#### **Validación de Entrada**
+```java
+public void setCorreo(String correo) {
+    this.correo = correo != null ? correo.trim() : null;
+}
+```
 
 ---
 
-## ✅ Módulo: Registro e Inicio de Sesión Seguro
+### 2. Principios SOLID
+Implementa **más de 3 principios SOLID**:
 
-### 🎯 Objetivo
+#### **S - Single Responsibility Principle**
+Cada clase tiene una única responsabilidad:
+- `ServicioAutenticacionImpl`: Solo autenticación
+- `UsuarioRepositorioImpl`: Solo persistencia de datos
+- `UsuarioWebController`: Solo manejo de peticiones web
 
-Permitir que los usuarios se registren e inicien sesión de manera segura, implementando validaciones, persistencia y protección de credenciales.
+#### **O - Open/Closed Principle**
+```java
+public interface IServicioUsuario {
+    void registrarUsuario(Usuario usuario);
+    // Abierto para extensión, cerrado para modificación
+}
+
+@Service
+public class ServicioUsuarioImpl implements IServicioUsuario {
+    // Implementación específica
+}
+```
+
+#### **L - Liskov Substitution Principle**
+```java
+IServicioUsuario usuarioServicio; // Puede ser cualquier implementación
+IServicioAutenticacion autenticacionServicio; // Intercambiable
+```
+
+#### **I - Interface Segregation Principle**
+Interfaces específicas y cohesivas:
+```java
+public interface IServicioAutenticacion {
+    Usuario autenticar(String correo, String password); // Solo autenticación
+}
+
+public interface IUsuarioRepositorio {
+    Usuario obtenerPorId(String id);
+    Optional<Usuario> buscarPorCorreo(String correo);
+    // Solo operaciones de repositorio
+}
+```
+
+#### **D - Dependency Inversion Principle**
+```java
+public class ServicioAutenticacionImpl implements IServicioAutenticacion {
+    private final IUsuarioRepositorio usuarioRepositorio; // Depende de abstracción
+    private final PasswordEncoder passwordEncoder;        // No de implementación concreta
+    
+    public ServicioAutenticacionImpl(IUsuarioRepositorio usuarioRepositorio,
+                                   PasswordEncoder passwordEncoder) {
+        this.usuarioRepositorio = usuarioRepositorio;
+        this.passwordEncoder = passwordEncoder;
+    }
+}
+```
 
 ---
+
+### 3. Domain-Driven Design
+
+Implementa **todos los elementos DDD**:
+
+#### **Entidades**
+```java
+public class Usuario {
+    private Long id; // Identidad única
+    private String nombre;
+    private String correo;
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Usuario)) return false;
+        Usuario usuario = (Usuario) o;
+        return Objects.equals(id, usuario.id); // Identidad por ID
+    }
+}
+```
+
+#### **Objetos de Valor (Value Objects)**
+```java
+public class UsuarioLoginDTO {
+    private String correo;
+    private String contrasena;
+    // Sin identidad propia, inmutable en comportamiento
+}
+
+public class UsuarioRegistroDTO {
+    private String nombre;
+    private String correo;
+    private String contrasena;
+}
+```
+
+#### **Servicios de Dominio**
+```java
+@Service
+public class ServicioAutenticacionImpl implements IServicioAutenticacion {
+    @Override
+    public Usuario autenticar(String correo, String password) {
+        // Lógica de negocio compleja que no pertenece a una entidad
+    }
+}
+```
+
+#### **Repositorios**
+```java
+public interface IUsuarioRepositorio {
+    Usuario obtenerPorId(String id);
+    Optional<Usuario> buscarPorCorreo(String correo);
+    void guardar(Usuario usuario);
+    void eliminar(String id);
+}
+
+@Repository
+public class UsuarioRepositorioImpl implements IUsuarioRepositorio {
+    // Implementación específica de persistencia
+}
+```
+
+#### **Módulos (Packages)**
+```
+com.planta.plantapp.dominio.usuario.modelo     // Entidades
+com.planta.plantapp.aplicacion.servicios       // Servicios de aplicación
+com.planta.plantapp.infraestructura.repositorio // Repositorios
+com.planta.plantapp.presentacion.controlador   // Controladores
+```
+
+#### **Fábricas (Implícitas)**
+```java
+// Constructor actúa como factory method
+public Usuario(String nombre, String correo, String contrasena) {
+    this.nombre = nombre;
+    this.correo = correo;
+    this.contrasena = contrasena;
+}
+```
+
+---
+
+### 4. Estilos/Patrones de Arquitectura 
+
+Implementa **Arquitectura en Capas con Repositorio**:
+
+#### **Capa de Presentación**
+```java
+@Controller
+@RequestMapping("/web")
+public class UsuarioWebController {
+    // Maneja peticiones HTTP, vistas Thymeleaf
+}
+
+@RestController
+@RequestMapping("/usuarios")
+public class UsuarioController {
+    // API REST para servicios externos
+}
+```
+
+#### **Capa de Aplicación**
+```java
+@Service
+public class ServicioUsuarioImpl implements IServicioUsuario {
+    // Orquesta casos de uso y lógica de aplicación
+}
+
+@Service
+public class ServicioAutenticacionImpl implements IServicioAutenticacion {
+    // Casos de uso específicos de autenticación
+}
+```
+
+#### **Capa de Dominio**
+```java
+public class Usuario {
+    // Entidad de dominio pura
+}
+
+public interface IUsuarioRepositorio {
+    // Contrato del dominio para persistencia
+}
+```
+
+#### **Capa de Infraestructura/Repositorio**
+```java
+@Repository
+public class UsuarioRepositorioImpl implements IUsuarioRepositorio {
+    private final UsuarioJpaRepositorio usuarioJpaRepositorio;
+    // Implementación específica con JPA/Hibernate
+}
+```
+
+---
+
+## 🏗️ Patrones de Diseño Identificados
+
+### **Repository Pattern**
+```java
+public interface IUsuarioRepositorio {
+    Optional<Usuario> buscarPorCorreo(String correo);
+}
+
+@Repository
+public class UsuarioRepositorioImpl implements IUsuarioRepositorio {
+    // Encapsula lógica de acceso a datos
+}
+```
+
+### **Dependency Injection**
+```java
+public ServicioAutenticacionImpl(IUsuarioRepositorio usuarioRepositorio,
+                               PasswordEncoder passwordEncoder) {
+    this.usuarioRepositorio = usuarioRepositorio;
+    this.passwordEncoder = passwordEncoder;
+}
+```
+
+### **Data Transfer Object (DTO)**
+```java
+public class UsuarioLoginDTO {
+    private String correo;
+    private String contrasena;
+    // Transfiere datos entre capas
+}
+```
+
+### **MVC (Model-View-Controller)**
+```java
+@Controller // Controlador
+public class UsuarioWebController {
+    public String mostrarLogin(Model model) { // Modelo
+        return "login/login"; // Vista
+    }
+}
+```
+
+
+---
+
+### 📦 Diagrama de Capas / Paquetes
+
+```text
+presentacion  →  aplicacion  →  dominio  →  infraestructura
+```
+
+## Módulos y Servicios REST (OpenAPI / Swagger)
+### 🔹 Módulo: Usuario
+Propósito: Gestión de autenticación y registro
+| Método | Endpoint           | Descripción       |
+| ------ | ------------------ | ----------------- |
+| POST   | /api/auth/register | Registrar usuario |
+| POST   | /api/auth/login    | Autenticación     |
+
+### 🔹 Módulo: Plantas
+Propósito: Gestión de plantas personales
+| Método | Endpoint          | Descripción      |
+| ------ | ----------------- | ---------------- |
+| GET    | /api/plantas      | Listar plantas   |
+| POST   | /api/plantas      | Registrar planta |
+| PUT    | /api/plantas/{id} | Actualizar       |
+| DELETE | /api/plantas/{id} | Eliminar         |
+
+
+ **Gestión de Plantas Personales**
+
+| Funcionalidad | Estado | Descripción |
+|---------------|--------|-------------|
+| Registrar planta personal | ✅ | Agregar planta desde catálogo |
+| Listar mis plantas | ✅ | Ver plantas del usuario |
+| Editar información de planta | ✅ | Modificar apodo, ubicación, estado |
+| Eliminar planta | ✅ | Remover planta del sistema |
+| Cambiar estado de planta | ✅ | Actualizar condición actual |
+
+### 🔹 Módulo: Catálogo
+Propósito: Consulta de plantas botánicas
+| Método | Endpoint              |
+| ------ | --------------------- |
+| GET    | /web/plantas/catalogo |
+
+### 🟢 Módulo: Dashboard y Reportes
+
+| Funcionalidad | Estado | Descripción |
+|---------------|--------|-------------|
+| Dashboard interactivo | ✅ | Vista general del sistema |
+| Estadísticas por usuario | ✅ | Contadores y métricas |
+| API REST completa | ✅ | Endpoints para todas las operaciones |
+
+
+## 🔐 Seguridad en el Manejo de Credenciales
+
+| Tarea                                                      | Estado       |
+| ---------------------------------------------------------- | ------------ |
+| Detectar credenciales visibles                             | ✅ Completado |
+| Reemplazar por variables de entorno (`DB_USER`, `DB_PASS`) | ✅ Completado |
+| Validar almacenamiento seguro de contraseñas               | ✅ Completado |
 
 ## 📝 Historias de Usuario Cubiertas
 
@@ -153,43 +522,192 @@ Permitir que los usuarios se registren e inicien sesión de manera segura, imple
 | Almacenar datos en tabla `usuarios` | ✅ Completado |
 | Evitar contraseñas en texto plano   | ✅ Completado |
 
-### 🔜 H.2.1.3 - Verificación por correo (Próximamente)
+## Pipeline CI/CD (Jenkins)
+**Etapas del Pipeline**
+- Checkout del repositorio
+- Clean & Build (multi-módulo)
+- Pruebas unitarias
+- Levantamiento de microservicios
+- Pruebas funcionales
+- Análisis SonarQube
+- Análisis de seguridad OWASP ZAP
 
----
+```java
+pipeline {
+    agent any
 
-## 🔐 Seguridad en el Manejo de Credenciales
+    tools {
+        maven 'MAVEN'   // Nombre del Maven instalado en Jenkins
+        jdk 'JAVA'      // Nombre del JDK en Jenkins
+    }
 
-| Tarea                                                      | Estado       |
-| ---------------------------------------------------------- | ------------ |
-| Detectar credenciales visibles                             | ✅ Completado |
-| Reemplazar por variables de entorno (`DB_USER`, `DB_PASS`) | ✅ Completado |
-| Validar almacenamiento seguro de contraseñas               | ✅ Completado |
+    environment {
+        SONARQUBE_TOKEN = credentials('sonarqube-local') // Token SonarQube
+        CI = 'true'
+        BASE_URL = 'http://localhost:8080'
+    }
 
----
+    stages {
 
-### 🟢 **Módulo: Gestión de Plantas Personales**
+        stage('Checkout') {
+            steps {
+                git branch: 'sophia-erika-hellen-pruebas',
+                    credentialsId: 'github-tokens',
+                    url: 'https://github.com/saph1r0/plante.git'
+            }
+        }
 
-| Funcionalidad | Estado | Descripción |
-|---------------|--------|-------------|
-| Registrar planta personal | ✅ | Agregar planta desde catálogo |
-| Listar mis plantas | ✅ | Ver plantas del usuario |
-| Editar información de planta | ✅ | Modificar apodo, ubicación, estado |
-| Eliminar planta | ✅ | Remover planta del sistema |
-| Cambiar estado de planta | ✅ | Actualizar condición actual |
+        stage('Clean Workspace') {
+            steps {
+                echo 'Limpiando workspace'
+                bat 'mvn clean -B'
+            }
+        }
 
-### 🟢 **Módulo: Dashboard y Reportes**
+        stage('Build All Modules') {
+            steps {
+                echo 'Construyendo todos los módulos (sin tests)'
+                bat 'mvn install -B -DskipTests=true'
+            }
+        }
 
-| Funcionalidad | Estado | Descripción |
-|---------------|--------|-------------|
-| Dashboard interactivo | ✅ | Vista general del sistema |
-| Estadísticas por usuario | ✅ | Contadores y métricas |
-| API REST completa | ✅ | Endpoints para todas las operaciones |
+        stage('Run Unit Tests (Surefire)') {
+            steps {
+                echo 'Ejecutando tests unitarios'
+                bat 'mvn test -B'
+                junit '**/target/surefire-reports/*.xml'
+            }
+        }
 
----
+        stage('Run Functional/Integration Tests (Failsafe)') {
+            steps {
+                echo 'Ejecutando tests funcionales Selenium'
+
+                // Levanta microservicios en background
+                bat 'start /b java -jar user-service/target/user-service.jar --server.port=8082'
+                bat 'start /b java -jar user-plants-service/target/user-plants-service.jar --server.port=8081'
+                bat 'start /b java -jar plantapp/target/plantapp.jar --server.port=8080'
+
+                echo 'Esperando que los servicios estén listos'
+                sleep 25 // espera a que se levanten los servicios
+
+                // Ejecuta tests funcionales/integración
+                bat 'mvn verify -B -Dtest=*FunctionalTest'
+                junit '**/target/failsafe-reports/*.xml'
+            }
+        }
+
+        stage('JaCoCo Coverage Report') {
+            steps {
+                echo 'Generando reporte de cobertura JaCoCo'
+                bat 'mvn jacoco:report'
+                archiveArtifacts artifacts: '**/target/site/jacoco/index.html', fingerprint: true
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('sonarqube-local') {
+                    bat """
+                    mvn sonar:sonar ^
+                      -Dsonar.projectKey=Plantapp ^
+                      -Dsonar.projectName=Plantapp ^
+                      -Dsonar.host.url=http://localhost:9000 ^
+                      -Dsonar.login=%SONARQUBE_TOKEN%
+                    """
+                }
+            }
+        }
+
+        stage('OWASP ZAP Security Scan') {
+            steps {
+                echo 'Ejecutando análisis de seguridad OWASP ZAP'
+                bat """
+                cd /d "C:\\Program Files\\ZAP\\Zed Attack Proxy"
+
+                zap.bat ^
+                  -cmd ^
+                  -quickurl http://localhost:8080/web/login ^
+                  -quickout "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\plante-ci-cd\\zap-plantapp.html"
+
+                zap.bat ^
+                  -cmd ^
+                  -quickurl http://localhost:8081/api/auth/login ^
+                  -quickout "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\plante-ci-cd\\zap-user-plants-service.html"
+
+                zap.bat ^
+                  -cmd ^
+                  -quickurl http://localhost:8082/api/auth/login ^
+                  -quickout "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\plante-ci-cd\\zap-user-service.html"
+                """
+            }
+        }
+
+    }
+
+    post {
+        always {
+            echo 'Pipeline finalizado'
+            archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+        }
+        success {
+            echo 'Pipeline CI/CD ejecutado correctamente'
+        }
+        failure {
+            echo 'Pipeline falló'
+        }
+    }
+}
+```
+## Variables de Entorno (Jenkins)
+```text
+CI=true
+BASE_URL=http://localhost:8080
+```
+✔ Headless automático
+
+✔ URLs no hardcodeadas
+
+## Gestión de Issues
+
+- Uso de GitHub Issues
+- Clasificación:
+  - Bug
+  - Enhancement
+  - Technical Debt
+- Asignación por integrante
+<img width="327" height="734" alt="Captura desde 2026-01-14 10-38-41" src="https://github.com/user-attachments/assets/6689f96e-e93e-42d0-b762-dec1f344255a" />
+
+
+## Gestión de Entrega (Despliegue)
+- Jenkins automatiza:
+  - Build
+  - Test
+  - Análisis
+- Artefactos versionados (.jar)
+- Despliegue local controlado
+
+## Evidencias Visuales (GUI)
+✔ Login
+<img width="1787" height="971" alt="Captura desde 2026-01-14 10-40-34" src="https://github.com/user-attachments/assets/548f0b45-7366-4965-9e04-69518983b80a" />
+
+✔ Registro
+<img width="1787" height="971" alt="Captura desde 2026-01-14 10-40-54" src="https://github.com/user-attachments/assets/cc87d877-c1fd-483d-931c-62d94319675e" />
+
+✔ Dashboard Principal
+<img width="1787" height="971" alt="Captura desde 2026-01-14 10-41-35" src="https://github.com/user-attachments/assets/baf56e1b-71a5-4b20-af1b-94658a3ea13f" />
+
+✔ Dashboard Personal
+<img width="1787" height="971" alt="Captura desde 2026-01-14 10-41-49" src="https://github.com/user-attachments/assets/c43c9871-9fa9-4069-8d85-f3ece6bae882" />
+
+✔ Catálogo
+<img width="1787" height="971" alt="Captura desde 2026-01-14 10-42-09" src="https://github.com/user-attachments/assets/79e2e349-c8fb-45ca-a841-e09b7429bebf" />
+
 
 ## 💡 Estilos de Programación Aplicados
 
 ### 1. Trinity (Entrada → Procesamiento → Salida)
+
 
 Separación clara entre:
 
@@ -410,307 +928,6 @@ if (Boolean.TRUE.equals(activo)) {
 }
 ```
 
-
-# PlantApp - Análisis Técnico y Arquitectónico
-
-## 📊 Evaluación Técnica
-
----
-
-### 2. Prácticas de Codificación Limpia (3/3 puntos) ✅
-
-Implementa **más de 5 prácticas de Clean Code**:
-
-#### **Nombres Descriptivos**
-```java
-private static final String ATTR_LOGIN_DTO = "loginDTO";
-private static final String ATTR_REGISTRO_DTO = "registroDTO";
-private static final String LOGIN_VIEW = "login/login";
-```
-
-#### **Funciones Pequeñas y con Una Responsabilidad**
-```java
-@GetMapping("/login")
-public String mostrarLogin(Model model) {
-    logger.debug("Cargando formulario de login");
-    model.addAttribute(ATTR_LOGIN_DTO, new UsuarioLoginDTO());
-    model.addAttribute(ATTR_REGISTRO_DTO, new UsuarioRegistroDTO());
-    return LOGIN_VIEW;
-}
-```
-
-#### **Manejo de Errores con Logging**
-```java
-} catch (Exception e) {
-    logger.error("Error al registrar usuario: {}", e.getMessage());
-    model.addAttribute("error", "Error al registrar usuario");
-    return LOGIN_VIEW;
-}
-```
-
-#### **Eliminación de Código Duplicado (DRY)**
-```java
-private void agregarDTOsAlModelo(Model model) {
-    model.addAttribute(ATTR_LOGIN_DTO, new UsuarioLoginDTO());
-    model.addAttribute(ATTR_REGISTRO_DTO, new UsuarioRegistroDTO());
-}
-```
-
-#### **Constantes en lugar de Magic Numbers/Strings**
-```java
-private static final Logger logger = LoggerFactory.getLogger(UsuarioWebController.class);
-private static final String ATTR_USUARIO_NOMBRE = "usuarioNombre";
-```
-
-#### **Validación de Entrada**
-```java
-public void setCorreo(String correo) {
-    this.correo = correo != null ? correo.trim() : null;
-}
-```
-
----
-
-### 3. Principios SOLID (3/3 puntos) ✅
-
-Implementa **más de 3 principios SOLID**:
-
-#### **S - Single Responsibility Principle**
-Cada clase tiene una única responsabilidad:
-- `ServicioAutenticacionImpl`: Solo autenticación
-- `UsuarioRepositorioImpl`: Solo persistencia de datos
-- `UsuarioWebController`: Solo manejo de peticiones web
-
-#### **O - Open/Closed Principle**
-```java
-public interface IServicioUsuario {
-    void registrarUsuario(Usuario usuario);
-    // Abierto para extensión, cerrado para modificación
-}
-
-@Service
-public class ServicioUsuarioImpl implements IServicioUsuario {
-    // Implementación específica
-}
-```
-
-#### **L - Liskov Substitution Principle**
-```java
-IServicioUsuario usuarioServicio; // Puede ser cualquier implementación
-IServicioAutenticacion autenticacionServicio; // Intercambiable
-```
-
-#### **I - Interface Segregation Principle**
-Interfaces específicas y cohesivas:
-```java
-public interface IServicioAutenticacion {
-    Usuario autenticar(String correo, String password); // Solo autenticación
-}
-
-public interface IUsuarioRepositorio {
-    Usuario obtenerPorId(String id);
-    Optional<Usuario> buscarPorCorreo(String correo);
-    // Solo operaciones de repositorio
-}
-```
-
-#### **D - Dependency Inversion Principle**
-```java
-public class ServicioAutenticacionImpl implements IServicioAutenticacion {
-    private final IUsuarioRepositorio usuarioRepositorio; // Depende de abstracción
-    private final PasswordEncoder passwordEncoder;        // No de implementación concreta
-    
-    public ServicioAutenticacionImpl(IUsuarioRepositorio usuarioRepositorio,
-                                   PasswordEncoder passwordEncoder) {
-        this.usuarioRepositorio = usuarioRepositorio;
-        this.passwordEncoder = passwordEncoder;
-    }
-}
-```
-
----
-
-### 4. Domain-Driven Design (3/3 puntos) ✅
-
-Implementa **todos los elementos DDD**:
-
-#### **Entidades**
-```java
-public class Usuario {
-    private Long id; // Identidad única
-    private String nombre;
-    private String correo;
-    
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Usuario)) return false;
-        Usuario usuario = (Usuario) o;
-        return Objects.equals(id, usuario.id); // Identidad por ID
-    }
-}
-```
-
-#### **Objetos de Valor (Value Objects)**
-```java
-public class UsuarioLoginDTO {
-    private String correo;
-    private String contrasena;
-    // Sin identidad propia, inmutable en comportamiento
-}
-
-public class UsuarioRegistroDTO {
-    private String nombre;
-    private String correo;
-    private String contrasena;
-}
-```
-
-#### **Servicios de Dominio**
-```java
-@Service
-public class ServicioAutenticacionImpl implements IServicioAutenticacion {
-    @Override
-    public Usuario autenticar(String correo, String password) {
-        // Lógica de negocio compleja que no pertenece a una entidad
-    }
-}
-```
-
-#### **Repositorios**
-```java
-public interface IUsuarioRepositorio {
-    Usuario obtenerPorId(String id);
-    Optional<Usuario> buscarPorCorreo(String correo);
-    void guardar(Usuario usuario);
-    void eliminar(String id);
-}
-
-@Repository
-public class UsuarioRepositorioImpl implements IUsuarioRepositorio {
-    // Implementación específica de persistencia
-}
-```
-
-#### **Módulos (Packages)**
-```
-com.planta.plantapp.dominio.usuario.modelo     // Entidades
-com.planta.plantapp.aplicacion.servicios       // Servicios de aplicación
-com.planta.plantapp.infraestructura.repositorio // Repositorios
-com.planta.plantapp.presentacion.controlador   // Controladores
-```
-
-#### **Fábricas (Implícitas)**
-```java
-// Constructor actúa como factory method
-public Usuario(String nombre, String correo, String contrasena) {
-    this.nombre = nombre;
-    this.correo = correo;
-    this.contrasena = contrasena;
-}
-```
-
----
-
-### 5. Estilos/Patrones de Arquitectura (3/3 puntos) ✅
-
-Implementa **Arquitectura en Capas con Repositorio**:
-
-#### **Capa de Presentación**
-```java
-@Controller
-@RequestMapping("/web")
-public class UsuarioWebController {
-    // Maneja peticiones HTTP, vistas Thymeleaf
-}
-
-@RestController
-@RequestMapping("/usuarios")
-public class UsuarioController {
-    // API REST para servicios externos
-}
-```
-
-#### **Capa de Aplicación**
-```java
-@Service
-public class ServicioUsuarioImpl implements IServicioUsuario {
-    // Orquesta casos de uso y lógica de aplicación
-}
-
-@Service
-public class ServicioAutenticacionImpl implements IServicioAutenticacion {
-    // Casos de uso específicos de autenticación
-}
-```
-
-#### **Capa de Dominio**
-```java
-public class Usuario {
-    // Entidad de dominio pura
-}
-
-public interface IUsuarioRepositorio {
-    // Contrato del dominio para persistencia
-}
-```
-
-#### **Capa de Infraestructura/Repositorio**
-```java
-@Repository
-public class UsuarioRepositorioImpl implements IUsuarioRepositorio {
-    private final UsuarioJpaRepositorio usuarioJpaRepositorio;
-    // Implementación específica con JPA/Hibernate
-}
-```
-
----
-
-## 🏗️ Patrones de Diseño Identificados
-
-### **Repository Pattern**
-```java
-public interface IUsuarioRepositorio {
-    Optional<Usuario> buscarPorCorreo(String correo);
-}
-
-@Repository
-public class UsuarioRepositorioImpl implements IUsuarioRepositorio {
-    // Encapsula lógica de acceso a datos
-}
-```
-
-### **Dependency Injection**
-```java
-public ServicioAutenticacionImpl(IUsuarioRepositorio usuarioRepositorio,
-                               PasswordEncoder passwordEncoder) {
-    this.usuarioRepositorio = usuarioRepositorio;
-    this.passwordEncoder = passwordEncoder;
-}
-```
-
-### **Data Transfer Object (DTO)**
-```java
-public class UsuarioLoginDTO {
-    private String correo;
-    private String contrasena;
-    // Transfiere datos entre capas
-}
-```
-
-### **MVC (Model-View-Controller)**
-```java
-@Controller // Controlador
-public class UsuarioWebController {
-    public String mostrarLogin(Model model) { // Modelo
-        return "login/login"; // Vista
-    }
-}
-```
-## 🚀 Diagrama de clases UML
-
-![diagrama](https://github.com/user-attachments/assets/4321524d-24e0-4a54-8735-31661deedc93)
-
 ## 🚀 Fortalezas del Proyecto
 
 1. **Arquitectura Sólida**: Separación clara de responsabilidades en capas
@@ -719,4 +936,3 @@ public class UsuarioWebController {
 4. **Validación**: Manejo apropiado de errores y validaciones
 5. **Testabilidad**: Alto desacoplamiento facilita testing
 6. **Escalabilidad**: Estructura preparada para crecimiento
-
