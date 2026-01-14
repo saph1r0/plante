@@ -1,9 +1,7 @@
 package com.planta.plantapp.aplicacion.servicios;
 
-import com.planta.plantapp.dominio.modelo.IRecordatorioRepositorio;
 import com.planta.plantapp.dominio.modelo.planta.Planta;
 import com.planta.plantapp.dominio.modelo.recordatorio.Recordatorio;
-import com.planta.plantapp.dominio.modelo.servicios.ServicioRecordatorioDominio;
 import com.planta.plantapp.dominio.modelo.recordatorio.EstadoRecordatorio;
 
 import java.util.Date;
@@ -18,8 +16,6 @@ public class ServicioRecordatorioImpl {
         // Constructor por defecto
     }
 
-    private ServicioRecordatorioDominio servicioDominio;
-    private IRecordatorioRepositorio repositorioRecordatorio;
 
     /**
      * Consulta todos los recordatorios existentes.
@@ -35,9 +31,6 @@ public class ServicioRecordatorioImpl {
      *
      * Este método no está implementado en esta versión.
      */
-    // public List<RecordatorioPendientes> consultarPendientes() {
-    //     throw new UnsupportedOperationException("Método consultarPendientes() no implementado.");
-    // }
 
     /**
      * Consulta los recordatorios de una planta específica.
