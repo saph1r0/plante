@@ -531,6 +531,9 @@ Propósito: Consulta de plantas botánicas
 - Pruebas funcionales
 - Análisis SonarQube
 - Análisis de seguridad OWASP ZAP
+<img width="1837" height="971" alt="Captura desde 2026-01-14 14-00-56" src="https://github.com/user-attachments/assets/d1376d3f-b98e-4918-a953-c2c4ec6d2e55" />
+
+-
 
 ```java
 pipeline {
@@ -661,6 +664,9 @@ pipeline {
 ```
 ### Pipeline sin testers
 ![jenkins](https://github.com/user-attachments/assets/6e9aab03-0525-4702-8a34-4115bf53e25f)
+
+<img width="1837" height="971" alt="Captura desde 2026-01-14 14-00-56" src="https://github.com/user-attachments/assets/10564b33-0833-4038-a5df-7d799a0f9b1d" />
+
 
 
 ## Variables de Entorno (Jenkins)
