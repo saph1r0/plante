@@ -664,9 +664,7 @@ pipeline {
 ```
 ### Pipeline sin testers
 ![jenkins](https://github.com/user-attachments/assets/6e9aab03-0525-4702-8a34-4115bf53e25f)
-
-<img width="1837" height="971" alt="Captura desde 2026-01-14 14-00-56" src="https://github.com/user-attachments/assets/10564b33-0833-4038-a5df-7d799a0f9b1d" />
-
+![jenkins2](https://github.com/user-attachments/assets/c8c97892-594a-41b9-af52-1804a8a8e55d)
 
 
 ## Variables de Entorno (Jenkins)
