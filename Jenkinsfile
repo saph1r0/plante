@@ -6,12 +6,8 @@ pipeline {
         jdk 'JAVA'
     }
 
-    triggers {
-        githubPush()
-    }
-
     environment {
-        SONARQUBE_ENV = credentials('sonarqube-local')
+        SONARQUBE_TOKEN = credentials('sonarqube-local')
     }
 
     stages {
@@ -38,7 +34,7 @@ pipeline {
                     -Dsonar.projectKey=Plantapp ^
                     -Dsonar.projectName=Plantapp ^
                     -Dsonar.host.url=http://localhost:9000 ^
-                    -Dsonar.login=%SONARQUBE_ENV%
+                    -Dsonar.login=%SONARQUBE_TOKEN%
                     '''
                 }
             }
@@ -55,13 +51,14 @@ pipeline {
         stage('Start Services') {
             steps {
                 bat '''
-                start cmd /c "java -jar target\\*.jar"
-                start cmd /c ^
-                "set DB_URL=jdbc:mysql://localhost:3306/usersdb&& ^
-                 set DB_USERNAME=root&& ^
-                 set DB_PASSWORD=&& ^
-                 java -jar user-service\\target\\*.jar"
-                timeout /t 40
+                REM ===== START PLANTE =====
+                start "" cmd /c "java -jar target\\*.jar"
+
+                REM ===== START USER SERVICE =====
+                start "" cmd /c "set DB_URL=jdbc:mysql://localhost:3306/usersdb&&set DB_USERNAME=root&&set DB_PASSWORD=&&java -jar user-service\\target\\*.jar"
+
+                REM ===== WAIT SERVICES =====
+                ping 127.0.0.1 -n 40 > nul
                 '''
             }
         }
@@ -69,10 +66,12 @@ pipeline {
         stage('OWASP ZAP - Plante') {
             steps {
                 bat '''
-                zap-cli start
-                zap-cli open-url http://localhost:8080
-                zap-cli active-scan http://localhost:8080
-                zap-cli report -o zap-plante.html -f html
+                cd /d "C:\\Program Files\\ZAP\\Zed Attack Proxy"
+
+                zap.bat ^
+                  -cmd ^
+                  -quickurl http://localhost:8080/web/login ^
+                  -quickout "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\plante-ci-cd\\zap-plante.html"
                 '''
             }
         }
@@ -80,10 +79,12 @@ pipeline {
         stage('OWASP ZAP - User Service') {
             steps {
                 bat '''
-                zap-cli open-url http://localhost:8081
-                zap-cli active-scan http://localhost:8081
-                zap-cli report -o zap-user-service.html -f html
-                zap-cli shutdown
+                cd /d "C:\\Program Files\\ZAP\\Zed Attack Proxy"
+
+                zap.bat ^
+                  -cmd ^
+                  -zapit http://localhost:8082/api/auth/login ^
+                  -quickout "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\plante-ci-cd\\zap-user-service.html"
                 '''
             }
         }
