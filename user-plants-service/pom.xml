@@ -18,11 +18,8 @@
 
 
     <groupId>com.planta</groupId>
-    <artifactId>Plantapp</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>plantapp</name>
-    <description>Demo project for Spring Boot</description>
-
+    <artifactId>user-plants-service</artifactId> <version>0.0.1-SNAPSHOT</version>
+    <name>user-plants-service</name> <description>Microservicio para la gestión de plantas de usuario</description>
     <properties>
         <java.version>17</java.version>
 
@@ -38,34 +35,10 @@
         <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
 
-    <!-- Thymeleaf (para vistas) -->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-thymeleaf</artifactId>
-    </dependency>
-
-    <!-- Spring Data JPA (para MySQL) -->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-data-jpa</artifactId>
-    </dependency>
-
     <!-- Spring Security -->
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-security</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>org.mindrot</groupId>
-        <artifactId>jbcrypt</artifactId>
-        <version>0.3m</version> <!-- Versión disponible en Maven Central -->
-    </dependency>
-
-    <!-- MySQL Driver con versión -->
-    <dependency>
-        <groupId>com.mysql</groupId>
-        <artifactId>mysql-connector-j</artifactId>
-        <scope>runtime</scope>
     </dependency>
 
     <!-- Spring Data MongoDB -->
@@ -81,6 +54,12 @@
         <scope>runtime</scope>
         <optional>true</optional>
     </dependency>
+    <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-crypto</artifactId>
+        <version>6.3.3</version>
+    </dependency>
+
     <dependency>
         <groupId>io.jsonwebtoken</groupId>
         <artifactId>jjwt-api</artifactId>
@@ -143,12 +122,6 @@
         <scope>test</scope>
     </dependency>
 
-    <!-- Spring Security (para PasswordEncoder) -->
-    <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-crypto</artifactId>
-        <version>6.3.3</version>
-    </dependency>
     <dependency>
         <groupId>io.github.bonigarcia</groupId>
         <artifactId>webdrivermanager</artifactId>
@@ -204,8 +177,10 @@
         <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+                <mainClass>com.planta.userplantsservice.Main</mainClass>
+            </configuration>
         </plugin>
-
         <!-- JaCoCo - Herramienta de Code Coverage -->
         <plugin>
             <groupId>org.jacoco</groupId>
