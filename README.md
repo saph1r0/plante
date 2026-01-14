@@ -659,6 +659,10 @@ pipeline {
     }
 }
 ```
+### Pipeline sin testers
+![jenkins](https://github.com/user-attachments/assets/6e9aab03-0525-4702-8a34-4115bf53e25f)
+
+
 ## Variables de Entorno (Jenkins)
 ```text
 CI=true
