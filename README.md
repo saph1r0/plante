@@ -558,14 +558,12 @@ pipeline {
     agent any
 
     tools {
-        maven 'MAVEN'   // Nombre del Maven instalado en Jenkins
-        jdk 'JAVA'      // Nombre del JDK en Jenkins
+        maven 'MAVEN'
+        jdk 'JAVA'
     }
 
     environment {
-        SONARQUBE_TOKEN = credentials('sonarqube-local') // Token SonarQube
-        CI = 'true'
-        BASE_URL = 'http://localhost:8080'
+        SONARQUBE_TOKEN = credentials('sonarqube-local')
     }
 
     stages {
@@ -578,104 +576,82 @@ pipeline {
             }
         }
 
-        stage('Clean Workspace') {
+        stage('Build Plante') {
             steps {
-                echo 'Limpiando workspace'
-                bat 'mvn clean -B'
-            }
-        }
-
-        stage('Build All Modules') {
-            steps {
-                echo 'Construyendo todos los módulos (sin tests)'
-                bat 'mvn install -B -DskipTests=true'
-            }
-        }
-
-        stage('Run Unit Tests (Surefire)') {
-            steps {
-                echo 'Ejecutando tests unitarios'
-                bat 'mvn test -B'
-                junit '**/target/surefire-reports/*.xml'
-            }
-        }
-
-        stage('Run Functional/Integration Tests (Failsafe)') {
-            steps {
-                echo 'Ejecutando tests funcionales Selenium'
-
-                // Levanta microservicios en background
-                bat 'start /b java -jar user-service/target/user-service.jar --server.port=8082'
-                bat 'start /b java -jar user-plants-service/target/user-plants-service.jar --server.port=8081'
-                bat 'start /b java -jar plantapp/target/plantapp.jar --server.port=8080'
-
-                echo 'Esperando que los servicios estén listos'
-                sleep 25 // espera a que se levanten los servicios
-
-                // Ejecuta tests funcionales/integración
-                bat 'mvn verify -B -Dtest=*FunctionalTest'
-                junit '**/target/failsafe-reports/*.xml'
-            }
-        }
-
-        stage('JaCoCo Coverage Report') {
-            steps {
-                echo 'Generando reporte de cobertura JaCoCo'
-                bat 'mvn jacoco:report'
-                archiveArtifacts artifacts: '**/target/site/jacoco/index.html', fingerprint: true
+                bat 'mvn clean package -DskipTests=true'
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('sonarqube-local') {
-                    bat """
+                    bat '''
                     mvn sonar:sonar ^
-                      -Dsonar.projectKey=Plantapp ^
-                      -Dsonar.projectName=Plantapp ^
-                      -Dsonar.host.url=http://localhost:9000 ^
-                      -Dsonar.login=%SONARQUBE_TOKEN%
-                    """
+                    -Dsonar.projectKey=Plantapp ^
+                    -Dsonar.projectName=Plantapp ^
+                    -Dsonar.host.url=http://localhost:9000 ^
+                    -Dsonar.login=%SONARQUBE_TOKEN%
+                    '''
                 }
             }
         }
 
-        stage('OWASP ZAP Security Scan') {
+        stage('Build User Service') {
             steps {
-                echo 'Ejecutando análisis de seguridad OWASP ZAP'
-                bat """
+                dir('user-service') {
+                    bat 'mvn clean package -DskipTests=true'
+                }
+            }
+        }
+
+        stage('Start Services') {
+            steps {
+                bat '''
+                REM ===== START PLANTE =====
+                start "" cmd /c "java -jar target\\*.jar"
+
+                REM ===== START USER SERVICE =====
+                start "" cmd /c "set DB_URL=jdbc:mysql://localhost:3306/usersdb&&set DB_USERNAME=root&&set DB_PASSWORD=&&java -jar user-service\\target\\*.jar"
+
+                REM ===== WAIT SERVICES =====
+                ping 127.0.0.1 -n 40 > nul
+                '''
+            }
+        }
+
+        stage('OWASP ZAP - Plante') {
+            steps {
+                bat '''
                 cd /d "C:\\Program Files\\ZAP\\Zed Attack Proxy"
 
                 zap.bat ^
                   -cmd ^
                   -quickurl http://localhost:8080/web/login ^
-                  -quickout "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\plante-ci-cd\\zap-plantapp.html"
-
-                zap.bat ^
-                  -cmd ^
-                  -quickurl http://localhost:8081/api/auth/login ^
-                  -quickout "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\plante-ci-cd\\zap-user-plants-service.html"
-
-                zap.bat ^
-                  -cmd ^
-                  -quickurl http://localhost:8082/api/auth/login ^
-                  -quickout "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\plante-ci-cd\\zap-user-service.html"
-                """
+                  -quickout "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\plante-ci-cd\\zap-plante.html"
+                '''
             }
         }
 
+        stage('OWASP ZAP - User Service') {
+            steps {
+                bat '''
+                cd /d "C:\\Program Files\\ZAP\\Zed Attack Proxy"
+
+                zap.bat ^
+                  -cmd ^
+                  -zapit http://localhost:8082/api/auth/login ^
+                  -quickout "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\plante-ci-cd\\zap-user-service.html"
+                '''
+            }
+        }
     }
 
     post {
-        always {
-            echo 'Pipeline finalizado'
-            archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
-        }
         success {
-            echo 'Pipeline CI/CD ejecutado correctamente'
+            echo "Pipeline CI/CD ejecutado correctamente"
         }
         failure {
-            echo 'Pipeline falló'
+            echo "Pipeline falló"
         }
     }
 }
