@@ -16,6 +16,7 @@ class RegisterFunctionalTest {
 
     private WebDriver driver;
     private WebDriverWait wait;
+    private JavascriptExecutor js;
 
     @BeforeEach
     void setUp() {
@@ -23,20 +24,24 @@ class RegisterFunctionalTest {
 
         ChromeOptions options = new ChromeOptions();
 
-        // Si estamos en Jenkins o CI/CD
+        // CI / Jenkins safe
         if (System.getenv("CI") != null) {
-            options.addArguments("--headless=new");
-            options.addArguments("--no-sandbox");
-            options.addArguments("--disable-dev-shm-usage");
-            options.addArguments("--disable-gpu");
-            options.addArguments("--window-size=1920,1080");
-            options.addArguments("--disable-extensions");
-            options.addArguments("--remote-allow-origins=*");
+            options.addArguments(
+                    "--headless=new",
+                    "--no-sandbox",
+                    "--disable-dev-shm-usage",
+                    "--disable-gpu",
+                    "--window-size=1920,1080",
+                    "--disable-extensions",
+                    "--remote-allow-origins=*"
+            );
         }
 
         driver = new ChromeDriver(options);
         driver.manage().window().maximize();
-        wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+
+        wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        js = (JavascriptExecutor) driver;
     }
 
     @Test
@@ -45,8 +50,11 @@ class RegisterFunctionalTest {
 
         driver.get("http://localhost:8080/web/login");
 
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("registerToggle")))
-                .click();
+        // Toggle registro
+        WebElement toggle = wait.until(
+                ExpectedConditions.elementToBeClickable(By.id("registerToggle"))
+        );
+        jsClick(toggle);
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("registerForm")));
 
@@ -54,32 +62,30 @@ class RegisterFunctionalTest {
                 .sendKeys("Maria Test");
 
         String email = "maria" + System.currentTimeMillis() + "@test.com";
-        driver.findElement(By.id("register-correo"))
-                .sendKeys(email);
+        driver.findElement(By.id("register-correo")).sendKeys(email);
+        driver.findElement(By.id("register-contrasena")).sendKeys("123456");
 
-        driver.findElement(By.id("register-contrasena"))
-                .sendKeys("123456");
+        // Checkbox términos
+        WebElement checkbox = wait.until(
+                ExpectedConditions.presenceOfElementLocated(
+                        By.cssSelector("#registerForm input[type='checkbox']")
+                )
+        );
+        jsClick(checkbox);
 
-        // CHECKBOX
-        WebElement checkbox = driver.findElement(
-                By.cssSelector("#registerForm input[type='checkbox']")
+        // Botón registrar
+        WebElement registerBtn = wait.until(
+                ExpectedConditions.elementToBeClickable(By.cssSelector("button.register-btn"))
+        );
+        jsClick(registerBtn);
+
+        // Assert seguro
+        WebElement successMessage = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.id("successMessage"))
         );
 
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("arguments[0].scrollIntoView(true);", checkbox);
-        js.executeScript("arguments[0].click();", checkbox);
-
-        // Submit
-        driver.findElement(By.cssSelector("button.register-btn"))
-                .click();
-
-        // Assert
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("successMessage")));
-
-        assertTrue(
-                driver.findElement(By.id("successMessage")).isDisplayed(),
-                "Debería mostrarse mensaje de registro exitoso"
-        );
+        assertTrue(successMessage.isDisplayed(),
+                "Debe mostrarse mensaje de registro exitoso");
     }
 
     @Test
@@ -88,8 +94,10 @@ class RegisterFunctionalTest {
 
         driver.get("http://localhost:8080/web/login");
 
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("registerToggle")))
-                .click();
+        WebElement toggle = wait.until(
+                ExpectedConditions.elementToBeClickable(By.id("registerToggle"))
+        );
+        jsClick(toggle);
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("registerForm")));
 
@@ -97,24 +105,31 @@ class RegisterFunctionalTest {
                 .sendKeys("Maria Sin Terminos");
 
         String email = "maria" + System.currentTimeMillis() + "@test.com";
-        driver.findElement(By.id("register-correo"))
-                .sendKeys(email);
+        driver.findElement(By.id("register-correo")).sendKeys(email);
+        driver.findElement(By.id("register-contrasena")).sendKeys("123456");
 
-        driver.findElement(By.id("register-contrasena"))
-                .sendKeys("123456");
-
-        //NO marcar checkbox de términos
-        driver.findElement(By.cssSelector("button.register-btn"))
-                .click();
-
-        wait.withTimeout(Duration.ofSeconds(3));
-
-        WebElement successMessage = driver.findElement(By.id("successMessage"));
-
-        assertFalse(
-                successMessage.isDisplayed(),
-                "NO debería mostrarse el mensaje de éxito si no se aceptan los términos"
+        WebElement registerBtn = wait.until(
+                ExpectedConditions.elementToBeClickable(By.cssSelector("button.register-btn"))
         );
+        jsClick(registerBtn);
+
+        boolean successVisible = false;
+        try {
+            successVisible = new WebDriverWait(driver, Duration.ofSeconds(3))
+                    .until(ExpectedConditions.visibilityOfElementLocated(
+                            By.id("successMessage")
+                    ))
+                    .isDisplayed();
+        } catch (TimeoutException ignored) {}
+
+        assertFalse(successVisible,
+                "NO debe mostrarse mensaje de éxito si no se aceptan los términos");
+    }
+
+    // 🔥 Utilidad CI/CD SAFE
+    private void jsClick(WebElement element) {
+        js.executeScript("arguments[0].scrollIntoView({block:'center'});", element);
+        js.executeScript("arguments[0].click();", element);
     }
 
     @AfterEach

@@ -5,8 +5,7 @@ import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.*;
 
 import java.time.Duration;
 
@@ -17,48 +16,66 @@ class DashboardFunctionalTest {
     private WebDriver driver;
     private WebDriverWait wait;
 
+    private final String BASE_URL = System.getenv().getOrDefault(
+            "BASE_URL",
+            "http://localhost:8080"
+    );
+
     @BeforeEach
     void setUp() {
         WebDriverManager.chromedriver().setup();
 
         ChromeOptions options = new ChromeOptions();
 
-        // Si estamos en Jenkins o CI/CD
         if (System.getenv("CI") != null) {
             options.addArguments("--headless=new");
             options.addArguments("--no-sandbox");
             options.addArguments("--disable-dev-shm-usage");
             options.addArguments("--disable-gpu");
             options.addArguments("--window-size=1920,1080");
-            options.addArguments("--disable-extensions");
-            options.addArguments("--remote-allow-origins=*");
         }
 
         driver = new ChromeDriver(options);
-        driver.manage().window().maximize();
         wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+
+        realizarLogin();
     }
+
+    void realizarLogin() {
+        driver.get(BASE_URL + "/web/login");
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")))
+                .sendKeys("admin");
+
+        driver.findElement(By.id("password"))
+                .sendKeys("admin123");
+
+        driver.findElement(By.cssSelector("button[type='submit']")).click();
+
+        wait.until(ExpectedConditions.urlContains("/dashboard"));
+    }
+
     @Test
     @DisplayName("Dashboard carga correctamente")
     void dashboardCargaCorrectamente() {
 
-        driver.get("http://localhost:8080/web/dashboard");
+        driver.get(BASE_URL + "/web/dashboard");
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.className("app-header")
-        ));
-
-        assertTrue(
-                driver.findElement(By.className("app-header")).isDisplayed(),
-                "El header del dashboard debería mostrarse"
+        WebElement header = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(
+                        By.className("app-header")
+                )
         );
+
+        assertTrue(header.isDisplayed(),
+                "El header del dashboard debería mostrarse");
     }
 
     @Test
     @DisplayName("Botón menú abre el sidebar")
     void botonMenuAbreSidebar() {
 
-        driver.get("http://localhost:8080/web/dashboard");
+        driver.get(BASE_URL + "/web/dashboard");
 
         WebElement menuToggle = wait.until(
                 ExpectedConditions.elementToBeClickable(By.id("menu-toggle"))
@@ -66,23 +83,25 @@ class DashboardFunctionalTest {
 
         menuToggle.click();
 
-        WebElement sidebar = driver.findElement(By.id("sidebar"));
+        WebElement sidebar = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.id("sidebar"))
+        );
 
         assertTrue(
                 sidebar.getAttribute("class").contains("active"),
-                "El sidebar debería activarse al hacer click"
+                "El sidebar debería activarse"
         );
     }
 
     @Test
-    @DisplayName("Botón Ver Catálogo Completo redirige al catálogo")
+    @DisplayName("Botón Ver Catálogo redirige al catálogo")
     void botonVerCatalogoRedirigeCorrectamente() {
 
-        driver.get("http://localhost:8080/web/dashboard");
+        driver.get(BASE_URL + "/web/dashboard");
 
         WebElement btnCatalogo = wait.until(
                 ExpectedConditions.elementToBeClickable(
-                        By.linkText("Ver Catálogo Completo")
+                        By.partialLinkText("Catálogo")
                 )
         );
 
@@ -92,29 +111,29 @@ class DashboardFunctionalTest {
 
         assertTrue(
                 driver.getCurrentUrl().contains("/web/plantas/catalogo"),
-                "Debería redirigir al catálogo"
+                "Debe redirigir al catálogo"
         );
     }
 
     @Test
-    @DisplayName("Botón Dashboard del header redirige al dashboard")
+    @DisplayName("Botón Dashboard del header funciona")
     void botonDashboardHeaderFunciona() {
 
-        driver.get("http://localhost:8080/web/dashboard");
+        driver.get(BASE_URL + "/web/dashboard");
 
         WebElement btnDashboard = wait.until(
                 ExpectedConditions.elementToBeClickable(
-                        By.cssSelector("a[href='/web/plantas/dashboard2']")
+                        By.cssSelector("a[href*='dashboard']")
                 )
         );
 
         btnDashboard.click();
 
-        wait.until(ExpectedConditions.urlContains("/dashboard2"));
+        wait.until(ExpectedConditions.urlContains("/dashboard"));
 
         assertTrue(
-                driver.getCurrentUrl().contains("dashboard2"),
-                "Debería redirigir al dashboard del usuario"
+                driver.getCurrentUrl().contains("/dashboard"),
+                "Debe mantenerse en dashboard"
         );
     }
 

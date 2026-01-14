@@ -16,6 +16,7 @@ class CatalogoFunctionalTest {
 
     private WebDriver driver;
     private WebDriverWait wait;
+    private String baseUrl;
 
     @BeforeEach
     void setUp() {
@@ -23,7 +24,7 @@ class CatalogoFunctionalTest {
 
         ChromeOptions options = new ChromeOptions();
 
-        // Si estamos en Jenkins o CI/CD
+        // CI / Jenkins
         if (System.getenv("CI") != null) {
             options.addArguments("--headless=new");
             options.addArguments("--no-sandbox");
@@ -37,12 +38,18 @@ class CatalogoFunctionalTest {
         driver = new ChromeDriver(options);
         driver.manage().window().maximize();
         wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+
+        // BASE_URL configurable
+        baseUrl = System.getenv().getOrDefault(
+                "BASE_URL",
+                "http://localhost:8080"
+        );
     }
 
     @Test
     @DisplayName("El catálogo botánico carga correctamente")
     void catalogoDebeCargar() {
-        driver.get("http://localhost:8080/web/plantas/catalogo");
+        driver.get(baseUrl + "/web/plantas/catalogo");
 
         WebElement titulo = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(By.className("hero-title"))
@@ -54,7 +61,7 @@ class CatalogoFunctionalTest {
     @Test
     @DisplayName("Se muestran plantas al cargar el catálogo")
     void debeMostrarPlantas() {
-        driver.get("http://localhost:8080/web/plantas/catalogo");
+        driver.get(baseUrl + "/web/plantas/catalogo");
 
         List<WebElement> plantas = wait.until(
                 ExpectedConditions.visibilityOfAllElementsLocatedBy(
@@ -68,7 +75,7 @@ class CatalogoFunctionalTest {
     @Test
     @DisplayName("La búsqueda filtra plantas por nombre")
     void busquedaDebeFiltrarPlantas() {
-        driver.get("http://localhost:8080/web/plantas/catalogo");
+        driver.get(baseUrl + "/web/plantas/catalogo");
 
         WebElement search = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(By.id("plant-search-input"))
@@ -76,18 +83,20 @@ class CatalogoFunctionalTest {
 
         search.sendKeys("rosa");
 
-        wait.until(ExpectedConditions
-                .numberOfElementsToBeMoreThan(By.className("plant-card"), 0));
+        wait.until(
+                ExpectedConditions.numberOfElementsToBeMoreThan(
+                        By.className("plant-card"), 0
+                )
+        );
 
         List<WebElement> plantas = driver.findElements(By.className("plant-card"));
-        assertFalse(plantas.isEmpty(), "Deberían mostrarse plantas filtradas");
+        assertFalse(plantas.isEmpty());
     }
-
 
     @Test
     @DisplayName("Si no hay resultados se muestra mensaje correspondiente")
     void noResultadosDebeMostrarMensaje() {
-        driver.get("http://localhost:8080/web/plantas/catalogo");
+        driver.get(baseUrl + "/web/plantas/catalogo");
 
         WebElement search = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(By.id("plant-search-input"))
@@ -105,7 +114,7 @@ class CatalogoFunctionalTest {
     @Test
     @DisplayName("El botón reset restaura todas las plantas")
     void resetBusquedaDebeRestaurarCatalogo() {
-        driver.get("http://localhost:8080/web/plantas/catalogo");
+        driver.get(baseUrl + "/web/plantas/catalogo");
 
         WebElement search = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(By.id("plant-search-input"))
@@ -124,7 +133,7 @@ class CatalogoFunctionalTest {
     @Test
     @DisplayName("El filtro Interior funciona")
     void filtroInteriorDebeAplicarse() {
-        driver.get("http://localhost:8080/web/plantas/catalogo");
+        driver.get(baseUrl + "/web/plantas/catalogo");
 
         WebElement filtroInterior = wait.until(
                 ExpectedConditions.presenceOfElementLocated(
@@ -132,11 +141,12 @@ class CatalogoFunctionalTest {
                 )
         );
 
-        // Usa JavaScript para evitar StaleElement
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", filtroInterior);
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].click();", filtroInterior);
 
-        // Espera a que se carguen las plantas
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.className("plant-card")));
+        wait.until(
+                ExpectedConditions.presenceOfElementLocated(By.className("plant-card"))
+        );
 
         List<WebElement> plantas = driver.findElements(By.className("plant-card"));
         assertFalse(plantas.isEmpty());
@@ -145,7 +155,7 @@ class CatalogoFunctionalTest {
     @Test
     @DisplayName("Al hacer click en una planta se abre el modal")
     void modalDebeAbrirseYCerrarse() {
-        driver.get("http://localhost:8080/web/plantas/catalogo");
+        driver.get(baseUrl + "/web/plantas/catalogo");
 
         WebElement planta = wait.until(
                 ExpectedConditions.elementToBeClickable(By.className("plant-card"))
@@ -165,6 +175,8 @@ class CatalogoFunctionalTest {
 
     @AfterEach
     void tearDown() {
-        driver.quit();
+        if (driver != null) {
+            driver.quit();
+        }
     }
 }
