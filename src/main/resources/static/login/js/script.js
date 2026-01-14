@@ -205,7 +205,7 @@ async function handleFormSubmit(event, formType) {
                 correo: document.getElementById("register-correo").value,
                 contrasena: document.getElementById("register-contrasena").value
             };
-            url = "http://localhost:8082/api/auth/registro";
+            url = "http://localhost:8082/api/auth/register";
         }
 
         const res = await fetch(url, {
@@ -229,13 +229,13 @@ async function handleFormSubmit(event, formType) {
             const data = await res.json();
 
             // 🔐 Guardar JWT
-            localStorage.setItem("token", data.token);
+           localStorage.setItem("token", data.token);
 
-            showSuccessMessage("¡Sesión iniciada!");
+           showSuccessMessage("¡Sesión iniciada!");
 
-            setTimeout(() => {
-                window.location.href = "/web/dashboard";
-            }, 1000);
+           setTimeout(() => {
+               window.location.href = `/web/dashboard?token=${data.token}`; // pasar token en query param
+           }, 1000);
         } else {
             showSuccessMessage("¡Registrado exitosamente!");
         }
