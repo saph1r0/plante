@@ -25,76 +25,94 @@ El sistema fue desarrollado usando Java + Spring Boot, aplicando:
 El desarrollo se realizó en **IntelliJ IDEA**, siguiendo principios de arquitectura limpia.
 
 ---
-
 ## 🛠️ Estructura del Proyecto
 
 ```bash
-PlanTapp/
-├── mvnw, mvnw.cmd         # Wrappers para Maven (portabilidad del build)
-├── pom.xml                # Descriptor del proyecto Maven (dependencias, plugins)
+plante/
+├── dependencias.txt
+├── Jenkinsfile
+├── pom.xml
+├── README.md
+├── sonar-project.properties
+│
+├── plantapp-functional-tests/
+│   ├── pom.xml
+│   └── src/
+│       └── test/
+│           └── java/
+│               └── com/
+│                   └── planta/
+│                       └── functional/
+│                           ├── CatalogoFunctionalTest.java
+│                           ├── Dashboard2FunctionalTest.java
+│                           ├── DashboardFunctionalTest.java
+│                           ├── LoginFunctionalTest.java
+│                           └── RegisterFunctionalTest.java
+│
 ├── src/
-│   └── main/
-│       ├── java/
-│       │   └── com/planta/plantapp/
-│       │       ├── aplicacion/                  # Casos de uso y servicios de aplicación
-│       │       │   ├── interfaces/              # Contratos para servicios
-│       │       │   │   ├── IServicioAutenticacion.java
-│       │       │   │   ├── IServicioBitacora.java
-│       │       │   │   ├── IServicioPlanta.java
-│       │       │   │   ├── IServicioRecordatorio.java
-│       │       │   │   └── IServicioUsuario.java
-│       │       │   └── servicios/               # Implementaciones de servicios
-│       │       │       ├── ServicioAutenticacionImpl.java
-│       │       │       ├── ServicioBitacoraImpl.java
-│       │       │       ├── ServicioPlantaImpl.java
-│       │       │       ├── ServicioRecordatorioImpl.java
-│       │       │       └── ServicioUsuarioImpl.java
-│       │       ├── config/                      # Configuraciones de seguridad (Spring Security)
-│       │       │   └── SecurityConfig.java
-│       │       ├── dominio/                     # Modelo de dominio (entidades, DTOs, fábricas)
-│       │       │   ├── modelo/
-│       │       │   │   ├── bitacora/            # Entidad de bitácora
-│       │       │   │   ├── cuidado/             # Tipos de cuidados y tareas
-│       │       │   │   ├── fabrica/             # Fábricas de creación de objetos del dominio
-│       │       │   │   ├── planta/              # Entidades y DTOs de plantas
-│       │       │   │   ├── recordatorio/        # Entidad Recordatorio y estados
-│       │       │   │   ├── servicios/           # Servicios de dominio puro
-│       │       │   │   └── usuario/             # Entidad y DTOs de usuario
-│       │       │   ├── IUsuarioRepositorio.java
-│       │       │   ├── IPlantaRepositorio.java
-│       │       │   ├── IRecordatorioRepositorio.java
-│       │       │   └── IBitacoraRepositorio.java
-│       │       ├── infraestructura/             # Implementaciones de acceso a datos y persistencia
-│       │       │   ├── documento/               # Documentos MongoDB (NoSQL)
-│       │       │   ├── entidad/                 # Entidades JPA/Hibernate (MySQL)
-│       │       │   ├── mapper/                  # Mapeadores entre entidades/dominios/DTOs
-│       │       │   └── repositorio/             # Repositorios específicos
-│       │       │       ├── mysql/               # Repositorios para MySQL
-│       │       │       │   ├── jpa/             # Interfaces JPA Spring Data
-│       │       │       │   └── ReposImpl.java   # Implementaciones personalizadas
-│       │       │       └── mongodb/             # Repositorios para MongoDB
-│       │       ├── presentacion/                # Controladores web (REST y MVC)
-│       │       │   └── controlador/
-│       │       │       ├── BitacoraController.java
-│       │       │       ├── PlantaController.java
-│       │       │       ├── RecordatorioController.java
-│       │       │       ├── UsuarioController.java
-│       │       │       └── UsuarioWebController.java
-│       │       └── PlantappApplication.java     # Clase principal de arranque (Spring Boot)
-│       └── resources/                           # Recursos estáticos, vistas HTML y config
-│           ├── application.properties           # Configuraciones de aplicación (DB, puertos, etc.)
-│           ├── static/
-│           │   ├── images/                      # Catálogo visual de plantas (JPG, PNG)
-│           │   └── login/
-│           │       ├── css/                     # Hojas de estilo para vistas
-│           │       └── js/                      # Scripts JavaScript del frontend
-│           └── templates/
-│               └── login/                       # Vistas Thymeleaf
-│                   ├── catalogo.html
-│                   ├── dashboard.html
-│                   ├── home.html
-│                   ├── index.html
-│                   └── login.html
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/
+│   │   │       └── planta/
+│   │   │           └── plantapp/
+│   │   │               ├── aplicacion/
+│   │   │               ├── config/
+│   │   │               ├── controller/
+│   │   │               ├── dominio/
+│   │   │               ├── infraestructura/
+│   │   │               ├── presentacion/
+│   │   │               └── PlantappApplication.java
+│   │   └── resources/
+│   │       ├── application.properties
+│   │       ├── static/
+│   │       └── templates/
+│   └── test/
+│       └── java/
+│           └── com/
+│               └── planta/
+│                   └── plantapp/
+│
+├── user-plants-service/
+│   ├── pom.xml
+│   └── src/
+│       ├── main/
+│       │   ├── java/
+│       │   │   └── com/
+│       │   │       └── planta/
+│       │   │           └── userplantsservice/
+│       │   │               ├── aplicacion/
+│       │   │               ├── dominio/
+│       │   │               ├── infraestructura/
+│       │   │               ├── presentacion/
+│       │   │               └── Main.java
+│       │   └── resources/
+│       │       └── application.properties
+│       └── test/
+│           └── java/
+│               └── com/
+│                   └── planta/
+│                       └── userplantsservice/
+│
+└── user-service/
+    ├── pom.xml
+    └── src/
+        ├── main/
+        │   ├── java/
+        │   │   └── com/
+        │   │       └── planta/
+        │   │           └── userservice/
+        │   │               ├── aplicacion/
+        │   │               ├── dominio/
+        │   │               ├── infraestructura/
+        │   │               ├── presentacion/
+        │   │               └── Main.java
+        │   └── resources/
+        │       └── application.properties
+        └── test/
+            └── java/
+                └── com/
+                    └── planta/
+                        └── userservice/
 
 ````
 ## Funcionalidades (Alto Nivel)
