@@ -4,6 +4,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -20,9 +21,44 @@ class Dashboard2FunctionalTest {
     @BeforeEach
     void setUp() {
         WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
+
+        // Opciones de Chrome para CI/CD
+        ChromeOptions options = new ChromeOptions();
+
+        // Si está en Jenkins (CI=true), ejecuta en modo headless
+        if (System.getenv("CI") != null) {
+            options.addArguments("--headless=new");
+            options.addArguments("--no-sandbox");
+            options.addArguments("--disable-dev-shm-usage");
+            options.addArguments("--disable-gpu");
+            options.addArguments("--window-size=1920,1080");
+            options.addArguments("--disable-extensions");
+            options.addArguments("--remote-allow-origins=*");
+        }
+
+        driver = new ChromeDriver(options);
         driver.manage().window().maximize();
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+
+        //INICIA SESIÓN ANTES DE CADA TEST
+        login();
+    }
+
+    // Método helper para hacer login
+    private void login() {
+        driver.get("http://localhost:8080/web/login");
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("login-correo")))
+                .sendKeys("maria@gmail.com"); // Usa un usuario válido
+
+        driver.findElement(By.id("login-contrasena"))
+                .sendKeys("mariaaa", Keys.ENTER); // Usa una contraseña válida
+
+        // Espera a que termine el login y redirija
+        wait.until(ExpectedConditions.or(
+                ExpectedConditions.urlContains("dashboard"),
+                ExpectedConditions.urlContains("plantas")
+        ));
     }
 
     @Test
@@ -69,13 +105,15 @@ class Dashboard2FunctionalTest {
     void seMuestranPlantasOEstadoVacio() {
         driver.get("http://localhost:8080/web/plantas/dashboard2");
 
-        wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        // Espera a que cargue la página
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.tagName("body")));
 
-        // Esperar hasta que aparezca al menos una planta o un estado vacío
+        // Espera a que aparezca al menos una planta o un estado vacío
         wait.until(d ->
                 !d.findElements(By.className("plant-card")).isEmpty()
                         || !d.findElements(By.className("empty-state")).isEmpty()
         );
+
         List<WebElement> plantas = driver.findElements(By.className("plant-card"));
         List<WebElement> emptyStates = driver.findElements(By.className("empty-state"));
 
@@ -84,7 +122,6 @@ class Dashboard2FunctionalTest {
                 "Debe haber plantas o un estado vacío visible"
         );
     }
-
 
     @Test
     @DisplayName("Cerrar sesión redirige al login")
@@ -97,13 +134,15 @@ class Dashboard2FunctionalTest {
 
         btnCerrar.click();
 
+        // Espera al alert y acéptalo
+        wait.until(ExpectedConditions.alertIsPresent());
         driver.switchTo().alert().accept();
 
+        // Espera redirección al login
         wait.until(ExpectedConditions.urlContains("/web/login"));
 
         assertTrue(driver.getCurrentUrl().contains("/web/login"));
     }
-
 
     @AfterEach
     void tearDown() {

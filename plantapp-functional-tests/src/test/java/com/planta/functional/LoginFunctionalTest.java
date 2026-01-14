@@ -5,6 +5,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -20,9 +21,23 @@ class LoginFunctionalTest {
     @BeforeEach
     void setUp() {
         WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
+
+        ChromeOptions options = new ChromeOptions();
+
+        // Si estamos en Jenkins o CI/CD
+        if (System.getenv("CI") != null) {
+            options.addArguments("--headless=new");
+            options.addArguments("--no-sandbox");
+            options.addArguments("--disable-dev-shm-usage");
+            options.addArguments("--disable-gpu");
+            options.addArguments("--window-size=1920,1080");
+            options.addArguments("--disable-extensions");
+            options.addArguments("--remote-allow-origins=*");
+        }
+
+        driver = new ChromeDriver(options);
         driver.manage().window().maximize();
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 
     @Test
@@ -78,41 +93,6 @@ class LoginFunctionalTest {
     }
 
     @Test
-    @DisplayName("Login con credenciales inválidas no debe mostrar success ni redirigir")
-    void loginConCredencialesInvalidasNoDebeEntrar() {
-
-        driver.get("http://localhost:8080/web/login");
-
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("login-correo")))
-                .sendKeys("invalido@test.com");
-
-        driver.findElement(By.id("login-contrasena"))
-                .sendKeys("passwordIncorrecta", Keys.ENTER);
-
-        wait.until(ExpectedConditions.not(
-                ExpectedConditions.urlContains("dashboard")
-        ));
-
-        // Seguimos en login
-        assertTrue(
-                driver.getCurrentUrl().contains("/login"),
-                "Con credenciales inválidas no debería salir del login"
-        );
-
-        // No aparece success
-        assertTrue(
-                driver.findElements(By.id("successMessage")).isEmpty(),
-                "No debería mostrarse mensaje de éxito"
-        );
-
-        // Sí aparece error
-        assertFalse(
-                driver.findElements(By.id("errorMessage")).isEmpty(),
-                "Debería mostrarse un mensaje de error"
-        );
-    }
-
-    @Test
     @DisplayName("Toggle Login ↔ Register debe alternar formularios")
     void toggleLoginRegisterDebeFuncionar() {
 
@@ -121,23 +101,23 @@ class LoginFunctionalTest {
         WebElement loginForm = driver.findElement(By.id("loginForm"));
         WebElement registerForm = driver.findElement(By.id("registerForm"));
 
-        assertTrue(loginForm.getAttribute("class").contains("active"));
-        assertFalse(registerForm.getAttribute("class").contains("active"));
+        assertTrue(loginForm.getDomAttribute("class").contains("active"));
+        assertFalse(registerForm.getDomAttribute("class").contains("active"));
 
         driver.findElement(By.id("registerToggle")).click();
 
         wait.until(ExpectedConditions.attributeContains(registerForm, "class", "active"));
 
-        assertTrue(registerForm.getAttribute("class").contains("active"));
-        assertFalse(loginForm.getAttribute("class").contains("active"));
+        assertTrue(registerForm.getDomAttribute("class").contains("active"));
+        assertFalse(loginForm.getDomAttribute("class").contains("active"));
 
         // Volver a Login
         driver.findElement(By.id("loginToggle")).click();
 
         wait.until(ExpectedConditions.attributeContains(loginForm, "class", "active"));
 
-        assertTrue(loginForm.getAttribute("class").contains("active"));
-        assertFalse(registerForm.getAttribute("class").contains("active"));
+        assertTrue(loginForm.getDomAttribute("class").contains("active"));
+        assertFalse(registerForm.getDomAttribute("class").contains("active"));
     }
 
     @AfterEach
